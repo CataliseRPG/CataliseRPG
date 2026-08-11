@@ -7,7 +7,6 @@
   <style>
     * { box-sizing: border-box; margin: 0; padding: 0; }
     
-    /* TEMA VERDE ESCURO AZULADO */
     body {
       background-color: #061215;
       color: #cbe3db;
@@ -17,7 +16,6 @@
       flex-direction: column;
     }
 
-    /* BARRA SUPERIOR */
     header {
       background: #0b1f24;
       border-bottom: 2px solid #114b5f;
@@ -62,7 +60,6 @@
       gap: 10px;
     }
 
-    /* CONTEÚDO PRINCIPAL */
     main {
       flex: 1;
       padding: 30px;
@@ -74,7 +71,6 @@
     .tab-content { display: none; }
     .tab-content.active { display: block; }
 
-    /* LOGIN */
     .login-box {
       max-width: 420px;
       margin: 60px auto;
@@ -86,7 +82,6 @@
       box-shadow: 0 8px 25px rgba(0,0,0,0.7);
     }
 
-    /* CARDS DE AGENTES E CAMPANHAS */
     .grid-cards {
       display: grid;
       grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
@@ -131,7 +126,6 @@
       justify-content: space-between;
     }
 
-    /* BOTÕES & INPUTS */
     .btn-main {
       background: #114b5f;
       color: #fff;
@@ -150,12 +144,8 @@
     .btn-main:hover { background: #1a6b85; }
     .btn-main:disabled { background: #22383d !important; cursor: not-allowed; color: #5c7b82; }
 
-    .btn-danger {
-      background: #5c1d1d;
-    }
-    .btn-danger:hover {
-      background: #802727;
-    }
+    .btn-danger { background: #5c1d1d; }
+    .btn-danger:hover { background: #802727; }
 
     input, select, textarea {
       width: 100%;
@@ -182,11 +172,9 @@
     textarea#anotacoes {
       resize: vertical;
       min-height: 120px;
-      max-width: 100%;
       width: 100%;
     }
 
-    /* ESTILOS DE TÍTULOS E CONTAINERS DA FICHA */
     h1, h2, h3 {
       color: #45b69c;
       text-transform: uppercase;
@@ -254,7 +242,6 @@
 
     .sobrecarregado { color: #ff6b6b !important; font-weight: bold; }
 
-    /* HISTÓRICO DE DADOS */
     #log-rolagem {
       margin-top: 25px;
       padding: 15px;
@@ -267,7 +254,6 @@
       color: #2ec4b6;
     }
 
-    /* MODAL BASE */
     .modal {
       display: none;
       position: fixed;
@@ -332,7 +318,7 @@
     <div id="aba-login" class="tab-content active">
       <div class="login-box">
         <h2 style="color: #45b69c; margin-bottom: 15px;">ACESSO AO SISTEMA</h2>
-        <p style="font-size: 0.85em; color: #8bb3a8; margin-bottom: 20px;">Insira seu codinome de investigador para acessar seus arquivos.</p>
+        <p style="font-size: 0.85em; color: #8bb3a8; margin-bottom: 20px;">Insira seu codinome de investigador para acessar seus arquivos na nuvem.</p>
         
         <label style="text-align: left; display: block;">CODINOME</label>
         <input type="text" id="login-usuario" placeholder="Ex: Agente_Silveira" style="margin-bottom: 18px;">
@@ -346,7 +332,7 @@
         <h2 style="text-align: left; border: none; margin-top:0;">PAINEL DO INVESTIGADOR</h2>
         <p style="margin-top: 10px; color: #8bb3a8; font-size: 0.95em;">
           Sessão ativa como <b id="dash-usuario" style="color:#fff;">-</b>. 
-          Navegue entre seus agentes ou gerencie campanhas ativas.
+          Navegue entre seus agentes ou gerencie campanhas ativas em tempo real.
         </p>
       </div>
 
@@ -388,7 +374,7 @@
 
   <div id="modal-novo-agente" class="modal modal-dialog">
     <div class="modal-content-sm">
-      <h3 style="margin-top:0;">Nostro Agente</h3>
+      <h3 style="margin-top:0;">Novo Agente</h3>
       <p style="font-size:0.85em; color:#8bb3a8; margin-bottom:15px;">Informe o codinome ou nome completo do seu personagem.</p>
       
       <label>Nome do Agente</label>
@@ -436,9 +422,6 @@
       <h3 style="margin-top:0; color:#ff6b6b;">Excluir Campanha</h3>
       <p style="font-size:0.9em; color:#cbe3db; margin-bottom:15px;">
         Tem certeza que deseja apagar a campanha <b id="pop-texto-excluir-campanha" style="color:#45b69c;"></b>?
-      </p>
-      <p style="font-size:0.8em; color:#8bb3a8; margin-bottom:20px;">
-        Essa ação não pode ser desfeita. Os agentes desvincularão desta mesa.
       </p>
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
@@ -680,787 +663,753 @@
     </div>
   </div>
 
-<script>
-  let usuarioAtual = null;
-  let usuarioId = null;
-  let agentes = [];
-  let campanhas = [];
-  let agenteAtualId = null;
-  let agenteAtualDonoId = null;
-  let campanhaAtualId = null;
-  let campanhaParaEditarId = null;
-  let campanhaParaExcluirId = null;
-  let eMestreDaMesaAtual = false;
-  let podeEditarFichaAtual = true;
+  <script type="module">
+    import { initializeApp } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-app.js";
+    import { 
+      getFirestore, doc, setDoc, getDoc, deleteDoc, 
+      collection, query, where, getDocs, onSnapshot 
+    } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
 
-  // DADOS BALANCEADOS NATIVOS CRIPTOGRÁFICOS
-  function rolarDadoCripto(lados) {
-    const array = new Uint32Array(1);
-    window.crypto.getRandomValues(array);
-    return (array[0] % lados) + 1;
-  }
-
-  const pericias = [
-    { nome: "Atletismo", attr: "corpo" },
-    { nome: "Luta", attr: "corpo" },
-    { nome: "Fortitude", attr: "corpo" },
-    { nome: "Acrobacia", attr: "reflexo" },
-    { nome: "Furtividade", attr: "reflexo" },
-    { nome: "Pontaria", attr: "reflexo" },
-    { nome: "Pilotagem", attr: "reflexo" },
-    { nome: "Investigação", attr: "mente" },
-    { nome: "Medicina", attr: "mente" },
-    { nome: "Ocultismo", attr: "mente" },
-    { nome: "Tecnologia", attr: "mente" },
-    { nome: "Ciências", attr: "mente" },
-    { nome: "Vontade", attr: "espirito" },
-    { nome: "Sintonização", attr: "espirito" },
-    { nome: "Intuição", attr: "espirito" },
-    { nome: "Diplomacia", attr: "presenca" },
-    { nome: "Enganação", attr: "presenca" },
-    { nome: "Intimidação", attr: "presenca" },
-    { nome: "Percepção", attr: "presenca" }
-  ];
-
-  // TODOS OS ITENS OFICIAIS COMPLETOS
-  const itensOficiais = {
-    revolver: { nome: "Revólver Calibre .38", cat: "arma", espaco: 1, dano: "1d8", efeito: "Arma leve de porte fácil." },
-    pistola: { nome: "Pistola Semi-automática", cat: "arma", espaco: 1, dano: "1d6+1", efeito: "Disparo rápido." },
-    espingarda: { nome: "Espingarda Calibre 12", cat: "arma", espaco: 2, dano: "2d6", efeito: "Alto impacto em curto alcance." },
-    faca: { nome: "Faca Tática", cat: "arma", espaco: 1, dano: "1d4", efeito: "Ataque silencioso em corpo a corpo." },
-    bastao: { nome: "Bastão Retrátil", cat: "arma", espaco: 1, dano: "1d6", efeito: "Dano não letal / contundente." },
-    fuzil: { nome: "Fuzil de Precisão", cat: "arma", espaco: 3, dano: "2d8", efeito: "Alcance longo / alta precisão." },
-    submetralhadora: { nome: "Submetralhadora", cat: "arma", espaco: 2, dano: "1d8+2", efeito: "Rajada rápida." },
-    colete: { nome: "Colete Balístico", cat: "protecao", espaco: 2, dano: "1d4", efeito: "Redução de dano físico (RD)." },
-    traje_reforcado: { nome: "Traje Reforçado", cat: "protecao", espaco: 1, dano: "1d2", efeito: "Proteção leve (RD)." },
-    escudo: { nome: "Escudo Tático", cat: "protecao", espaco: 2, dano: "", efeito: "+2 na Defesa passiva." },
-    kit_medico: { nome: "Kit de Primeiros Socorros", cat: "cura", espaco: 1, dano: "1d6", efeito: "Restaura PV." },
-    kit_cirurgico: { nome: "Kit Cirúrgico Avançado", cat: "cura", espaco: 2, dano: "2d6", efeito: "Tratamento de ferimentos graves." },
-    estimulante: { nome: "Injeção Estimulante", cat: "cura", espaco: 1, dano: "1d4", efeito: "Recupera Integridade Mental (IM)." },
-    lanterna_uv: { nome: "Lanterna Ultravioleta", cat: "util", espaco: 1, dano: "1d20", efeito: "Revela rastros invisíveis e substâncias ocultas." },
-    radio: { nome: "Rádio Comunicador", cat: "util", espaco: 1, dano: "", efeito: "Comunicação a longa distância." },
-    corda: { nome: "Corda de Kevlar 15m", cat: "util", espaco: 1, dano: "", efeito: "Resistência extrema." },
-    sensor: { nome: "Sensor Eletromagnético", cat: "util", espaco: 1, dano: "", efeito: "Detecta anomalias no ambiente." },
-    grimorio: { nome: "Anotações Ocultas / Relíquia", cat: "util", espaco: 1, dano: "", efeito: "Auxilia em testes de Ocultismo." }
-  };
-
-  // --- CONTROLE DE POP-UPS ---
-  function abrirPop(idModal) {
-    document.getElementById(idModal).style.display = 'block';
-  }
-
-  function fecharPop(idModal) {
-    document.getElementById(idModal).style.display = 'none';
-  }
-
-  // --- LOGIN E SESSÃO ---
-  function fazerLogin() {
-    const nomeInput = document.getElementById('login-usuario').value.trim();
-    if (!nomeInput) return alert("Por favor, digite seu codinome!");
-
-    usuarioAtual = nomeInput;
-    
-    let idSalvo = localStorage.getItem(`cat_id_${usuarioAtual}`);
-    if (!idSalvo) {
-      idSalvo = 'user_' + Date.now() + '_' + Math.floor(Math.random()*1000);
-      localStorage.setItem(`cat_id_${usuarioAtual}`, idSalvo);
-    }
-    usuarioId = idSalvo;
-
-    localStorage.setItem('cat_usuario_ativo', usuarioAtual);
-    localStorage.setItem('cat_id_ativo', usuarioId);
-
-    document.getElementById('user-info').innerHTML = `
-      <span>Investigador: <b style="color:#fff;">${usuarioAtual}</b></span>
-      <button onclick="fazerLogout()" style="background:none; border:none; color:#ff6b6b; cursor:pointer; font-size:0.8em; margin-left:8px;">[Sair]</button>
-    `;
-
-    document.getElementById('menu-nav').style.display = 'flex';
-    document.getElementById('dash-usuario').innerText = usuarioAtual;
-
-    carregarAgentes();
-    carregarCampanhas();
-    mudarAba('inicio');
-  }
-
-  function fazerLogout() {
-    localStorage.removeItem('cat_usuario_ativo');
-    localStorage.removeItem('cat_id_ativo');
-    location.reload();
-  }
-
-  function mudarAba(nomeAba) {
-    document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
-    document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
-
-    const aba = document.getElementById(`aba-${nomeAba}`);
-    const link = document.getElementById(`link-${nomeAba}`);
-
-    if (aba) aba.classList.add('active');
-    if (link) link.classList.add('active');
-
-    if (nomeAba === 'campanhas') renderizarCampanhas();
-  }
-
-  function irParaInicio() {
-    if (usuarioAtual) mudarAba('inicio');
-  }
-
-  // --- GERENCIAMENTO DE AGENTES ---
-  function carregarAgentes() {
-    const salvos = localStorage.getItem(`agentes_${usuarioId}`);
-    agentes = salvos ? JSON.parse(salvos) : [];
-    renderizarAgentes();
-  }
-
-  function salvarAgentes() {
-    localStorage.setItem(`agentes_${usuarioId}`, JSON.stringify(agentes));
-    localStorage.setItem(`global_agentes_${usuarioId}`, JSON.stringify(agentes));
-  }
-
-  function abrirPopNovoAgente() {
-    document.getElementById('pop-input-agente-nome').value = '';
-    abrirPop('modal-novo-agente');
-  }
-
-  function confirmarCriarAgente() {
-    const nome = document.getElementById('pop-input-agente-nome').value.trim();
-    if (!nome) return alert("Digite o nome do agente!");
-
-    const novoAgente = {
-      id: Date.now(),
-      nome: nome,
-      donoNome: usuarioAtual,
-      donoId: usuarioId,
-      origem: "Investigador",
-      classe: "Mundano",
-      campanhaCodigo: "",
-      fotoUrl: "",
-      corpo: 1, reflexo: 1, mente: 1, espirito: 1, presenca: 1,
-      pvAtual: 19, imAtual: 15, eeAtual: 0,
-      treinos: pericias.map(() => "0"),
-      inventario: [],
-      anotacoes: ""
+    const firebaseConfig = {
+      apiKey: "AIzaSyB8Y4lDdk0s0iT3l-7C0kU3ZnMNJoIeE08",
+      authDomain: "catalise-rpg.firebaseapp.com",
+      projectId: "catalise-rpg",
+      storageBucket: "catalise-rpg.firebasestorage.app",
+      messagingSenderId: "190087571897",
+      appId: "1:190087571897:web:1b83a97d01ad1a0f196e68",
+      measurementId: "G-G5LCEG95EY"
     };
 
-    agentes.push(novoAgente);
-    salvarAgentes();
-    renderizarAgentes();
-    fecharPop('modal-novo-agente');
-  }
+    const app = initializeApp(firebaseConfig);
+    const db = getFirestore(app);
 
-  function renderizarAgentes() {
-    const container = document.getElementById('container-agentes');
-    container.innerHTML = '';
+    window.usuarioAtual = null;
+    window.usuarioId = null;
+    window.agentes = [];
+    window.campanhas = [];
+    window.agenteAtualId = null;
+    window.agenteAtualDonoId = null;
+    window.campanhaAtualId = null;
+    window.campanhaParaEditarId = null;
+    window.campanhaParaExcluirId = null;
+    window.eMestreDaMesaAtual = false;
+    window.podeEditarFichaAtual = true;
 
-    if (agentes.length === 0) {
-      container.innerHTML = `<p style="grid-column: 1/-1; color: #8bb3a8; text-align: center;">Nenhum agente cadastrado. Clique em "+ Criar Novo Agente".</p>`;
-      return;
-    }
+    window.rolarDadoCripto = function(lados) {
+      const array = new Uint32Array(1);
+      window.crypto.getRandomValues(array);
+      return (array[0] % lados) + 1;
+    };
 
-    agentes.forEach(ag => {
-      const bgImg = ag.fotoUrl ? `url('${ag.fotoUrl}')` : 'none';
-      container.innerHTML += `
-        <div class="card-item">
-          <div class="card-avatar" style="background-image: ${bgImg}; display: ${ag.fotoUrl ? 'block' : 'none'};"></div>
-          <div class="card-title">${ag.nome}</div>
-          <div class="card-subtitle">${ag.classe} — ${ag.origem}</div>
-          <div style="font-size:0.8em; color:#8bb3a8;">Dono: <b>${ag.donoNome || usuarioAtual}</b></div>
-          <div style="font-size:0.8em; color:#5c7b82;">Campanha: <b>${ag.campanhaCodigo || 'Nenhuma'}</b></div>
-          <div class="card-details">
-            <span>❤️ PV: ${ag.pvAtual}</span>
-            <span>🧠 IM: ${ag.imAtual}</span>
-            <span>🔮 EE: ${ag.eeAtual}%</span>
-          </div>
-          <div style="margin-top: 10px; display: flex; gap: 5px;">
-            <button class="btn-main" style="width:100%; font-size: 0.8em;" onclick="abrirFicha(${ag.id})">Abrir Ficha</button>
-            <button class="btn-main btn-danger" style="font-size: 0.8em;" onclick="deletarAgente(${ag.id})">🗑️</button>
-          </div>
-        </div>
+    window.pericias = [
+      { nome: "Atletismo", attr: "corpo" },
+      { nome: "Luta", attr: "corpo" },
+      { nome: "Fortitude", attr: "corpo" },
+      { nome: "Acrobacia", attr: "reflexo" },
+      { nome: "Furtividade", attr: "reflexo" },
+      { nome: "Pontaria", attr: "reflexo" },
+      { nome: "Pilotagem", attr: "reflexo" },
+      { nome: "Investigação", attr: "mente" },
+      { nome: "Medicina", attr: "mente" },
+      { nome: "Ocultismo", attr: "mente" },
+      { nome: "Tecnologia", attr: "mente" },
+      { nome: "Ciências", attr: "mente" },
+      { nome: "Vontade", attr: "espirito" },
+      { nome: "Sintonização", attr: "espirito" },
+      { nome: "Intuição", attr: "espirito" },
+      { nome: "Diplomacia", attr: "presenca" },
+      { nome: "Enganação", attr: "presenca" },
+      { nome: "Intimidação", attr: "presenca" },
+      { nome: "Percepção", attr: "presenca" }
+    ];
+
+    window.itensOficiais = {
+      revolver: { nome: "Revólver Calibre .38", cat: "arma", espaco: 1, dano: "1d8", efeito: "Arma leve de porte fácil." },
+      pistola: { nome: "Pistola Semi-automática", cat: "arma", espaco: 1, dano: "1d6+1", efeito: "Disparo rápido." },
+      espingarda: { nome: "Espingarda Calibre 12", cat: "arma", espaco: 2, dano: "2d6", efeito: "Alto impacto em curto alcance." },
+      faca: { nome: "Faca Tática", cat: "arma", espaco: 1, dano: "1d4", efeito: "Ataque silencioso em corpo a corpo." },
+      bastao: { nome: "Bastão Retrátil", cat: "arma", espaco: 1, dano: "1d6", efeito: "Dano não letal / contundente." },
+      fuzil: { nome: "Fuzil de Precisão", cat: "arma", espaco: 3, dano: "2d8", efeito: "Alcance longo / alta precisão." },
+      submetralhadora: { nome: "Submetralhadora", cat: "arma", espaco: 2, dano: "1d8+2", efeito: "Rajada rápida." },
+      colete: { nome: "Colete Balístico", cat: "protecao", espaco: 2, dano: "1d4", efeito: "Redução de dano físico (RD)." },
+      traje_reforcado: { nome: "Traje Reforçado", cat: "protecao", espaco: 1, dano: "1d2", efeito: "Proteção leve (RD)." },
+      escudo: { nome: "Escudo Tático", cat: "protecao", espaco: 2, dano: "", efeito: "+2 na Defesa passiva." },
+      kit_medico: { nome: "Kit de Primeiros Socorros", cat: "cura", espaco: 1, dano: "1d6", efeito: "Restaura PV." },
+      kit_cirurgico: { nome: "Kit Cirúrgico Avançado", cat: "cura", espaco: 2, dano: "2d6", efeito: "Tratamento de ferimentos graves." },
+      estimulante: { nome: "Injeção Estimulante", cat: "cura", espaco: 1, dano: "1d4", efeito: "Recupera Integridade Mental (IM)." },
+      lanterna_uv: { nome: "Lanterna Ultravioleta", cat: "util", espaco: 1, dano: "1d20", efeito: "Revela rastros invisíveis e substâncias ocultas." },
+      radio: { nome: "Rádio Comunicador", cat: "util", espaco: 1, dano: "", efeito: "Comunicação a longa distância." },
+      corda: { nome: "Corda de Kevlar 15m", cat: "util", espaco: 1, dano: "", efeito: "Resistência extrema." },
+      sensor: { nome: "Sensor Eletromagnético", cat: "util", espaco: 1, dano: "", efeito: "Detecta anomalias no ambiente." },
+      grimorio: { nome: "Anotações Ocultas / Relíquia", cat: "util", espaco: 1, dano: "", efeito: "Auxilia em testes de Ocultismo." }
+    };
+
+    window.abrirPop = function(idModal) { document.getElementById(idModal).style.display = 'block'; };
+    window.fecharPop = function(idModal) { document.getElementById(idModal).style.display = 'none'; };
+
+    window.fazerLogin = async function() {
+      const nomeInput = document.getElementById('login-usuario').value.trim();
+      if (!nomeInput) return alert("Por favor, digite seu codinome!");
+
+      window.usuarioAtual = nomeInput;
+      window.usuarioId = "usr_" + nomeInput.toLowerCase().replace(/\s+/g, '_');
+
+      localStorage.setItem('cat_usuario_ativo', window.usuarioAtual);
+
+      document.getElementById('user-info').innerHTML = `
+        <span>Investigador: <b style="color:#fff;">${window.usuarioAtual}</b></span>
+        <button onclick="fazerLogout()" style="background:none; border:none; color:#ff6b6b; cursor:pointer; font-size:0.8em; margin-left:8px;">[Sair]</button>
       `;
-    });
-  }
 
-  function deletarAgente(id) {
-    if (confirm("Deseja apagar este agente permanentemente?")) {
-      agentes = agentes.filter(a => a.id !== id);
-      salvarAgentes();
-      renderizarAgentes();
+      document.getElementById('menu-nav').style.display = 'flex';
+      document.getElementById('dash-usuario').innerText = window.usuarioAtual;
+
+      await escutarAgentes();
+      await escutarCampanhas();
+      window.mudarAba('inicio');
+    };
+
+    window.fazerLogout = function() {
+      localStorage.removeItem('cat_usuario_ativo');
+      location.reload();
+    };
+
+    window.mudarAba = function(nomeAba) {
+      document.querySelectorAll('.tab-content').forEach(el => el.classList.remove('active'));
+      document.querySelectorAll('.nav-link').forEach(el => el.classList.remove('active'));
+
+      const aba = document.getElementById(`aba-${nomeAba}`);
+      const link = document.getElementById(`link-${nomeAba}`);
+
+      if (aba) aba.classList.add('active');
+      if (link) link.classList.add('active');
+
+      if (nomeAba === 'campanhas') window.renderizarCampanhas();
+    };
+
+    window.irParaInicio = function() {
+      if (window.usuarioAtual) window.mudarAba('inicio');
+    };
+
+    async function escutarAgentes() {
+      const q = query(collection(db, "agentes"), where("donoId", "==", window.usuarioId));
+      onSnapshot(q, (snapshot) => {
+        window.agentes = [];
+        snapshot.forEach((doc) => {
+          window.agentes.push(doc.data());
+        });
+        window.renderizarAgentes();
+      });
     }
-  }
 
-  // --- GERENCIAMENTO DE CAMPANHAS ---
-  function carregarCampanhas() {
-    const salvas = localStorage.getItem(`campanhas_${usuarioId}`);
-    campanhas = salvas ? JSON.parse(salvas) : [];
-    renderizarCampanhas();
-  }
+    window.abrirPopNovoAgente = function() {
+      document.getElementById('pop-input-agente-nome').value = '';
+      window.abrirPop('modal-novo-agente');
+    };
 
-  function salvarCampanhas() {
-    localStorage.setItem(`campanhas_${usuarioId}`, JSON.stringify(campanhas));
-  }
+    window.confirmarCriarAgente = async function() {
+      const nome = document.getElementById('pop-input-agente-nome').value.trim();
+      if (!nome) return alert("Digite o nome do agente!");
 
-  function abrirPopNovaCampanha() {
-    document.getElementById('pop-input-campanha-nome').value = '';
-    abrirPop('modal-nova-campanha');
-  }
+      const id = Date.now().toString();
+      const novoAgente = {
+        id: id,
+        nome: nome,
+        donoNome: window.usuarioAtual,
+        donoId: window.usuarioId,
+        origem: "Investigador",
+        classe: "Mundano",
+        campanhaCodigo: "",
+        fotoUrl: "",
+        corpo: 1, reflexo: 1, mente: 1, espirito: 1, presenca: 1,
+        pvAtual: 19, imAtual: 15, eeAtual: 0,
+        treinos: window.pericias.map(() => "0"),
+        inventario: [],
+        anotacoes: ""
+      };
 
-  function confirmarCriarCampanha() {
-    const nome = document.getElementById('pop-input-campanha-nome').value.trim();
-    if (!nome) return alert("Digite o nome da campanha!");
+      await setDoc(doc(db, "agentes", id), novoAgente);
+      window.fecharPop('modal-novo-agente');
+    };
 
-    const codigo = "CAMP-" + Math.floor(100 + Math.random() * 900);
-    const novaCamp = { id: Date.now(), nome: nome, codigo: codigo, bannerUrl: "" };
+    window.renderizarAgentes = function() {
+      const container = document.getElementById('container-agentes');
+      container.innerHTML = '';
 
-    campanhas.push(novaCamp);
-    salvarCampanhas();
-    renderizarCampanhas();
-    fecharPop('modal-nova-campanha');
-  }
+      if (window.agentes.length === 0) {
+        container.innerHTML = `<p style="grid-column: 1/-1; color: #8bb3a8; text-align: center;">Nenhum agente cadastrado no seu codinome. Clique em "+ Criar Novo Agente".</p>`;
+        return;
+      }
 
-  function abrirPopEditarCampanha(campId) {
-    campanhaParaEditarId = campId;
-    const c = campanhas.find(item => item.id === campId);
-    if (!c) return;
-
-    document.getElementById('pop-input-editar-campanha-nome').value = c.nome;
-    abrirPop('modal-editar-campanha');
-  }
-
-  function confirmarEditarCampanha() {
-    const novoNome = document.getElementById('pop-input-editar-campanha-nome').value.trim();
-    if (!novoNome) return alert("Digite o novo nome!");
-
-    const c = campanhas.find(item => item.id === campanhaParaEditarId);
-    if (!c) return;
-
-    c.nome = novoNome;
-    salvarCampanhas();
-    renderizarCampanhas();
-    fecharPop('modal-editar-campanha');
-  }
-
-  function abrirPopExcluirCampanha(campId) {
-    campanhaParaExcluirId = campId;
-    const c = campanhas.find(item => item.id === campId);
-    if (!c) return;
-
-    document.getElementById('pop-texto-excluir-campanha').innerText = `"${c.nome}"`;
-    abrirPop('modal-excluir-campanha');
-  }
-
-  function confirmarExcluirCampanha() {
-    campanhas = campanhas.filter(c => c.id !== campanhaParaExcluirId);
-    salvarCampanhas();
-    renderizarCampanhas();
-    fecharPop('modal-excluir-campanha');
-  }
-
-  function renderizarCampanhas() {
-    const containerCriadas = document.getElementById('container-campanhas');
-    const containerParticipando = document.getElementById('container-campanhas-participando');
-
-    containerCriadas.innerHTML = '';
-    containerParticipando.innerHTML = '';
-
-    if (campanhas.length === 0) {
-      containerCriadas.innerHTML = `<p style="grid-column: 1/-1; color: #8bb3a8; text-align: center;">Nenhuma campanha criada por você.</p>`;
-    } else {
-      campanhas.forEach(c => {
-        const bgBanner = c.bannerUrl ? `url('${c.bannerUrl}')` : 'none';
-        containerCriadas.innerHTML += `
+      window.agentes.forEach(ag => {
+        const bgImg = ag.fotoUrl ? `url('${ag.fotoUrl}')` : 'none';
+        container.innerHTML += `
           <div class="card-item">
-            <div class="card-banner" style="background-image: ${bgBanner}; display: ${c.bannerUrl ? 'block' : 'none'};"></div>
-            <div class="card-title">${c.nome}</div>
-            <div class="card-subtitle">CÓDIGO: <b style="color:#2ec4b6;">${c.codigo}</b></div>
-            <button class="btn-main" style="margin-top:10px;" onclick="abrirPainelCampanha(${c.id}, true)">👁️ Painel do Mestre</button>
-            <div style="display: flex; gap: 5px; margin-top: 5px;">
-              <button class="btn-main" style="width:100%; font-size: 0.75em; background: #1a4d58;" onclick="abrirPopEditarCampanha(${c.id})">✏️ Editar Nome</button>
-              <button class="btn-main btn-danger" style="font-size: 0.75em;" onclick="abrirPopExcluirCampanha(${c.id})">🗑️ Excluir</button>
+            <div class="card-avatar" style="background-image: ${bgImg}; display: ${ag.fotoUrl ? 'block' : 'none'};"></div>
+            <div class="card-title">${ag.nome}</div>
+            <div class="card-subtitle">${ag.classe} — ${ag.origem}</div>
+            <div style="font-size:0.8em; color:#8bb3a8;">Dono: <b>${ag.donoNome || window.usuarioAtual}</b></div>
+            <div style="font-size:0.8em; color:#5c7b82;">Campanha: <b>${ag.campanhaCodigo || 'Nenhuma'}</b></div>
+            <div class="card-details">
+              <span>❤️ PV: ${ag.pvAtual}</span>
+              <span>🧠 IM: ${ag.imAtual}</span>
+              <span>🔮 EE: ${ag.eeAtual}%</span>
+            </div>
+            <div style="margin-top: 10px; display: flex; gap: 5px;">
+              <button class="btn-main" style="width:100%; font-size: 0.8em;" onclick="abrirFicha('${ag.id}')">Abrir Ficha</button>
+              <button class="btn-main btn-danger" style="font-size: 0.8em;" onclick="deletarAgente('${ag.id}')">🗑️</button>
+            </div>
+          </div>
+        `;
+      });
+    };
+
+    window.deletarAgente = async function(id) {
+      if (confirm("Deseja apagar este agente permanentemente da nuvem?")) {
+        await deleteDoc(doc(db, "agentes", id.toString()));
+      }
+    };
+
+    async function escutarCampanhas() {
+      const q = query(collection(db, "campanhas"), where("mestreId", "==", window.usuarioId));
+      onSnapshot(q, (snapshot) => {
+        window.campanhas = [];
+        snapshot.forEach((doc) => {
+          window.campanhas.push(doc.data());
+        });
+        window.renderizarCampanhas();
+      });
+    }
+
+    window.abrirPopNovaCampanha = function() {
+      document.getElementById('pop-input-campanha-nome').value = '';
+      window.abrirPop('modal-nova-campanha');
+    };
+
+    window.confirmarCriarCampanha = async function() {
+      const nome = document.getElementById('pop-input-campanha-nome').value.trim();
+      if (!nome) return alert("Digite o nome da campanha!");
+
+      const id = Date.now().toString();
+      const codigo = "CAMP-" + Math.floor(100 + Math.random() * 900);
+      const novaCamp = { 
+        id: id, 
+        nome: nome, 
+        codigo: codigo, 
+        bannerUrl: "", 
+        mestreId: window.usuarioId 
+      };
+
+      await setDoc(doc(db, "campanhas", id), novaCamp);
+      window.fecharPop('modal-nova-campanha');
+    };
+
+    window.abrirPopEditarCampanha = function(campId) {
+      window.campanhaParaEditarId = campId.toString();
+      const c = window.campanhas.find(item => item.id == campId);
+      if (!c) return;
+
+      document.getElementById('pop-input-editar-campanha-nome').value = c.nome;
+      window.abrirPop('modal-editar-campanha');
+    };
+
+    window.confirmarEditarCampanha = async function() {
+      const novoNome = document.getElementById('pop-input-editar-campanha-nome').value.trim();
+      if (!novoNome) return alert("Digite o novo nome!");
+
+      const c = window.campanhas.find(item => item.id == window.campanhaParaEditarId);
+      if (!c) return;
+
+      c.nome = novoNome;
+      await setDoc(doc(db, "campanhas", window.campanhaParaEditarId), c, { merge: true });
+      window.fecharPop('modal-editar-campanha');
+    };
+
+    window.abrirPopExcluirCampanha = function(campId) {
+      window.campanhaParaExcluirId = campId.toString();
+      const c = window.campanhas.find(item => item.id == campId);
+      if (!c) return;
+
+      document.getElementById('pop-texto-excluir-campanha').innerText = `"${c.nome}"`;
+      window.abrirPop('modal-excluir-campanha');
+    };
+
+    window.confirmarExcluirCampanha = async function() {
+      await deleteDoc(doc(db, "campanhas", window.campanhaParaExcluirId));
+      window.fecharPop('modal-excluir-campanha');
+    };
+
+    window.renderizarCampanhas = async function() {
+      const containerCriadas = document.getElementById('container-campanhas');
+      const containerParticipando = document.getElementById('container-campanhas-participando');
+
+      containerCriadas.innerHTML = '';
+      containerParticipando.innerHTML = '';
+
+      if (window.campanhas.length === 0) {
+        containerCriadas.innerHTML = `<p style="grid-column: 1/-1; color: #8bb3a8; text-align: center;">Nenhuma campanha criada por você.</p>`;
+      } else {
+        window.campanhas.forEach(c => {
+          const bgBanner = c.bannerUrl ? `url('${c.bannerUrl}')` : 'none';
+          containerCriadas.innerHTML += `
+            <div class="card-item">
+              <div class="card-banner" style="background-image: ${bgBanner}; display: ${c.bannerUrl ? 'block' : 'none'};"></div>
+              <div class="card-title">${c.nome}</div>
+              <div class="card-subtitle">CÓDIGO: <b style="color:#2ec4b6;">${c.codigo}</b></div>
+              <button class="btn-main" style="margin-top:10px;" onclick="abrirPainelCampanha('${c.id}', true)">👁️ Painel do Mestre</button>
+              <div style="display: flex; gap: 5px; margin-top: 5px;">
+                <button class="btn-main" style="width:100%; font-size: 0.75em; background: #1a4d58;" onclick="abrirPopEditarCampanha('${c.id}')">✏️ Editar Nome</button>
+                <button class="btn-main btn-danger" style="font-size: 0.75em;" onclick="abrirPopExcluirCampanha('${c.id}')">🗑️ Excluir</button>
+              </div>
+            </div>
+          `;
+        });
+      }
+
+      let codigosParticipante = window.agentes.map(a => a.campanhaCodigo ? a.campanhaCodigo.toUpperCase() : null).filter(Boolean);
+      codigosParticipante = [...new Set(codigosParticipante)];
+
+      if (codigosParticipante.length === 0) {
+        containerParticipando.innerHTML = `<p style="grid-column: 1/-1; color: #8bb3a8; text-align: center;">Você não está participando de nenhuma mesa no momento.</p>`;
+        return;
+      }
+
+      const querySnapshot = await getDocs(collection(db, "campanhas"));
+      let encontrou = false;
+      querySnapshot.forEach((doc) => {
+        const c = doc.data();
+        if (codigosParticipante.includes(c.codigo.toUpperCase())) {
+          encontrou = true;
+          const bgBanner = c.bannerUrl ? `url('${c.bannerUrl}')` : 'none';
+          containerParticipando.innerHTML += `
+            <div class="card-item">
+              <div class="card-banner" style="background-image: ${bgBanner}; display: ${c.bannerUrl ? 'block' : 'none'};"></div>
+              <div class="card-title">${c.nome}</div>
+              <div class="card-subtitle">CÓDIGO: <b style="color:#2ec4b6;">${c.codigo}</b></div>
+              <button class="btn-main" style="margin-top:10px; background: #0e2a30;" onclick="abrirPainelCampanhaJogador('${c.codigo}', '${c.nome}', '${c.bannerUrl || ''}')">👁️ Ver Equipe</button>
+            </div>
+          `;
+        }
+      });
+
+      if (!encontrou) {
+        containerParticipando.innerHTML = `<p style="grid-column: 1/-1; color: #8bb3a8; text-align: center;">Você não está participando de nenhuma mesa no momento.</p>`;
+      }
+    };
+
+    window.abrirPainelCampanha = function(campId, eMestre) {
+      window.campanhaAtualId = campId.toString();
+      window.eMestreDaMesaAtual = eMestre;
+      const c = window.campanhas.find(item => item.id == campId);
+      if (!c) return;
+
+      document.getElementById('mestre-campanha-titulo').innerText = `CAMPANHA — ${c.nome.toUpperCase()}`;
+      document.getElementById('mestre-campanha-codigo').innerText = c.codigo;
+      document.getElementById('input-banner-url').value = c.bannerUrl || '';
+
+      const preview = document.getElementById('banner-campanha-preview');
+      if (c.bannerUrl) {
+        preview.style.backgroundImage = `url('${c.bannerUrl}')`;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+
+      document.getElementById('box-banner-edit').style.display = 'grid';
+
+      carregarJogadoresDaCampanha(c.codigo);
+      document.getElementById('modal-mestre').style.display = 'block';
+    };
+
+    window.abrirPainelCampanhaJogador = function(codigo, nome, bannerUrl) {
+      window.eMestreDaMesaAtual = false;
+      document.getElementById('mestre-campanha-titulo').innerText = `CAMPANHA — ${nome.toUpperCase()}`;
+      document.getElementById('mestre-campanha-codigo').innerText = codigo;
+
+      const preview = document.getElementById('banner-campanha-preview');
+      if (bannerUrl) {
+        preview.style.backgroundImage = `url('${bannerUrl}')`;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+
+      document.getElementById('box-banner-edit').style.display = 'none';
+
+      carregarJogadoresDaCampanha(codigo);
+      document.getElementById('modal-mestre').style.display = 'block';
+    };
+
+    window.salvarBannerCampanha = async function() {
+      if (!window.campanhaAtualId) return;
+      const c = window.campanhas.find(item => item.id == window.campanhaAtualId);
+      if (!c) return;
+
+      c.bannerUrl = document.getElementById('input-banner-url').value.trim();
+      await setDoc(doc(db, "campanhas", window.campanhaAtualId), { bannerUrl: c.bannerUrl }, { merge: true });
+
+      const preview = document.getElementById('banner-campanha-preview');
+      if (c.bannerUrl) {
+        preview.style.backgroundImage = `url('${c.bannerUrl}')`;
+        preview.style.display = 'block';
+      } else {
+        preview.style.display = 'none';
+      }
+    };
+
+    async function carregarJogadoresDaCampanha(codigo) {
+      const container = document.getElementById('container-fichas-jogadores');
+      container.innerHTML = '';
+
+      const q = query(collection(db, "agentes"), where("campanhaCodigo", "==", codigo));
+      const querySnapshot = await getDocs(q);
+
+      if (querySnapshot.empty) {
+        container.innerHTML = `<p style="color:#8bb3a8; text-align:center;">Nenhum agente vinculado ao código "<b>${codigo}</b>".</p>`;
+        return;
+      }
+
+      querySnapshot.forEach((docSnap) => {
+        const ag = docSnap.data();
+        container.innerHTML += `
+          <div class="card-ficha grid-3" style="margin-bottom: 15px; align-items: center;">
+            <div>
+              <h3 style="text-align:left; border:none; margin:0; color:#fff;">${ag.nome}</h3>
+              <p style="font-size:0.85em; color:#2ec4b6;">Jogador: <b>${ag.donoNome || 'Desconhecido'}</b></p>
+              <p style="font-size:0.8em; color:#8bb3a8;">${ag.classe} - ${ag.origem}</p>
+            </div>
+            <div>
+              <p>❤️ PV: <b>${ag.pvAtual}</b> | 🧠 IM: <b>${ag.imAtual}</b> | 🔮 EE: <b>${ag.eeAtual}%</b></p>
+              <p style="font-size:0.8em; color:#8bb3a8;">Corpo:${ag.corpo} | Ref:${ag.reflexo} | Mente:${ag.mente}</p>
+            </div>
+            <div style="text-align: right;">
+              <button class="btn-main" onclick="abrirFichaOutroJogador('${ag.id}')">👁️ Ver Ficha</button>
             </div>
           </div>
         `;
       });
     }
 
-    let codigosParticipante = agentes.map(a => a.campanhaCodigo ? a.campanhaCodigo.toUpperCase() : null).filter(Boolean);
-    codigosParticipante = [...new Set(codigosParticipante)];
+    window.fecharPainelMestre = function() {
+      document.getElementById('modal-mestre').style.display = 'none';
+    };
 
-    let participacoesEncontradas = 0;
+    window.abrirFichaOutroJogador = async function(agenteId) {
+      const docSnap = await getDoc(doc(db, "agentes", agenteId.toString()));
+      if (!docSnap.exists()) return alert("Erro ao carregar a ficha!");
 
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key.startsWith('campanhas_')) {
-        try {
-          const listaCampanhas = JSON.parse(localStorage.getItem(key));
-          listaCampanhas.forEach(c => {
-            if (codigosParticipante.includes(c.codigo.toUpperCase())) {
-              participacoesEncontradas++;
-              const bgBanner = c.bannerUrl ? `url('${c.bannerUrl}')` : 'none';
-              containerParticipando.innerHTML += `
-                <div class="card-item">
-                  <div class="card-banner" style="background-image: ${bgBanner}; display: ${c.bannerUrl ? 'block' : 'none'};"></div>
-                  <div class="card-title">${c.nome}</div>
-                  <div class="card-subtitle">CÓDIGO: <b style="color:#2ec4b6;">${c.codigo}</b></div>
-                  <button class="btn-main" style="margin-top:10px; background: #0e2a30;" onclick="abrirPainelCampanhaJogador('${c.codigo}', '${c.nome}', '${c.bannerUrl || ''}')">👁️ Ver Equipe</button>
-                </div>
-              `;
-            }
-          });
-        } catch(e){}
+      const ag = docSnap.data();
+      window.agenteAtualDonoId = ag.donoId;
+      carregarDadosNaFicha(ag);
+    };
+
+    window.abrirFicha = function(id) {
+      window.agenteAtualDonoId = window.usuarioId;
+      const ag = window.agentes.find(a => a.id == id);
+      if (!ag) return;
+
+      carregarDadosNaFicha(ag);
+    };
+
+    function carregarDadosNaFicha(ag) {
+      window.agenteAtualId = ag.id.toString();
+
+      const ehDono = (window.agenteAtualDonoId === window.usuarioId || ag.donoId === window.usuarioId);
+      window.podeEditarFichaAtual = ehDono || window.eMestreDaMesaAtual;
+
+      const bannerPermissao = document.getElementById('banner-permissao-leitura');
+      bannerPermissao.style.display = window.podeEditarFichaAtual ? 'none' : 'block';
+
+      document.getElementById('ficha-agente-nome').innerText = `FICHA DE ${ag.nome.toUpperCase()}`;
+
+      document.getElementById('nome').value = ag.nome || '';
+      document.getElementById('dono-nome').value = ag.donoNome || window.usuarioAtual;
+      document.getElementById('origem').value = ag.origem || '';
+      document.getElementById('classe').value = ag.classe || 'Mundano';
+      document.getElementById('campanha-codigo').value = ag.campanhaCodigo || '';
+      document.getElementById('foto-url').value = ag.fotoUrl || '';
+
+      document.getElementById('attr-corpo').value = ag.corpo || 1;
+      document.getElementById('attr-reflexo').value = ag.reflexo || 1;
+      document.getElementById('attr-mente').value = ag.mente || 1;
+      document.getElementById('attr-espirito').value = ag.espirito || 1;
+      document.getElementById('attr-presenca').value = ag.presenca || 1;
+
+      document.getElementById('pv-atual').value = ag.pvAtual || 19;
+      document.getElementById('im-atual').value = ag.imAtual || 15;
+      document.getElementById('ee-atual').value = ag.eeAtual || 0;
+
+      document.getElementById('anotacoes').value = ag.anotacoes || '';
+
+      renderizarPericias();
+      if (ag.treinos) {
+        ag.treinos.forEach((val, idx) => {
+          const sel = document.getElementById(`p-treino-${idx}`);
+          if (sel) sel.value = val;
+        });
       }
+
+      window.atualizarTudo();
+      aplicarTravaLeitura();
+
+      document.getElementById('modal-ficha').style.display = 'block';
     }
 
-    if (participacoesEncontradas === 0) {
-      containerParticipando.innerHTML = `<p style="grid-column: 1/-1; color: #8bb3a8; text-align: center;">Você não está participando de nenhuma mesa no momento.</p>`;
-    }
-  }
+    function aplicarTravaLeitura() {
+      const campos = document.querySelectorAll('.campo-editavel');
+      campos.forEach(campo => {
+        campo.disabled = !window.podeEditarFichaAtual;
+      });
 
-  function abrirPainelCampanha(campId, eMestre) {
-    campanhaAtualId = campId;
-    eMestreDaMesaAtual = eMestre;
-    const c = campanhas.find(item => item.id === campId);
-    if (!c) return;
-
-    document.getElementById('mestre-campanha-titulo').innerText = `CAMPANHA — ${c.nome.toUpperCase()}`;
-    document.getElementById('mestre-campanha-codigo').innerText = c.codigo;
-    document.getElementById('input-banner-url').value = c.bannerUrl || '';
-
-    const preview = document.getElementById('banner-campanha-preview');
-    if (c.bannerUrl) {
-      preview.style.backgroundImage = `url('${c.bannerUrl}')`;
-      preview.style.display = 'block';
-    } else {
-      preview.style.display = 'none';
-    }
-
-    document.getElementById('box-banner-edit').style.display = 'grid';
-
-    carregarJogadoresDaCampanha(c.codigo, true);
-    document.getElementById('modal-mestre').style.display = 'block';
-  }
-
-  function abrirPainelCampanhaJogador(codigo, nome, bannerUrl) {
-    eMestreDaMesaAtual = false;
-    document.getElementById('mestre-campanha-titulo').innerText = `CAMPANHA — ${nome.toUpperCase()}`;
-    document.getElementById('mestre-campanha-codigo').innerText = codigo;
-
-    const preview = document.getElementById('banner-campanha-preview');
-    if (bannerUrl) {
-      preview.style.backgroundImage = `url('${bannerUrl}')`;
-      preview.style.display = 'block';
-    } else {
-      preview.style.display = 'none';
-    }
-
-    document.getElementById('box-banner-edit').style.display = 'none';
-
-    carregarJogadoresDaCampanha(codigo, false);
-    document.getElementById('modal-mestre').style.display = 'block';
-  }
-
-  function salvarBannerCampanha() {
-    if (!campanhaAtualId) return;
-    const c = campanhas.find(item => item.id === campanhaAtualId);
-    if (!c) return;
-
-    c.bannerUrl = document.getElementById('input-banner-url').value.trim();
-    salvarCampanhas();
-
-    const preview = document.getElementById('banner-campanha-preview');
-    if (c.bannerUrl) {
-      preview.style.backgroundImage = `url('${c.bannerUrl}')`;
-      preview.style.display = 'block';
-    } else {
-      preview.style.display = 'none';
-    }
-  }
-
-  function carregarJogadoresDaCampanha(codigo, podeEditar) {
-    const container = document.getElementById('container-fichas-jogadores');
-    container.innerHTML = '';
-
-    let mapaAgentesUnicos = new Map();
-
-    for (let i = 0; i < localStorage.length; i++) {
-      const key = localStorage.key(i);
-      if (key.startsWith('global_agentes_') || key.startsWith('agentes_')) {
-        try {
-          const donoId = key.replace('global_agentes_', '').replace('agentes_', '');
-          const listaAgentes = JSON.parse(localStorage.getItem(key));
-          
-          listaAgentes.forEach(ag => {
-            if (ag.campanhaCodigo && ag.campanhaCodigo.toUpperCase() === codigo.toUpperCase()) {
-              if (!mapaAgentesUnicos.has(ag.id)) {
-                mapaAgentesUnicos.set(ag.id, { agente: ag, donoId: donoId });
-              }
-            }
-          });
-        } catch(e) {}
-      }
-    }
-
-    if (mapaAgentesUnicos.size === 0) {
-      container.innerHTML = `<p style="color:#8bb3a8; text-align:center;">Nenhum agente vinculado ao código "<b>${codigo}</b>".</p>`;
-      return;
-    }
-
-    mapaAgentesUnicos.forEach(({ agente: ag, donoId }) => {
-      container.innerHTML += `
-        <div class="card-ficha grid-3" style="margin-bottom: 15px; align-items: center;">
-          <div>
-            <h3 style="text-align:left; border:none; margin:0; color:#fff;">${ag.nome}</h3>
-            <p style="font-size:0.85em; color:#2ec4b6;">Jogador: <b>${ag.donoNome || 'Desconhecido'}</b></p>
-            <p style="font-size:0.8em; color:#8bb3a8;">${ag.classe} - ${ag.origem}</p>
-          </div>
-          <div>
-            <p>❤️ PV: <b>${ag.pvAtual}</b> | 🧠 IM: <b>${ag.imAtual}</b> | 🔮 EE: <b>${ag.eeAtual}%</b></p>
-            <p style="font-size:0.8em; color:#8bb3a8;">Corpo:${ag.corpo} | Ref:${ag.reflexo} | Mente:${ag.mente}</p>
-          </div>
-          <div style="text-align: right;">
-            <button class="btn-main" onclick="abrirFichaOutroJogador(${ag.id}, '${donoId}')">👁️ Ver Ficha</button>
-          </div>
-        </div>
-      `;
-    });
-  }
-
-  function fecharPainelMestre() {
-    document.getElementById('modal-mestre').style.display = 'none';
-  }
-
-  // --- FICHA DE PERSONAGEM ---
-  function abrirFichaOutroJogador(agenteId, donoId) {
-    agenteAtualDonoId = donoId;
-    let lista = JSON.parse(localStorage.getItem(`global_agentes_${donoId}`) || localStorage.getItem(`agentes_${donoId}`) || '[]');
-    const ag = lista.find(a => a.id === agenteId);
-    if (!ag) return alert("Erro ao carregar a ficha!");
-
-    carregarDadosNaFicha(ag);
-  }
-
-  function abrirFicha(id) {
-    agenteAtualDonoId = usuarioId;
-    const ag = agentes.find(a => a.id === id);
-    if (!ag) return;
-
-    carregarDadosNaFicha(ag);
-  }
-
-  function carregarDadosNaFicha(ag) {
-    agenteAtualId = ag.id;
-
-    const ehDono = (agenteAtualDonoId === usuarioId || ag.donoId === usuarioId);
-    podeEditarFichaAtual = ehDono || eMestreDaMesaAtual;
-
-    const bannerPermissao = document.getElementById('banner-permissao-leitura');
-    bannerPermissao.style.display = podeEditarFichaAtual ? 'none' : 'block';
-
-    document.getElementById('ficha-agente-nome').innerText = `FICHA DE ${ag.nome.toUpperCase()}`;
-
-    document.getElementById('nome').value = ag.nome || '';
-    document.getElementById('dono-nome').value = ag.donoNome || usuarioAtual;
-    document.getElementById('origem').value = ag.origem || '';
-    document.getElementById('classe').value = ag.classe || 'Mundano';
-    document.getElementById('campanha-codigo').value = ag.campanhaCodigo || '';
-    document.getElementById('foto-url').value = ag.fotoUrl || '';
-
-    document.getElementById('attr-corpo').value = ag.corpo || 1;
-    document.getElementById('attr-reflexo').value = ag.reflexo || 1;
-    document.getElementById('attr-mente').value = ag.mente || 1;
-    document.getElementById('attr-espirito').value = ag.espirito || 1;
-    document.getElementById('attr-presenca').value = ag.presenca || 1;
-
-    document.getElementById('pv-atual').value = ag.pvAtual || 19;
-    document.getElementById('im-atual').value = ag.imAtual || 15;
-    document.getElementById('ee-atual').value = ag.eeAtual || 0;
-
-    document.getElementById('anotacoes').value = ag.anotacoes || '';
-
-    renderizarPericias();
-    if (ag.treinos) {
-      ag.treinos.forEach((val, idx) => {
-        const sel = document.getElementById(`p-treino-${idx}`);
-        if (sel) sel.value = val;
+      const areasEdicao = document.querySelectorAll('.area-edicao-item');
+      areasEdicao.forEach(area => {
+        area.style.display = window.podeEditarFichaAtual ? 'grid' : 'none';
       });
     }
 
-    atualizarTudo();
-    aplicarTravaLeitura();
-
-    document.getElementById('modal-ficha').style.display = 'block';
-  }
-
-  function aplicarTravaLeitura() {
-    const campos = document.querySelectorAll('.campo-editavel');
-    campos.forEach(campo => {
-      campo.disabled = !podeEditarFichaAtual;
-    });
-
-    const areasEdicao = document.querySelectorAll('.area-edicao-item');
-    areasEdicao.forEach(area => {
-      area.style.display = podeEditarFichaAtual ? 'grid' : 'none';
-      if (!podeEditarFichaAtual && area.classList.contains('card-ficha') && !area.classList.contains('grid-2')) {
-        area.style.display = 'none';
+    window.fecharFicha = function() {
+      if (window.podeEditarFichaAtual) {
+        window.salvarAgenteAtual();
       }
-    });
-  }
+      document.getElementById('modal-ficha').style.display = 'none';
+    };
 
-  function fecharFicha() {
-    if (podeEditarFichaAtual) {
-      salvarAgenteAtual();
+    window.salvarAgenteAtual = async function() {
+      if (!window.podeEditarFichaAtual || !window.agenteAtualId) return;
+
+      const dadosAtualizados = {
+        nome: document.getElementById('nome').value,
+        origem: document.getElementById('origem').value,
+        classe: document.getElementById('classe').value,
+        campanhaCodigo: document.getElementById('campanha-codigo').value.trim(),
+        fotoUrl: document.getElementById('foto-url').value,
+
+        corpo: parseInt(document.getElementById('attr-corpo').value) || 0,
+        reflexo: parseInt(document.getElementById('attr-reflexo').value) || 0,
+        mente: parseInt(document.getElementById('attr-mente').value) || 0,
+        espirito: parseInt(document.getElementById('attr-espirito').value) || 0,
+        presenca: parseInt(document.getElementById('attr-presenca').value) || 0,
+
+        pvAtual: parseInt(document.getElementById('pv-atual').value) || 0,
+        imAtual: parseInt(document.getElementById('im-atual').value) || 0,
+        eeAtual: parseInt(document.getElementById('ee-atual').value) || 0,
+
+        anotacoes: document.getElementById('anotacoes').value,
+        treinos: window.pericias.map((_, i) => document.getElementById(`p-treino-${i}`)?.value || "0")
+      };
+
+      await setDoc(doc(db, "agentes", window.agenteAtualId.toString()), dadosAtualizados, { merge: true });
+    };
+
+    function renderizarPericias() {
+      const tbody = document.getElementById('lista-pericias');
+      tbody.innerHTML = '';
+
+      window.pericias.forEach((p, idx) => {
+        tbody.innerHTML += `
+          <tr>
+            <td><b>${p.nome}</b></td>
+            <td>${p.attr.toUpperCase()}</td>
+            <td>
+              <select id="p-treino-${idx}" class="campo-editavel" onchange="atualizarTudo()">
+                <option value="0">Não Treinado (+0)</option>
+                <option value="2">Treinado (+2)</option>
+                <option value="5">Especializado (+5)</option>
+              </select>
+            </td>
+            <td>
+              <button class="btn-main" style="padding:5px 10px; font-size:0.8em;" onclick="rolarPericia('${p.nome}', '${p.attr}', ${idx})">🎲 Rolar</button>
+            </td>
+          </tr>
+        `;
+      });
     }
-    document.getElementById('modal-ficha').style.display = 'none';
-    if (agenteAtualDonoId === usuarioId) {
-      carregarAgentes();
-    } else if (eMestreDaMesaAtual) {
-      const codigo = document.getElementById('mestre-campanha-codigo').innerText;
-      carregarJogadoresDaCampanha(codigo, true);
+
+    async function obterAgenteEmEdicao() {
+      if (!window.agenteAtualId) return null;
+      const docSnap = await getDoc(doc(db, "agentes", window.agenteAtualId.toString()));
+      return docSnap.exists() ? docSnap.data() : null;
     }
-  }
 
-  function salvarAgenteAtual() {
-    if (!podeEditarFichaAtual || !agenteAtualId || !agenteAtualDonoId) return;
+    window.adicionarItemBase = async function() {
+      if (!window.podeEditarFichaAtual) return;
+      const key = document.getElementById('select-item-base').value;
+      if (!key || !window.itensOficiais[key]) return alert("Selecione um item!");
 
-    let lista = (agenteAtualDonoId === usuarioId) ? agentes : JSON.parse(localStorage.getItem(`global_agentes_${agenteAtualDonoId}`) || localStorage.getItem(`agentes_${agenteAtualDonoId}`) || '[]');
-    const idx = lista.findIndex(a => a.id === agenteAtualId);
-    if (idx === -1) return;
+      const ag = await obterAgenteEmEdicao();
+      if (!ag) return;
 
-    lista[idx].nome = document.getElementById('nome').value;
-    lista[idx].origem = document.getElementById('origem').value;
-    lista[idx].classe = document.getElementById('classe').value;
-    lista[idx].campanhaCodigo = document.getElementById('campanha-codigo').value.trim();
-    lista[idx].fotoUrl = document.getElementById('foto-url').value;
+      ag.inventario = ag.inventario || [];
+      ag.inventario.push({ ...window.itensOficiais[key] });
 
-    lista[idx].corpo = parseInt(document.getElementById('attr-corpo').value) || 0;
-    lista[idx].reflexo = parseInt(document.getElementById('attr-reflexo').value) || 0;
-    lista[idx].mente = parseInt(document.getElementById('attr-mente').value) || 0;
-    lista[idx].espirito = parseInt(document.getElementById('attr-espirito').value) || 0;
-    lista[idx].presenca = parseInt(document.getElementById('attr-presenca').value) || 0;
+      document.getElementById('select-item-base').value = "";
+      await setDoc(doc(db, "agentes", window.agenteAtualId.toString()), { inventario: ag.inventario }, { merge: true });
+      window.atualizarTudo();
+    };
 
-    lista[idx].pvAtual = parseInt(document.getElementById('pv-atual').value) || 0;
-    lista[idx].imAtual = parseInt(document.getElementById('im-atual').value) || 0;
-    lista[idx].eeAtual = parseInt(document.getElementById('ee-atual').value) || 0;
+    window.adicionarItemCustom = async function() {
+      if (!window.podeEditarFichaAtual) return;
+      const nome = document.getElementById('novo-item-nome').value.trim();
+      const cat = document.getElementById('novo-item-cat').value;
+      const espaco = parseInt(document.getElementById('novo-item-espaco').value) || 0;
+      const dano = document.getElementById('novo-item-dano').value.trim();
+      const efeito = document.getElementById('novo-item-efeito').value.trim();
 
-    lista[idx].anotacoes = document.getElementById('anotacoes').value;
-    lista[idx].treinos = pericias.map((_, i) => document.getElementById(`p-treino-${i}`)?.value || "0");
+      if (!nome) return alert("Digite o nome do item!");
 
-    if (agenteAtualDonoId === usuarioId) {
-      salvarAgentes();
-    } else {
-      localStorage.setItem(`agentes_${agenteAtualDonoId}`, JSON.stringify(lista));
-      localStorage.setItem(`global_agentes_${agenteAtualDonoId}`, JSON.stringify(lista));
-    }
-  }
+      const ag = await obterAgenteEmEdicao();
+      if (!ag) return;
 
-  function renderizarPericias() {
-    const tbody = document.getElementById('lista-pericias');
-    tbody.innerHTML = '';
+      ag.inventario = ag.inventario || [];
+      ag.inventario.push({ nome, cat, espaco, dano, efeito });
 
-    pericias.forEach((p, idx) => {
-      tbody.innerHTML += `
-        <tr>
-          <td><b>${p.nome}</b></td>
-          <td>${p.attr.toUpperCase()}</td>
-          <td>
-            <select id="p-treino-${idx}" class="campo-editavel" onchange="atualizarTudo()">
-              <option value="0">Não Treinado (+0)</option>
-              <option value="2">Treinado (+2)</option>
-              <option value="5">Especializado (+5)</option>
-            </select>
-          </td>
-          <td>
-            <button class="btn-main" style="padding:5px 10px; font-size:0.8em;" onclick="rolarPericia('${p.nome}', '${p.attr}', ${idx})">🎲 Rolar</button>
-          </td>
-        </tr>
-      `;
-    });
-  }
+      document.getElementById('novo-item-nome').value = '';
+      document.getElementById('novo-item-espaco').value = '1';
+      document.getElementById('novo-item-dano').value = '';
+      document.getElementById('novo-item-efeito').value = '';
 
-  function obterAgenteEmEdicao() {
-    let lista = (agenteAtualDonoId === usuarioId) ? agentes : JSON.parse(localStorage.getItem(`global_agentes_${agenteAtualDonoId}`) || localStorage.getItem(`agentes_${agenteAtualDonoId}`) || '[]');
-    return lista.find(a => a.id === agenteAtualId);
-  }
+      await setDoc(doc(db, "agentes", window.agenteAtualId.toString()), { inventario: ag.inventario }, { merge: true });
+      window.atualizarTudo();
+    };
 
-  function adicionarItemBase() {
-    if (!podeEditarFichaAtual) return;
-    const key = document.getElementById('select-item-base').value;
-    if (!key || !itensOficiais[key]) return alert("Selecione um item!");
+    window.removerItem = async function(itemIdx) {
+      if (!window.podeEditarFichaAtual) return;
+      const ag = await obterAgenteEmEdicao();
+      if (!ag) return;
 
-    const ag = obterAgenteEmEdicao();
-    if (!ag) return;
+      ag.inventario.splice(itemIdx, 1);
+      await setDoc(doc(db, "agentes", window.agenteAtualId.toString()), { inventario: ag.inventario }, { merge: true });
+      window.atualizarTudo();
+    };
 
-    ag.inventario.push({ ...itensOficiais[key] });
-    document.getElementById('select-item-base').value = "";
-    salvarAgenteAtual();
-    atualizarTudo();
-  }
+    async function renderizarInventario() {
+      const tbody = document.getElementById('lista-inventario');
+      tbody.innerHTML = '';
 
-  function adicionarItemCustom() {
-    if (!podeEditarFichaAtual) return;
-    const nome = document.getElementById('novo-item-nome').value.trim();
-    const cat = document.getElementById('novo-item-cat').value;
-    const espaco = parseInt(document.getElementById('novo-item-espaco').value) || 0;
-    const dano = document.getElementById('novo-item-dano').value.trim();
-    const efeito = document.getElementById('novo-item-efeito').value.trim();
+      const ag = await obterAgenteEmEdicao();
+      if (!ag || !ag.inventario) return;
 
-    if (!nome) return alert("Digite o nome do item!");
+      ag.inventario.forEach((item, idx) => {
+        let tagClass = `tag-${item.cat || 'util'}`;
+        let tagNome = item.cat ? item.cat.toUpperCase() : 'UTIL';
+        
+        let botaoAcao = '';
+        const possuiDadoRolavel = item.dano && item.dano.match(/\d+d\d+/i);
 
-    const ag = obterAgenteEmEdicao();
-    if (!ag) return;
-
-    ag.inventario.push({ nome, cat, espaco, dano, efeito });
-
-    document.getElementById('novo-item-nome').value = '';
-    document.getElementById('novo-item-espaco').value = '1';
-    document.getElementById('novo-item-dano').value = '';
-    document.getElementById('novo-item-efeito').value = '';
-
-    salvarAgenteAtual();
-    atualizarTudo();
-  }
-
-  function removerItem(itemIdx) {
-    if (!podeEditarFichaAtual) return;
-    const ag = obterAgenteEmEdicao();
-    if (!ag) return;
-
-    ag.inventario.splice(itemIdx, 1);
-    salvarAgenteAtual();
-    atualizarTudo();
-  }
-
-  function renderizarInventario() {
-    const tbody = document.getElementById('lista-inventario');
-    tbody.innerHTML = '';
-
-    const ag = obterAgenteEmEdicao();
-    if (!ag || !ag.inventario) return;
-
-    ag.inventario.forEach((item, idx) => {
-      let tagClass = `tag-${item.cat || 'util'}`;
-      let tagNome = item.cat ? item.cat.toUpperCase() : 'UTIL';
-      
-      let botaoAcao = '';
-      const possuiDadoRolavel = item.dano && item.dano.match(/\d+d\d+/i);
-
-      if (possuiDadoRolavel) {
-        if (item.cat === 'cura') {
-          botaoAcao = `<button class="btn-main" style="padding:4px 8px; font-size:0.8em; background:#1d5c31;" onclick="rolarDadosGenerico('${item.nome}', '${item.dano}', 'Cura')">💚 Curar (${item.dano})</button>`;
-        } else if (item.cat === 'protecao') {
-          botaoAcao = `<button class="btn-main" style="padding:4px 8px; font-size:0.8em; background:#1d3d5c;" onclick="rolarDadosGenerico('${item.nome}', '${item.dano}', 'Proteção')">🛡️ Rolar (${item.dano})</button>`;
-        } else {
-          botaoAcao = `<button class="btn-main" style="padding:4px 8px; font-size:0.8em;" onclick="rolarDadosGenerico('${item.nome}', '${item.dano}', 'Efeito')">🎲 Rolar (${item.dano})</button>`;
+        if (possuiDadoRolavel) {
+          if (item.cat === 'cura') {
+            botaoAcao = `<button class="btn-main" style="padding:4px 8px; font-size:0.8em; background:#1d5c31;" onclick="rolarDadosGenerico('${item.nome}', '${item.dano}', 'Cura')">💚 Curar (${item.dano})</button>`;
+          } else if (item.cat === 'protecao') {
+            botaoAcao = `<button class="btn-main" style="padding:4px 8px; font-size:0.8em; background:#1d3d5c;" onclick="rolarDadosGenerico('${item.nome}', '${item.dano}', 'Proteção')">🛡️ Rolar (${item.dano})</button>`;
+          } else {
+            botaoAcao = `<button class="btn-main" style="padding:4px 8px; font-size:0.8em;" onclick="rolarDadosGenerico('${item.nome}', '${item.dano}', 'Efeito')">🎲 Rolar (${item.dano})</button>`;
+          }
         }
+
+        let desc = [];
+        if (item.dano && !possuiDadoRolavel) desc.push(`<b>Bônus:</b> ${item.dano}`);
+        if (item.efeito) desc.push(item.efeito);
+
+        let btnDelete = window.podeEditarFichaAtual ? `<button class="btn-main btn-danger" style="padding:4px 8px; font-size:0.8em;" onclick="removerItem(${idx})">🗑️</button>` : '';
+
+        tbody.innerHTML += `
+          <tr>
+            <td><span class="tag-cat ${tagClass}">${tagNome}</span></td>
+            <td><b>${item.nome}</b></td>
+            <td style="text-align: center;">${item.espaco}</td>
+            <td>${desc.join(' — ') || '-'}</td>
+            <td style="text-align: center; white-space: nowrap;">
+              ${botaoAcao}
+              ${btnDelete}
+            </td>
+          </tr>
+        `;
+      });
+    }
+
+    window.atualizarTudo = async function() {
+      let corpo = parseInt(document.getElementById('attr-corpo').value) || 0;
+      let mente = parseInt(document.getElementById('attr-mente').value) || 0;
+
+      let pvMax = 18 + corpo;
+      let imMax = 14 + mente;
+      let cargaMax = 10 + (corpo * 2);
+
+      document.getElementById('pv-max').innerText = pvMax;
+      document.getElementById('im-max').innerText = imMax;
+      document.getElementById('carga-max').innerText = cargaMax;
+
+      const ag = await obterAgenteEmEdicao();
+      let cargaUsada = ag && ag.inventario ? ag.inventario.reduce((acc, item) => acc + item.espaco, 0) : 0;
+
+      const elemCargaUsada = document.getElementById('carga-usada');
+      const alertaCarga = document.getElementById('alerta-carga');
+      
+      elemCargaUsada.innerText = cargaUsada;
+
+      if (cargaUsada > cargaMax) {
+        elemCargaUsada.classList.add('sobrecarregado');
+        alertaCarga.innerHTML = `<span class="sobrecarregado">⚠️ SOBRECARREGADO!</span>`;
+      } else {
+        elemCargaUsada.classList.remove('sobrecarregado');
+        alertaCarga.innerHTML = '';
       }
 
-      let desc = [];
-      if (item.dano && !possuiDadoRolavel) desc.push(`<b>Bônus:</b> ${item.dano}`);
-      if (item.efeito) desc.push(item.efeito);
+      await renderizarInventario();
+      if (window.podeEditarFichaAtual) window.salvarAgenteAtual();
+    };
 
-      let btnDelete = podeEditarFichaAtual ? `<button class="btn-main btn-danger" style="padding:4px 8px; font-size:0.8em;" onclick="removerItem(${idx})">🗑️</button>` : '';
+    window.rolarPericia = function(nome, attr, idx) {
+      let attrVal = parseInt(document.getElementById('attr-' + attr).value) || 0;
+      let treinoVal = parseInt(document.getElementById(`p-treino-${idx}`).value) || 0;
 
-      tbody.innerHTML += `
-        <tr>
-          <td><span class="tag-cat ${tagClass}">${tagNome}</span></td>
-          <td><b>${item.nome}</b></td>
-          <td style="text-align: center;">${item.espaco}</td>
-          <td>${desc.join(' — ') || '-'}</td>
-          <td style="text-align: center; white-space: nowrap;">
-            ${botaoAcao}
-            ${btnDelete}
-          </td>
-        </tr>
-      `;
-    });
-  }
+      let d20 = window.rolarDadoCripto(20);
+      let total = d20 + attrVal + treinoVal;
 
-  function atualizarTudo() {
-    let corpo = parseInt(document.getElementById('attr-corpo').value) || 0;
-    let mente = parseInt(document.getElementById('attr-mente').value) || 0;
+      let log = document.getElementById('log-rolagem');
+      
+      if (d20 === 20) {
+        log.innerHTML = `<b style="color: #2ec4b6;">🔥 SUCESSO CRÍTICO!</b> ${nome} (1d20: 20) + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b>Total: ${total}</b>`;
+      } else if (d20 === 1) {
+        log.innerHTML = `<b style="color: #ff6b6b;">💀 FALHA CATASTRÓFICA!</b> ${nome} (1d20: 1) + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b>Total: ${total}</b>`;
+      } else {
+        log.innerHTML = `Teste de <b>${nome}</b>: [1d20: ${d20}] + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b style="color: #2ec4b6; font-size: 1.2em;">Total: ${total}</b>`;
+      }
+    };
 
-    let pvMax = 18 + corpo;
-    let imMax = 14 + mente;
-    let cargaMax = 10 + (corpo * 2);
+    window.rolarDadosGenerico = function(nomeItem, formula, tipo) {
+      let match = formula.toLowerCase().match(/^(\d+)d(\d+)(?:\+(\d+))?$/);
+      let log = document.getElementById('log-rolagem');
 
-    document.getElementById('pv-max').innerText = pvMax;
-    document.getElementById('im-max').innerText = imMax;
-    document.getElementById('carga-max').innerText = cargaMax;
+      if (!match) {
+        log.innerHTML = `⚠️ Formato inválido. Use ex: <b>1d6</b>, <b>1d8+2</b> ou <b>2d6</b>.`;
+        return;
+      }
 
-    const ag = obterAgenteEmEdicao();
-    let cargaUsada = ag && ag.inventario ? ag.inventario.reduce((acc, item) => acc + item.espaco, 0) : 0;
+      let qtdDados = parseInt(match[1]);
+      let ladosDado = parseInt(match[2]);
+      let bonus = parseInt(match[3]) || 0;
 
-    const elemCargaUsada = document.getElementById('carga-usada');
-    const alertaCarga = document.getElementById('alerta-carga');
-    
-    elemCargaUsada.innerText = cargaUsada;
+      let resultados = [];
+      let soma = 0;
 
-    if (cargaUsada > cargaMax) {
-      elemCargaUsada.classList.add('sobrecarregado');
-      alertaCarga.innerHTML = `<span class="sobrecarregado">⚠️ SOBRECARREGADO!</span>`;
-    } else {
-      elemCargaUsada.classList.remove('sobrecarregado');
-      alertaCarga.innerHTML = '';
+      for (let i = 0; i < qtdDados; i++) {
+        let roll = window.rolarDadoCripto(ladosDado);
+        resultados.push(roll);
+        soma += roll;
+      }
+
+      let total = soma + bonus;
+      let textoBonus = bonus > 0 ? ` + ${bonus}` : '';
+
+      log.innerHTML = `🎲 ${tipo} de <b>${nomeItem}</b> (${formula}): [${resultados.join(', ')}]${textoBonus} = <b style="color: #2ec4b6; font-size: 1.2em;">${total}</b>`;
+    };
+
+    const usuarioSalvo = localStorage.getItem('cat_usuario_ativo');
+    if (usuarioSalvo) {
+      document.getElementById('login-usuario').value = usuarioSalvo;
+      window.fazerLogin();
     }
-
-    renderizarInventario();
-    if (podeEditarFichaAtual) salvarAgenteAtual();
-  }
-
-  // ROLAGEM DE DADOS BALANCEADA (UNIFORME COM CRIPTO-RANDOM)
-  function rolarPericia(nome, attr, idx) {
-    let attrVal = parseInt(document.getElementById('attr-' + attr).value) || 0;
-    let treinoVal = parseInt(document.getElementById(`p-treino-${idx}`).value) || 0;
-
-    let d20 = rolarDadoCripto(20);
-    let total = d20 + attrVal + treinoVal;
-
-    let log = document.getElementById('log-rolagem');
-    
-    if (d20 === 20) {
-      log.innerHTML = `<b style="color: #2ec4b6;">🔥 SUCESSO CRÍTICO!</b> ${nome} (1d20: 20) + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b>Total: ${total}</b>`;
-    } else if (d20 === 1) {
-      log.innerHTML = `<b style="color: #ff6b6b;">💀 FALHA CATASTRÓFICA!</b> ${nome} (1d20: 1) + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b>Total: ${total}</b>`;
-    } else {
-      log.innerHTML = `Teste de <b>${nome}</b>: [1d20: ${d20}] + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b style="color: #2ec4b6; font-size: 1.2em;">Total: ${total}</b>`;
-    }
-  }
-
-  function rolarDadosGenerico(nomeItem, formula, tipo) {
-    let match = formula.toLowerCase().match(/^(\d+)d(\d+)(?:\+(\d+))?$/);
-    let log = document.getElementById('log-rolagem');
-
-    if (!match) {
-      log.innerHTML = `⚠️ Formato inválido. Use ex: <b>1d6</b>, <b>1d8+2</b> ou <b>2d6</b>.`;
-      return;
-    }
-
-    let qtdDados = parseInt(match[1]);
-    let ladosDado = parseInt(match[2]);
-    let bonus = parseInt(match[3]) || 0;
-
-    let resultados = [];
-    let soma = 0;
-
-    for (let i = 0; i < qtdDados; i++) {
-      let roll = rolarDadoCripto(ladosDado);
-      resultados.push(roll);
-      soma += roll;
-    }
-
-    let total = soma + bonus;
-    let textoBonus = bonus > 0 ? ` + ${bonus}` : '';
-
-    log.innerHTML = `🎲 ${tipo} de <b>${nomeItem}</b> (${formula}): [${resultados.join(', ')}]${textoBonus} = <b style="color: #2ec4b6; font-size: 1.2em;">${total}</b>`;
-  }
-
-  // AUTO-LOGIN SESSÃO ATIVA
-  const usuarioSalvo = localStorage.getItem('cat_usuario_ativo');
-  if (usuarioSalvo) {
-    document.getElementById('login-usuario').value = usuarioSalvo;
-    fazerLogin();
-  }
-</script>
-
+  </script>
 </body>
 </html>
