@@ -1896,14 +1896,11 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
         const custo = ritual.custo || "-";
         const exposicao = ritual.exposicao || "";
         const descricao = ritual.descricao || ritual.dano || "-";
-        const possuiDadoRolavel = ritual.dano && ritual.dano.match(/^\d+d\d+(?:\+\d+)?$/i);
 
-        let botaoAcao = '';
-        if (possuiDadoRolavel) {
-          const tipo = ritual.origem === "oficial" ? "Ritual Oficial" : "Ritual";
-          botaoAcao =
-            `<button class="btn-main" style="padding:4px 8px; font-size:0.8em;" onclick="rolarDadosGenerico(${JSON.stringify(ritual.nome)}, ${JSON.stringify(ritual.dano)}, ${JSON.stringify(tipo)})">🔮 Conjurar (${ritual.dano})</button>`;
-        }
+        // Rituais usam apenas a ação de Conjurar.
+        // O campo "dano" continua salvo para os efeitos/dados internos do ritual,
+        // mas não é exibido como um botão de rolagem separado.
+        const botaoAcao = `<button class="btn-main" style="padding:4px 8px; font-size:0.8em;" onclick="conjurarRitual(${idx})">🔮 Conjurar</button>`;
 
         const origemBadge = ritual.origem === "oficial"
           ? `<span style="font-size:0.7em; color:#8fd8c2; margin-left:5px;">OFICIAL</span>`
@@ -1936,6 +1933,81 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
         `;
       });
     }
+
+    // Conjuração oficial do sistema: 1d20 + Espírito + Ocultismo contra a DT do Círculo.
+    // Regra do livro: em caso de falha, o ritual não funciona, o custo de IM é pago pela metade
+    // e a Exposição Espiritual recebida é dobrada.
+    window.conjurarRitual = async function(ritualIdx) {
+      if (!window.agenteAtualId) return;
+
+      const ag = await obterAgenteEmEdicao();
+      if (!ag || !ag.rituais || !ag.rituais[ritualIdx]) return;
+
+      const ritual = ag.rituais[ritualIdx];
+      const log = document.getElementById('log-rolagem');
+      const espirito = parseInt(document.getElementById('attr-espirito').value) || 0;
+      const treinoOcultismo = parseInt(document.getElementById(`p-treino-${window.pericias.findIndex(p => p.nome === 'Ocultismo')}`).value) || 0;
+      const dt = parseInt(ritual.dt) || ({'Círculo I':12,'Círculo II':17,'Círculo III':25}[ritual.circulo] || 0);
+
+      if (!dt) {
+        log.innerHTML = `⚠️ O ritual <b>${ritual.nome}</b> não possui uma DT válida.`;
+        return;
+      }
+
+      if (treinoOcultismo <= 0) {
+        log.innerHTML = `<b style="color:#ffb36b;">⚠️ OCULTISMO NÃO TREINADO</b> — O livro exige Ocultismo treinado para conjurar rituais.`;
+        return;
+      }
+
+      const custoMatch = String(ritual.custo || '').match(/(\d+)\s*IM/i);
+      const exposicaoMatch = String(ritual.exposicao || '').match(/(\d+)\s*EE/i);
+      const custoIM = custoMatch ? parseInt(custoMatch[1]) : 0;
+      const ganhoEE = exposicaoMatch ? parseInt(exposicaoMatch[1]) : 0;
+
+      if (window.podeEditarFichaAtual && (parseInt(ag.imAtual) || 0) < custoIM) {
+        log.innerHTML = `<b style="color:#ff6b6b;">⚠️ INTEGRIDADE MENTAL INSUFICIENTE</b> — ${ritual.nome} exige ${custoIM} IM.`;
+        return;
+      }
+
+      const d20 = window.rolarDadoCripto(20);
+      const total = d20 + espirito + treinoOcultismo;
+      const sucesso = total >= dt;
+
+      // Se a ficha é editável, aplica o custo/Exposição do resultado no Firebase.
+      // Em falha, a metade do custo é arredondada para baixo apenas para permitir
+      // representar valores inteiros de IM na ficha.
+      if (window.podeEditarFichaAtual) {
+        const custoAplicado = sucesso ? custoIM : Math.floor(custoIM / 2);
+        const eeAplicado = sucesso ? ganhoEE : ganhoEE * 2;
+        const novoIM = Math.max(0, (parseInt(ag.imAtual) || 0) - custoAplicado);
+        const novoEE = Math.max(0, (parseInt(ag.eeAtual) || 0) + eeAplicado);
+
+        await setDoc(doc(db, 'agentes', window.agenteAtualId.toString()), {
+          imAtual: novoIM,
+          eeAtual: novoEE
+        }, { merge: true });
+
+        document.getElementById('im-atual').value = novoIM;
+        document.getElementById('ee-atual').value = novoEE;
+      }
+
+      const resultado = sucesso
+        ? `<b style="color:#2ec4b6;">✨ RITUAL CONJURADO!</b>`
+        : `<b style="color:#ff6b6b;">✖ FALHA NA CONJURAÇÃO!</b>`;
+      const custoAplicadoTexto = sucesso ? `${custoIM} IM` : `${Math.floor(custoIM / 2)} IM`;
+      const eeAplicadoTexto = sucesso ? `+${ganhoEE} EE` : `+${ganhoEE * 2} EE`;
+
+      log.innerHTML = `${resultado} <b>${ritual.nome}</b><br>
+        1d20: <b>${d20}</b> + Espírito: <b>${espirito}</b> + Ocultismo: <b>${treinoOcultismo}</b> =
+        <b style="color:#2ec4b6; font-size:1.15em;">${total}</b> vs DT <b>${dt}</b><br>
+        ${sucesso ? 'Efeito ativado.' : 'O ritual não funciona.'} · Custo aplicado: <b>${custoAplicadoTexto}</b> · Exposição: <b>${eeAplicadoTexto}</b>`;
+
+      if (sucesso && ritual.dano) {
+        setTimeout(() => {
+          rolarDadosGenerico(ritual.nome, ritual.dano, 'Efeito do Ritual');
+        }, 150);
+      }
+    };
 
     window.atualizarTudo = async function() {
       let corpo = parseInt(document.getElementById('attr-corpo').value) || 0;
