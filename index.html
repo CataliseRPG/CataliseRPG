@@ -753,12 +753,13 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 .profile-cosmetics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.profile-showcase-box{padding:14px;border:1px solid rgba(67,182,163,.18);background:rgba(2,11,13,.34);border-radius:8px}.profile-section-kicker,.public-section-title{color:#6bc9b7;font:700 9px 'DM Mono';letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}.profile-agent-selector{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.profile-agent-option{display:flex!important;grid-template-columns:none!important;align-items:center;gap:9px;padding:8px;border:1px solid rgba(67,182,163,.16);background:rgba(7,23,26,.7);cursor:pointer;text-transform:none!important;letter-spacing:0!important}.profile-agent-option input{width:auto}.profile-agent-option-visual{width:38px;height:38px;border-radius:7px;overflow:hidden;display:grid;place-items:center;background:#071519;border:1px solid rgba(67,182,163,.25);flex:none}.profile-agent-option-visual img{width:100%;height:100%;object-fit:cover}.profile-agent-option small{display:block;color:#6e908b;font:500 8px 'DM Mono';margin-top:2px}.profile-agent-fallback,.public-agent-fallback{color:#58b7a6}.profile-empty{color:#64847f;font:500 9px 'DM Mono';padding:8px}.profile-achievement-preview,.public-achievement-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.achievement-chip,.public-achievement-chip{padding:7px 9px;border:1px solid rgba(191,158,76,.32);background:rgba(130,101,38,.08);color:#d6ba6f;font:700 8px 'DM Mono';letter-spacing:.06em;text-transform:uppercase}.public-profile-showcase{margin-top:22px;padding-top:18px;border-top:1px solid rgba(74,176,157,.16)}.public-agent-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.public-agent-card{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid rgba(67,182,163,.18);background:rgba(2,11,13,.38);min-width:0}.public-agent-card>img,.public-agent-fallback{width:48px;height:48px;border-radius:8px;object-fit:cover;display:grid;place-items:center;background:#071519;border:1px solid rgba(67,182,163,.25);flex:none}.public-agent-card b{display:block;color:#dcece8;font-size:12px}.public-agent-card small{display:block;color:#6f918c;font:500 8px 'DM Mono';margin-top:3px}.frame-sanctum .public-profile-avatar{box-shadow:0 0 0 3px #0b2b2f,0 0 0 5px rgba(84,193,176,.55),0 12px 35px rgba(0,0,0,.55)}.frame-thorn .public-profile-avatar{box-shadow:0 0 0 3px #20100f,0 0 0 5px rgba(154,59,69,.7),0 12px 35px rgba(0,0,0,.55)}.frame-reliquary .public-profile-avatar{box-shadow:0 0 0 3px #241b0c,0 0 0 5px rgba(197,163,76,.72),0 12px 35px rgba(0,0,0,.55)}.frame-obsidian .public-profile-avatar{box-shadow:0 0 0 3px #111719,0 0 0 5px rgba(139,164,166,.55),0 12px 35px rgba(0,0,0,.55)}.effect-embers:before,.effect-dust:before,.effect-fog:before,.effect-static:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.3}.effect-embers:before{background:radial-gradient(circle at 20% 80%,rgba(214,81,57,.22),transparent 18%),radial-gradient(circle at 70% 40%,rgba(214,81,57,.16),transparent 14%);animation:profileDrift 7s ease-in-out infinite alternate}.effect-dust:before{background-image:radial-gradient(circle,rgba(210,224,215,.22) 0 1px,transparent 1.5px);background-size:24px 24px;animation:profileDust 12s linear infinite}.effect-fog:before{background:linear-gradient(110deg,transparent,rgba(157,208,199,.1),transparent);filter:blur(10px);animation:profileFog 6s ease-in-out infinite}.effect-static:before{background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 1px,transparent 1px 4px);mix-blend-mode:screen}@keyframes profileDrift{from{transform:translateY(0)}to{transform:translateY(-10px) scale(1.03)}}@keyframes profileDust{from{background-position:0 0}to{background-position:48px -48px}}@keyframes profileFog{from{transform:translateX(-12%)}to{transform:translateX(12%)}}
 @media(max-width:700px){.profile-cosmetics-grid,.profile-agent-selector,.public-agent-grid{grid-template-columns:1fr}.profile-upload-row{grid-template-columns:1fr}.profile-identity{align-items:flex-start;flex-direction:column;gap:8px}.profile-avatar{margin-top:-48px}}
 
+</style>
+
 <style id="catalise-v6-admin-apoio-css">
 .support-admin-divider{display:flex;align-items:center;gap:12px;margin:28px 0 14px;color:#63817c;font:700 9px/1 'DM Mono';letter-spacing:.14em;text-transform:uppercase}
 .support-admin-divider::before,.support-admin-divider::after{content:"";height:1px;flex:1;background:rgba(67,182,163,.16)}
 .support-admin-divider span{white-space:nowrap}
 #admin-tier-panel{margin-top:0}
-</style>
 </style>
 
 <style id="vt-popup-theme">
@@ -1044,6 +1045,130 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
   .admin-tier-grid,.admin-tier-controls{grid-template-columns:1fr}
 }
 </style>
+
+<style id="catalise-final-effects-v1">
+/* =========================================================
+   CATÁLISE FINAL — EFEITOS VISUAIS DOS ARQUIVOS
+   Os efeitos são puramente visuais e não alteram permissões,
+   tiers ou dados administrativos.
+   ========================================================= */
+.profile-card,.public-profile-card{isolation:isolate}
+.profile-banner,.public-profile-banner{isolation:isolate}
+.profile-banner:before,.profile-banner:after,
+.public-profile-banner:before,.public-profile-banner:after{
+  content:"";position:absolute;inset:0;pointer-events:none;z-index:2;
+}
+.profile-banner > *,.public-profile-banner > *{position:relative;z-index:3}
+
+/* Molduras no editor e no perfil público */
+.frame-sanctum .profile-avatar,
+.frame-sanctum .public-profile-avatar{
+  box-shadow:0 0 0 3px #0b2b2f,0 0 0 5px rgba(84,193,176,.55),0 0 28px rgba(84,193,176,.18),0 12px 35px rgba(0,0,0,.55);
+}
+.frame-thorn .profile-avatar,
+.frame-thorn .public-profile-avatar{
+  box-shadow:0 0 0 3px #20100f,0 0 0 5px rgba(154,59,69,.72),0 0 30px rgba(154,59,69,.18),0 12px 35px rgba(0,0,0,.55);
+}
+.frame-reliquary .profile-avatar,
+.frame-reliquary .public-profile-avatar{
+  box-shadow:0 0 0 3px #241b0c,0 0 0 5px rgba(197,163,76,.75),0 0 32px rgba(197,163,76,.16),0 12px 35px rgba(0,0,0,.55);
+}
+.frame-obsidian .profile-avatar,
+.frame-obsidian .public-profile-avatar{
+  box-shadow:0 0 0 3px #111719,0 0 0 5px rgba(139,164,166,.58),0 0 34px rgba(139,164,166,.16),0 12px 35px rgba(0,0,0,.55);
+}
+
+/* Brasas — movimento quente e muito discreto */
+.effect-embers .profile-banner:before,
+.effect-embers .public-profile-banner:before{
+  background:
+    radial-gradient(circle at 18% 78%,rgba(231,89,55,.22) 0 2px,transparent 3px),
+    radial-gradient(circle at 28% 60%,rgba(229,125,63,.18) 0 1.5px,transparent 3px),
+    radial-gradient(circle at 74% 38%,rgba(221,83,53,.18) 0 2px,transparent 3px),
+    radial-gradient(circle at 84% 72%,rgba(239,142,72,.14) 0 1px,transparent 3px),
+    radial-gradient(circle at 55% 20%,rgba(221,83,53,.12),transparent 18%);
+  background-size:170px 170px,210px 210px,190px 190px,240px 240px,100% 100%;
+  animation:catEmbears 8s ease-in-out infinite alternate;
+  mix-blend-mode:screen;
+}
+.effect-embers .profile-banner:after,
+.effect-embers .public-profile-banner:after{
+  background:linear-gradient(115deg,transparent 25%,rgba(216,79,55,.08),transparent 65%);
+  filter:blur(9px);
+  animation:catEmberGlow 5s ease-in-out infinite alternate;
+}
+@keyframes catEmbears{from{transform:translate3d(-4px,8px,0) scale(1)}to{transform:translate3d(7px,-10px,0) scale(1.04)}}
+@keyframes catEmberGlow{from{opacity:.35;transform:translateX(-8%)}to{opacity:.9;transform:translateX(8%)}}
+
+/* Poeira — partículas lentas */
+.effect-dust .profile-banner:before,
+.effect-dust .public-profile-banner:before{
+  background-image:
+    radial-gradient(circle,rgba(223,235,229,.24) 0 1px,transparent 1.5px),
+    radial-gradient(circle,rgba(171,201,193,.14) 0 1px,transparent 1.5px);
+  background-size:31px 31px,67px 67px;
+  animation:catDust 18s linear infinite;
+  opacity:.48;
+}
+.effect-dust .profile-banner:after,
+.effect-dust .public-profile-banner:after{
+  background:linear-gradient(100deg,transparent,rgba(190,216,207,.07),transparent);
+  animation:catDustGlow 10s ease-in-out infinite alternate;
+}
+@keyframes catDust{from{background-position:0 0,0 0}to{background-position:62px -93px,-81px 54px}}
+@keyframes catDustGlow{from{transform:translateX(-14%);opacity:.25}to{transform:translateX(14%);opacity:.7}}
+
+/* Névoa — camadas orgânicas */
+.effect-fog .profile-banner:before,
+.effect-fog .public-profile-banner:before{
+  background:
+    radial-gradient(ellipse at 15% 70%,rgba(178,215,207,.10),transparent 42%),
+    radial-gradient(ellipse at 80% 35%,rgba(120,181,179,.10),transparent 38%),
+    linear-gradient(105deg,transparent 10%,rgba(175,213,207,.08) 50%,transparent 88%);
+  filter:blur(8px);
+  animation:catFog 9s ease-in-out infinite alternate;
+}
+.effect-fog .profile-banner:after,
+.effect-fog .public-profile-banner:after{
+  background:linear-gradient(180deg,transparent 35%,rgba(179,212,205,.10),transparent 80%);
+  filter:blur(14px);
+  animation:catFog2 7s ease-in-out infinite alternate;
+}
+@keyframes catFog{from{transform:translateX(-10%) scale(1.04)}to{transform:translateX(10%) scale(1.08)}}
+@keyframes catFog2{from{opacity:.2;transform:translateY(7%)}to{opacity:.75;transform:translateY(-6%)}}
+
+/* Ruído ritual — scanlines + pulsação */
+.effect-static .profile-banner:before,
+.effect-static .public-profile-banner:before{
+  background:
+    repeating-linear-gradient(0deg,rgba(255,255,255,.035) 0 1px,transparent 1px 4px),
+    repeating-linear-gradient(90deg,rgba(82,193,181,.025) 0 1px,transparent 1px 7px);
+  mix-blend-mode:screen;
+  animation:catStatic 1.8s steps(4,end) infinite;
+}
+.effect-static .profile-banner:after,
+.effect-static .public-profile-banner:after{
+  background:linear-gradient(90deg,transparent,rgba(105,216,198,.08),transparent);
+  animation:catStaticSweep 3.4s linear infinite;
+}
+@keyframes catStatic{0%,100%{opacity:.24;transform:translate(0)}25%{opacity:.4;transform:translate(-1px,1px)}50%{opacity:.18;transform:translate(1px,-1px)}75%{opacity:.34;transform:translate(0,1px)}}
+@keyframes catStaticSweep{from{transform:translateX(-110%)}to{transform:translateX(110%)}}
+
+/* Destaque vivo do nível atual */
+.tier-card.current-tier{position:relative;overflow:hidden}
+.tier-card.current-tier:after{
+  content:"";position:absolute;inset:-40%;pointer-events:none;
+  background:radial-gradient(circle at 50% 50%,rgba(110,216,193,.10),transparent 45%);
+  animation:catTierPulse 4s ease-in-out infinite;
+}
+@keyframes catTierPulse{0%,100%{opacity:.35;transform:scale(.9)}50%{opacity:.8;transform:scale(1.05)}}
+
+/* Redução de movimento para acessibilidade */
+@media (prefers-reduced-motion:reduce){
+  *,*::before,*::after{animation-duration:.001ms!important;animation-iteration-count:1!important;scroll-behavior:auto!important;transition-duration:.001ms!important}
+}
+</style>
+
 </head>
 <body>
   <header class="site-header">
@@ -1306,13 +1431,13 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         <h2>TORNE-SE PARTE DO CATÁLISE</h2>
         <p>O Catálise é um projeto independente. Seu apoio ajuda a manter o sistema, as campanhas, o Tabletop e o conteúdo em desenvolvimento. Em troca, você desbloqueia principalmente benefícios digitais, cosméticos e acesso antecipado.</p>
         <button type="button" class="btn-main" onclick="abrirCatarse()">☩ APOIAR NO CATARSE</button>
-        <div class="support-note">A cobrança acontece no Catarse. O site nunca pede sua senha do Catarse nem dados do cartão. A confirmação automática da assinatura será feita pelo backend quando a integração oficial estiver conectada.</div>
+        <div class="support-note">A cobrança acontece no Catarse. O site nunca pede sua senha do Catarse nem dados do cartão. Por enquanto, a confirmação dos apoios é feita manualmente pela administração do Catálise.</div>
       </section>
 
 
       <section class="card-ficha support-link-card">
         <div class="support-kicker">✦ VÍNCULO COM O CATARSE</div>
-        <h3>RECEBA SEUS BENEFÍCIOS AUTOMATICAMENTE</h3>
+        <h3>VINCULE SEU APOIO AO CATÁLISE</h3>
         <p class="support-link-help">
           Informe o e-mail usado no Catarse para preparar o vínculo da sua assinatura com esta conta.
           O Catálise nunca pede sua senha do Catarse nem dados de pagamento.
@@ -1368,11 +1493,11 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       </div>
 
       <!-- ADMINISTRAÇÃO: visível exclusivamente dentro da aba "Apoie o Projeto" -->
-      <div class="support-admin-divider" aria-hidden="true"><span>ADMINISTRAÇÃO DO APOIO</span></div>
+      <div id="support-admin-divider" class="support-admin-divider" aria-hidden="true" style="display:none;"><span>ADMINISTRAÇÃO DO APOIO</span></div>
       <section id="admin-tier-panel" class="card-ficha admin-tier-panel" style="display:none;">
           <div class="admin-tier-kicker">☩ ÁREA DE ADMINISTRAÇÃO</div>
           <h3 style="margin-top:4px;">GERENCIAR APOIADORES</h3>
-          <p class="profile-help">Localize uma conta por UID ou e-mail e conceda um nível manualmente. Esta área é exclusiva para administradores cadastrados no Firestore.</p>
+          <p class="profile-help">Localize uma conta por UID ou e-mail, confira os dados e conceda/remova o nível manualmente. Esta área existe somente dentro de Apoie o Projeto e é exclusiva para administradores cadastrados no Firestore.</p>
 
           <div class="admin-tier-grid">
             <label>UID ou e-mail da conta
@@ -1405,21 +1530,28 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
               </label>
               <label>Status da assinatura
                 <select id="admin-subscription-status">
-                  <option value="manual">Manual / teste</option>
+                  <option value="manual">Manual</option>
                   <option value="active">Ativa</option>
-                  <option value="pending">Pendente</option>
                   <option value="cancelled">Cancelada</option>
-                  <option value="expired">Expirada</option>
+                  <option value="test">Conta de teste</option>
+                </select>
+              </label>
+              <label style="grid-column:1/-1;">Origem do benefício
+                <select id="admin-tier-source">
+                  <option value="manual_admin">Apoio verificado / concessão manual</option>
+                  <option value="test_admin">Conta de teste</option>
                 </select>
               </label>
             </div>
 
             <label style="display:grid;gap:7px;margin-top:12px;">Motivo / observação (opcional)
-              <input id="admin-tier-reason" type="text" maxlength="180" placeholder="Ex.: conta de teste, amigo da equipe, benefício manual" data-enter-ready>
+              <input id="admin-tier-reason" type="text" maxlength="180" placeholder="Ex.: assinatura confirmada, conta de teste, benefício manual" data-enter-ready>
             </label>
+            <div class="profile-help" style="margin-top:8px;">A origem distingue apoio confirmado de conta de teste. A data da alteração é gravada pelo Firestore; o navegador não pode escolher essa data.</div>
 
             <div class="admin-tier-actions">
               <button type="button" class="btn-main" id="admin-tier-save-btn" onclick="salvarTierAdministrativo()">✦ APLICAR NÍVEL</button>
+              <button type="button" class="vt-mini-btn btn-danger" id="admin-tier-remove-btn" onclick="removerTierAdministrativo()">REMOVER BENEFÍCIO</button>
               <button type="button" class="vt-mini-btn" onclick="limparAlvoTier()">LIMPAR</button>
             </div>
             <div id="admin-tier-status" class="admin-tier-status" aria-live="polite"></div>
@@ -1980,7 +2112,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     import {
       getFirestore, doc, setDoc, getDoc, deleteDoc, updateDoc,
       collection, query, where, getDocs, onSnapshot,
-      arrayUnion
+      arrayUnion, serverTimestamp
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import {
       getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
@@ -2344,6 +2476,16 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       const frame=p.frame||'none';
       const effect=p.effect||'none';
       const displayTitle=p.displayTitle||p.titulo||'';
+      const profileCard=document.querySelector('.profile-card');
+      const bannerPreview=document.getElementById('profile-banner-preview');
+      if(profileCard){
+        profileCard.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','effect-none','effect-embers','effect-dust','effect-fog','effect-static');
+        profileCard.classList.add('frame-'+String(frame),'effect-'+String(effect));
+      }
+      if(bannerPreview){
+        bannerPreview.classList.remove('effect-none','effect-embers','effect-dust','effect-fog','effect-static');
+        bannerPreview.classList.add('effect-'+String(effect));
+      }
       const avatarEl=document.getElementById('profile-avatar-preview');
       if(avatarEl){avatarEl.src=avatar||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#071519"/><text x="60" y="67" text-anchor="middle" fill="#56b8a8" font-size="42">✦</text></svg>`);}
       const bannerEl=document.getElementById('profile-banner-preview');
@@ -2569,11 +2711,11 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         (email?`<span class="support-link-badge">${escaparHtml(email)}</span>`:'');
       if(help){
         if(status==='verified'){
-          help.textContent='Seu vínculo com o Catarse foi confirmado. O plano e o status da assinatura serão atualizados pela integração do projeto.';
+          help.textContent='Seu vínculo com o Catarse foi confirmado. A administração usa esse vínculo para conferir a assinatura e registrar manualmente o nível correspondente.';
         }else if(status==='pending'){
-          help.textContent='O vínculo foi registrado e aguarda confirmação. Informar um e-mail não concede tier por si só.';
+          help.textContent='O vínculo foi registrado e aguarda conferência. Informar um e-mail não concede tier por si só.';
         }else{
-          help.textContent='Depois do vínculo, a confirmação do plano será feita pelo mecanismo de integração do projeto. Enquanto isso, nenhuma assinatura é considerada ativa apenas por informar um e-mail.';
+          help.textContent='Depois do vínculo, a administração confere a assinatura no Catarse e registra manualmente o nível correspondente. Informar um e-mail sozinho nunca concede um tier.';
         }
       }
       const btn=document.getElementById('catarse-link-save-btn');
@@ -2600,7 +2742,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         window.perfilAtual={...window.perfilAtual,...payload};
         renderizarVinculoCatarse();
         await sitePopup(
-          'O e-mail do Catarse foi registrado. A confirmação da assinatura será feita pela integração; informar o e-mail sozinho não concede um tier.',
+          'O e-mail do Catarse foi registrado. A assinatura será conferida manualmente pela administração; informar o e-mail sozinho não concede um tier.',
           {title:'VÍNCULO REGISTRADO',okText:'CONTINUAR'}
         );
       }catch(e){
@@ -2662,7 +2804,8 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     // pelo navegador.
     // =========================================================
     const ADMIN_TIER_VALUES = new Set(['none','devoto','oficiante','arquiteto','arauto']);
-    const ADMIN_STATUS_VALUES = new Set(['manual','active','pending','cancelled','expired']);
+    const ADMIN_STATUS_VALUES = new Set(['manual','active','cancelled','test']);
+    const ADMIN_SOURCE_VALUES = new Set(['manual_admin','test_admin']);
 
     async function usuarioEhAdministrador(uid=window.usuarioId){
       if(!uid)return false;
@@ -2677,9 +2820,11 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
     async function atualizarPainelAdministrador(){
       const panel=document.getElementById('admin-tier-panel');
+      const divider=document.getElementById('support-admin-divider');
       if(!panel)return;
       const admin=await usuarioEhAdministrador();
       panel.style.display=admin?'block':'none';
+      if(divider)divider.style.display=admin?'flex':'none';
       window.ehAdministrador=admin;
     }
 
@@ -2712,13 +2857,19 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       const statusValue=ADMIN_STATUS_VALUES.has(String(data.subscriptionStatus||'manual'))?String(data.subscriptionStatus):'manual';
       const status=document.getElementById('admin-subscription-status');
       if(status)status.value=statusValue;
+      const sourceValue=ADMIN_SOURCE_VALUES.has(String(data.tierSource||'manual_admin'))?String(data.tierSource):'manual_admin';
+      const source=document.getElementById('admin-tier-source');
+      if(source)source.value=sourceValue;
       const reason=document.getElementById('admin-tier-reason');
       if(reason)reason.value=String(data.tierReason||'');
 
       const currentLabel=document.getElementById('admin-tier-current-label');
       if(currentLabel)currentLabel.textContent=SUPPORTER_LABEL[tierValue]||'INVESTIGADOR';
       const sourceLabel=document.getElementById('admin-tier-source-label');
-      if(sourceLabel)sourceLabel.textContent=String(data.tierSource||'não definido');
+      if(sourceLabel){
+        const sourceText=String(data.tierSource||'');
+        sourceLabel.textContent=sourceText==='test_admin'?'CONTA DE TESTE':sourceText==='manual_admin'?'APOIO MANUAL':'NÃO DEFINIDO';
+      }
 
       const msg=document.getElementById('admin-tier-status');
       if(msg){msg.textContent='Conta localizada. Escolha o nível e aplique a alteração.';msg.classList.remove('is-success');}
@@ -2775,18 +2926,32 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
       const tier=document.getElementById('admin-tier-select')?.value||'none';
       const subscriptionStatus=document.getElementById('admin-subscription-status')?.value||'manual';
+      const tierSource=document.getElementById('admin-tier-source')?.value||'manual_admin';
       const tierReason=(document.getElementById('admin-tier-reason')?.value||'').trim();
-      if(!ADMIN_TIER_VALUES.has(tier)||!ADMIN_STATUS_VALUES.has(subscriptionStatus)){
-        return sitePopup('Nível ou status inválido.',{title:'DADOS INVÁLIDOS'});
+      if(!ADMIN_TIER_VALUES.has(tier)||!ADMIN_STATUS_VALUES.has(subscriptionStatus)||!ADMIN_SOURCE_VALUES.has(tierSource)){
+        return sitePopup('Nível, status ou origem inválidos.',{title:'DADOS INVÁLIDOS'});
       }
 
-      const now=new Date().toISOString();
+      if(tierSource==='test_admin' && subscriptionStatus!=='test'){
+        return sitePopup('Contas de teste precisam usar o status "Conta de teste".',{title:'DADOS INVÁLIDOS'});
+      }
+
+      if(tierSource==='manual_admin' && subscriptionStatus==='test'){
+        return sitePopup('Um apoio manual não pode usar o status de conta de teste.',{title:'DADOS INVÁLIDOS'});
+      }
+
+      const confirmar=await window.vtPopupConfirm(
+        `Aplicar ${SUPPORTER_LABEL[tier]||'INVESTIGADOR'} a ${target.nome||'esta conta'}?\n\nOrigem: ${tierSource==='test_admin'?'CONTA DE TESTE':'APOIO VERIFICADO / CONCESSÃO MANUAL'}\nStatus: ${subscriptionStatus}`,
+        {title:'CONFIRMAR TIER',okText:'APLICAR',cancelText:'CANCELAR'}
+      );
+      if(!confirmar)return;
+
       const payload={
         supporterTier:tier,
         subscriptionStatus,
         subscriptionPlan:tier,
-        tierSource:'manual_admin',
-        tierUpdatedAt:now,
+        tierSource,
+        tierUpdatedAt:serverTimestamp(),
         tierUpdatedBy:window.usuarioId,
         tierReason:tierReason||'Concessão manual pelo administrador'
       };
@@ -2822,6 +2987,52 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         sitePopup(e?.message||'Não foi possível atualizar o tier.',{title:'ERRO AO ATUALIZAR'});
       }finally{
         if(save){save.disabled=false;save.textContent='✦ APLICAR NÍVEL';}
+      }
+    };
+
+    window.removerTierAdministrativo=async function(){
+      if(!(await usuarioEhAdministrador())){
+        return sitePopup('Sua conta não possui permissão administrativa.',{title:'ACESSO RESTRITO'});
+      }
+      const target=window.adminTierTarget;
+      if(!target?.uid)return sitePopup('Primeiro localize uma conta.',{title:'GERENCIAR TIERS'});
+      const confirmar=await window.vtPopupConfirm(
+        `Remover os benefícios de ${target.nome||'esta conta'} e voltar ao nível gratuito?`,
+        {title:'REMOVER BENEFÍCIO',okText:'REMOVER',cancelText:'CANCELAR',danger:true}
+      );
+      if(!confirmar)return;
+      const reason='Benefício removido manualmente pelo administrador';
+      const payload={
+        supporterTier:'none',
+        subscriptionStatus:'cancelled',
+        subscriptionPlan:'none',
+        tierSource:'manual_admin',
+        tierUpdatedAt:serverTimestamp(),
+        tierUpdatedBy:window.usuarioId,
+        tierReason:reason
+      };
+      const msg=document.getElementById('admin-tier-status');
+      const save=document.getElementById('admin-tier-save-btn');
+      const remove=document.getElementById('admin-tier-remove-btn');
+      if(msg){msg.textContent='Removendo benefício…';msg.classList.remove('is-success');}
+      if(save)save.disabled=true;if(remove)remove.disabled=true;
+      try{
+        await setDoc(doc(db,'usuarios',target.uid),payload,{merge:true});
+        await setDoc(doc(db,'perfisPublicos',target.uid),payload,{merge:true});
+        window.adminTierTarget={...target,...payload};
+        if(msg){msg.textContent='✓ Benefícios removidos. A conta voltou ao nível gratuito.';msg.classList.add('is-success');}
+        if(target.uid===window.usuarioId){
+          window.perfilAtual={...window.perfilAtual,...payload};
+          renderizarPerfilUI();
+          atualizarAcessoAssinatura();
+        }
+        await sitePopup('Os benefícios foram removidos e o nível voltou para INVESTIGADOR.',{title:'BENEFÍCIO REMOVIDO',okText:'CONTINUAR'});
+      }catch(e){
+        console.error('Erro ao remover tier:',e);
+        if(msg)msg.textContent='Não foi possível remover o benefício.';
+        await sitePopup(e?.message||'Não foi possível remover o benefício.',{title:'ERRO AO REMOVER'});
+      }finally{
+        if(save)save.disabled=false;if(remove)remove.disabled=false;
       }
     };
 
@@ -4726,527 +4937,8 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 </script>
 
 
-<script id="catalise-premium-v2-js">
-/* =========================================================
-   CATÁLISE PREMIUM V3
-   Preferências cosméticas persistidas no Firebase.
 
-   IMPORTANTE:
-   - Este código NÃO grava supporterTier/status/since.
-   - Esses campos continuam protegidos pelas Firestore Rules.
-   - Somente preferências cosméticas são salvas pelo usuário.
-   ========================================================= */
-(function () {
-  const TIERS = {
-    none:      { level: 0, name: "Sem assinatura", icon: "" },
-    devoto:    { level: 1, name: "Devoto", icon: "☽" },
-    oficiante: { level: 2, name: "Oficiante", icon: "☩" },
-    arquiteto: { level: 3, name: "Arquiteto", icon: "⚒" },
-    arauto:    { level: 4, name: "Arauto", icon: "👁" }
-  };
 
-  const OPTIONS = {
-    themes: [
-      { id: "default",   label: "Catálise — Verde Profundo", min: 0 },
-      { id: "devoto",    label: "Ritual do Devoto",         min: 1 },
-      { id: "oficiante", label: "Câmara do Oficiante",      min: 2 },
-      { id: "arquiteto", label: "Oficina do Arquiteto",     min: 3 },
-      { id: "arauto",    label: "Olho do Arauto",           min: 4 }
-    ],
-    frames: [
-      { id: "none",      label: "Sem moldura", min: 0 },
-      { id: "relicario", label: "Relicário",    min: 2 },
-      { id: "espinhos",  label: "Espinhos",     min: 3 },
-      { id: "olho",      label: "Olho Ritual",  min: 4 }
-    ],
-    effects: [
-      { id: "none",   label: "Nenhum", min: 0 },
-      { id: "mist",   label: "Névoa",  min: 2 },
-      { id: "embers", label: "Cinzas", min: 3 },
-      { id: "void",   label: "Vazio",  min: 4 }
-    ]
-  };
-
-  let firebaseDb = null;
-  let firebaseAuth = null;
-  let firebaseReady = false;
-  let firebaseInitPromise = null;
-
-  function getTierFromKnownData() {
-    const candidates = [
-      window.currentUserData?.supporterTier,
-      window.userData?.supporterTier,
-      window.usuarioAtual?.supporterTier,
-      document.body?.dataset?.supporterTier
-    ];
-
-    const tier = candidates.find(v => typeof v === "string" && TIERS[v]);
-    return tier || "none";
-  }
-
-  function level(tier) {
-    return TIERS[tier]?.level ?? 0;
-  }
-
-  function sanitizePreferences(data) {
-    const safe = {};
-
-    if (OPTIONS.themes.some(o => o.id === data.theme)) {
-      safe.theme = data.theme;
-    }
-
-    if (OPTIONS.frames.some(o => o.id === data.frame)) {
-      safe.frame = data.frame;
-    }
-
-    if (OPTIONS.effects.some(o => o.id === data.effect)) {
-      safe.effect = data.effect;
-    }
-
-    return safe;
-  }
-
-  function isUnlocked(type, value, tier) {
-    const option = OPTIONS[type]?.find(o => o.id === value);
-    return !!option && level(tier) >= option.min;
-  }
-
-  function buildOptions(type, tier, current) {
-    return OPTIONS[type].map(option => {
-      const unlocked = level(tier) >= option.min;
-      const selected = option.id === current ? " selected" : "";
-      const disabled = unlocked ? "" : " disabled";
-      const lock = unlocked ? "" : " 🔒";
-
-      return `<option value="${option.id}"${selected}${disabled}>${option.label}${lock}</option>`;
-    }).join("");
-  }
-
-  function panelHtml(tier, prefs) {
-    const t = TIERS[tier];
-
-    return `
-      <section class="premium-profile-panel" id="catalisePremiumPanel">
-        <div class="premium-tier-badge">
-          ${t.icon ? t.icon + " " : ""}${t.name}
-        </div>
-
-        <h3 style="margin-top:12px">PERSONALIZAÇÃO DO ARQUIVO</h3>
-
-        <p class="premium-subtitle">
-          Suas escolhas ficam vinculadas à sua conta e acompanham você
-          quando entrar novamente.
-        </p>
-
-        <div class="premium-grid">
-
-          <div class="premium-control">
-            <label for="premiumTheme">Tema</label>
-            <select id="premiumTheme">
-              ${buildOptions("themes", tier, prefs.theme)}
-            </select>
-          </div>
-
-          <div class="premium-control">
-            <label for="premiumFrame">Moldura</label>
-            <select id="premiumFrame">
-              ${buildOptions("frames", tier, prefs.frame)}
-            </select>
-          </div>
-
-          <div class="premium-control">
-            <label for="premiumEffect">Efeito</label>
-            <select id="premiumEffect">
-              ${buildOptions("effects", tier, prefs.effect)}
-            </select>
-          </div>
-
-          <div class="premium-control premium-locked">
-            <label>Banner animado</label>
-            <input
-              type="text"
-              value="Disponível a partir do Arquiteto"
-              disabled
-            >
-            <span class="premium-lock-note">🔒 Arquiteto</span>
-          </div>
-
-        </div>
-
-        <div class="premium-save-row">
-          <span class="premium-save-status" id="premiumSaveStatus"></span>
-
-          <button
-            type="button"
-            class="btn-primary"
-            id="premiumSaveBtn"
-          >
-            SALVAR PERSONALIZAÇÃO
-          </button>
-        </div>
-      </section>
-    `;
-  }
-
-  /*
-   * Tenta localizar o Firebase já carregado pelo HTML principal.
-   * Não cria outra aplicação Firebase, evitando o problema de
-   * initializeApp() duplicado.
-   */
-  async function getFirebase() {
-    if (firebaseReady) {
-      return {
-        db: firebaseDb,
-        auth: firebaseAuth
-      };
-    }
-
-    if (firebaseInitPromise) {
-      return firebaseInitPromise;
-    }
-
-    firebaseInitPromise = (async () => {
-      /*
-       * Firebase compat, caso o HTML atual esteja usando
-       * firebase.initializeApp().
-       */
-      if (window.firebase) {
-        try {
-          if (typeof window.firebase.firestore === "function") {
-            firebaseDb = window.firebase.firestore();
-          }
-
-          if (typeof window.firebase.auth === "function") {
-            firebaseAuth = window.firebase.auth();
-          }
-
-          if (firebaseDb || firebaseAuth) {
-            firebaseReady = true;
-            return {
-              db: firebaseDb,
-              auth: firebaseAuth
-            };
-          }
-        } catch (error) {
-          console.warn("Catálise Premium: Firebase compat indisponível.", error);
-        }
-      }
-
-      /*
-       * Firebase modular, caso o HTML exponha db/auth globalmente.
-       */
-      firebaseDb =
-        window.db ||
-        window.firestoreDb ||
-        window.firebaseDb ||
-        null;
-
-      firebaseAuth =
-        window.auth ||
-        window.firebaseAuth ||
-        null;
-
-      firebaseReady = !!(firebaseDb || firebaseAuth);
-
-      return {
-        db: firebaseDb,
-        auth: firebaseAuth
-      };
-    })();
-
-    return firebaseInitPromise;
-  }
-
-  async function getCurrentUser() {
-    const fb = await getFirebase();
-
-    if (fb.auth?.currentUser) {
-      return fb.auth.currentUser;
-    }
-
-    /*
-     * Alguns layouts existentes mantêm o usuário globalmente.
-     */
-    return window.currentUser ||
-           window.usuarioAtual ||
-           window.user ||
-           null;
-  }
-
-  async function loadPreferences(uid) {
-    /*
-     * Preferimos Firebase.
-     */
-    const fb = await getFirebase();
-
-    if (fb.db && uid) {
-      try {
-        const ref = fb.db.collection("usuarios").doc(uid);
-        const snap = await ref.get();
-
-        if (snap.exists) {
-          const data = snap.data() || {};
-
-          return {
-            theme: data.profileTheme || data.theme || "default",
-            frame: data.profileFrame || data.frame || "none",
-            effect: data.profileEffect || data.effect || "none"
-          };
-        }
-      } catch (error) {
-        console.warn("Catálise Premium: não foi possível ler preferências.", error);
-      }
-    }
-
-    /*
-     * Fallback apenas para compatibilidade com uma sessão antiga.
-     */
-    try {
-      const local = JSON.parse(
-        localStorage.getItem("catalise_profile_preferences") || "{}"
-      );
-
-      return {
-        theme: local.theme || "default",
-        frame: local.frame || "none",
-        effect: local.effect || "none"
-      };
-    } catch (_) {
-      return {
-        theme: "default",
-        frame: "none",
-        effect: "none"
-      };
-    }
-  }
-
-  async function savePreferences() {
-    const status = document.getElementById("premiumSaveStatus");
-
-    if (status) {
-      status.textContent = "Salvando...";
-    }
-
-    const tier = getTierFromKnownData();
-
-    const requested = {
-      theme: document.getElementById("premiumTheme")?.value || "default",
-      frame: document.getElementById("premiumFrame")?.value || "none",
-      effect: document.getElementById("premiumEffect")?.value || "none"
-    };
-
-    /*
-     * Defesa adicional no cliente.
-     *
-     * A Security Rule continua sendo a proteção real.
-     * Aqui apenas evitamos enviar uma escolha bloqueada.
-     */
-    if (!isUnlocked("themes", requested.theme, tier)) {
-      requested.theme = "default";
-    }
-
-    if (!isUnlocked("frames", requested.frame, tier)) {
-      requested.frame = "none";
-    }
-
-    if (!isUnlocked("effects", requested.effect, tier)) {
-      requested.effect = "none";
-    }
-
-    const safe = sanitizePreferences(requested);
-    const user = await getCurrentUser();
-    const fb = await getFirebase();
-
-    try {
-      if (!user?.uid) {
-        throw new Error("Usuário não autenticado.");
-      }
-
-      /*
-       * Escrevemos SOMENTE preferências cosméticas.
-       *
-       * Nunca enviamos supporterTier/status/since/achievements.
-       */
-      if (fb.db) {
-        await fb.db.collection("usuarios").doc(user.uid).set({
-          profileTheme: safe.theme,
-          profileFrame: safe.frame,
-          profileEffect: safe.effect
-        }, {
-          merge: true
-        });
-
-        /*
-         * Também sincroniza o perfil público, se ele já existir.
-         * As Rules continuam protegendo os campos premium.
-         */
-        try {
-          await fb.db.collection("perfisPublicos").doc(user.uid).set({
-            profileTheme: safe.theme,
-            profileFrame: safe.frame,
-            profileEffect: safe.effect
-          }, {
-            merge: true
-          });
-        } catch (publicError) {
-          /*
-           * Se o perfil público ainda não existir ou a rotina atual
-           * estiver responsável por ele, não interrompemos o salvamento
-           * do perfil privado.
-           */
-          console.warn(
-            "Catálise Premium: sincronização pública ignorada.",
-            publicError
-          );
-        }
-      }
-
-      /*
-       * Fallback/compatibilidade.
-       */
-      localStorage.setItem(
-        "catalise_profile_preferences",
-        JSON.stringify(safe)
-      );
-
-      /*
-       * Atualiza referências globais, se o HTML atual utilizar alguma.
-       */
-      if (window.currentUserData) {
-        window.currentUserData.profileTheme = safe.theme;
-        window.currentUserData.profileFrame = safe.frame;
-        window.currentUserData.profileEffect = safe.effect;
-      }
-
-      if (window.userData) {
-        window.userData.profileTheme = safe.theme;
-        window.userData.profileFrame = safe.frame;
-        window.userData.profileEffect = safe.effect;
-      }
-
-      if (status) {
-        status.textContent = "✓ Personalização salva na sua conta.";
-      }
-
-      document.dispatchEvent(
-        new CustomEvent("catalise:profilePreferencesSaved", {
-          detail: safe
-        })
-      );
-
-    } catch (error) {
-      console.error("Catálise Premium — erro ao salvar:", error);
-
-      if (status) {
-        if (
-          error?.code === "permission-denied" ||
-          error?.message?.includes("permission")
-        ) {
-          status.textContent =
-            "O Firebase recusou a alteração. Verifique sua conta.";
-        } else {
-          status.textContent =
-            "Não foi possível salvar. Tente novamente.";
-        }
-      }
-    }
-  }
-
-  async function mount() {
-    if (document.getElementById("catalisePremiumPanel")) {
-      return;
-    }
-
-    /*
-     * Tenta somente páginas que realmente possuem uma área de perfil.
-     */
-    const target =
-      document.querySelector("#profileCustomization") ||
-      document.querySelector(".profile-content") ||
-      document.querySelector("#perfil") ||
-      document.querySelector("#profile");
-
-    if (!target) {
-      return;
-    }
-
-    const tier = getTierFromKnownData();
-
-    let uid = null;
-
-    try {
-      const user = await getCurrentUser();
-      uid = user?.uid || null;
-    } catch (_) {}
-
-    const prefs = await loadPreferences(uid);
-
-    const wrapper = document.createElement("div");
-    wrapper.innerHTML = panelHtml(tier, prefs);
-
-    const panel = wrapper.firstElementChild;
-
-    if (!panel) return;
-
-    target.appendChild(panel);
-
-    document
-      .getElementById("premiumSaveBtn")
-      ?.addEventListener("click", savePreferences);
-
-    /*
-     * Caso a conta seja none, somente o tema básico fica disponível.
-     */
-    document.dispatchEvent(
-      new CustomEvent("catalise:premiumMounted", {
-        detail: {
-          tier,
-          preferences: prefs
-        }
-      })
-    );
-  }
-
-  window.CatalisePremium = {
-    tiers: TIERS,
-    options: OPTIONS,
-    getTier: getTierFromKnownData,
-    loadPreferences,
-    savePreferences,
-    mount
-  };
-
-  /*
-   * Inicialização.
-   */
-  if (document.readyState === "loading") {
-    document.addEventListener("DOMContentLoaded", mount);
-  } else {
-    mount();
-  }
-
-  /*
-   * O site atual pode carregar o usuário/perfil de forma assíncrona.
-   * Tentamos novamente algumas vezes, sem loop infinito.
-   */
-  let attempts = 0;
-
-  const timer = setInterval(async () => {
-    attempts++;
-
-    if (!document.getElementById("catalisePremiumPanel")) {
-      await mount();
-    }
-
-    if (
-      document.getElementById("catalisePremiumPanel") ||
-      attempts >= 15
-    ) {
-      clearInterval(timer);
-    }
-  }, 1000);
-})();
-</script>
-
+<div id="catalise-build-mark" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;">CATÁLISE FINAL — manual tiers + perfil + tabletop + efeitos visuais</div>
 </body>
 </html>
