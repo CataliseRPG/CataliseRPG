@@ -790,7 +790,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 /* =========================================================
    PERFIL DO INVESTIGADOR + APOIO AO CATÁLISE
    ========================================================= */
-.profile-shell{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.75fr);gap:18px;align-items:start}
+.profile-shell{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(360px,.85fr);grid-template-areas:"profile featured" "customize customize";gap:18px;align-items:start}.profile-shell>.profile-card{grid-area:profile}.profile-shell>.profile-featured-media{grid-area:featured}.profile-shell>.card-ficha:not(.profile-featured-media){grid-area:customize}.profile-featured-media{align-self:start}.profile-featured-stage{min-height:300px}.profile-featured-stage img{min-height:300px;max-height:360px;object-fit:cover}.profile-featured-stage.has-image{border-style:solid}.profile-featured-stage .profile-featured-loading{position:absolute;inset:0;display:none;place-items:center;background:rgba(3,8,12,.72);backdrop-filter:blur(4px);z-index:3;color:var(--cat-accent2);font:700 9px 'DM Mono';letter-spacing:.14em}.profile-featured-stage.is-loading .profile-featured-loading{display:grid}.profile-featured-stage.is-error{border-color:rgba(220,90,110,.55);background:radial-gradient(circle at 50% 0%,rgba(220,90,110,.08),transparent 55%),rgba(12,5,9,.6)}.profile-featured-error{display:none;margin-top:8px;padding:8px 10px;border:1px solid rgba(220,90,110,.3);background:rgba(90,20,30,.12);color:#eaa0aa;font:500 9px/1.5 'DM Mono'}.profile-featured-error.show{display:block}.profile-featured-url-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end;margin-top:12px}.profile-featured-url-row label{display:grid;gap:6px}.profile-featured-apply{white-space:nowrap}.profile-featured-media .profile-help{max-width:62ch}.profile-featured-media .profile-upload-status{margin-top:8px}@media(max-width:1000px){.profile-shell{grid-template-columns:1fr;grid-template-areas:"profile" "featured" "customize"}.profile-featured-stage,.profile-featured-stage img{min-height:230px;max-height:420px}}
 .profile-card{position:relative;overflow:hidden;border:1px solid rgba(67,182,163,.22);background:linear-gradient(145deg,rgba(10,29,33,.96),rgba(4,15,18,.98));box-shadow:var(--shadow)}
 .profile-banner{height:230px;position:relative;background:radial-gradient(circle at 20% 20%,rgba(67,182,163,.22),transparent 35%),linear-gradient(135deg,#0b2a2f,#071317 72%);background-size:cover;background-position:center;overflow:hidden}
 .profile-banner:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(3,10,12,.96),transparent 65%);pointer-events:none}
@@ -2494,9 +2494,10 @@ body.page-effect-static .catalise-page-effects::after{
           <div class="profile-section-kicker">✦ IMAGEM DE DESTAQUE</div>
           <h3 style="margin-top:4px;">UM SEGUNDO FRAGMENTO DO SEU ARQUIVO</h3>
           <p class="profile-help">Adicione uma imagem horizontal para ocupar o segundo espaço visual do seu Arquivo Pessoal. Ela também aparecerá no seu perfil público.</p>
-          <div id="profile-featured-stage" class="profile-featured-stage"><div id="profile-featured-empty" class="profile-featured-empty"><b>ARQUIVO VISUAL VAZIO</b>Escolha uma imagem para registrar uma segunda peça do seu arquivo.</div><img id="profile-featured-image-preview" alt="Imagem de destaque do arquivo" style="display:none;"></div>
-          <div class="profile-featured-upload-row"><label style="display:grid;gap:6px;color:#72948f;font:700 9px 'DM Mono';letter-spacing:.12em;text-transform:uppercase;">URL da imagem de destaque<input id="profile-featured-image-url" type="url" placeholder="https://..." data-enter-ready></label><button type="button" class="vt-mini-btn" onclick="document.getElementById('profile-featured-image-upload').click()">ENVIAR IMAGEM</button></div>
-          <input id="profile-featured-image-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden><div id="profile-featured-upload-status" class="profile-upload-status">PNG, JPG, WebP e GIF. A imagem é decorativa e não altera nenhuma permissão.</div>
+          <div id="profile-featured-stage" class="profile-featured-stage"><div id="profile-featured-empty" class="profile-featured-empty"><b>ARQUIVO VISUAL VAZIO</b>Escolha uma imagem para registrar uma segunda peça do seu arquivo.</div><div id="profile-featured-loading" class="profile-featured-loading">CARREGANDO IMAGEM…</div><img id="profile-featured-image-preview" alt="Imagem de destaque do arquivo" style="display:none;"></div>
+          <div class="profile-featured-url-row"><label>URL DA IMAGEM DE DESTAQUE<input id="profile-featured-image-url" type="url" placeholder="https://..." data-enter-ready></label><button type="button" class="vt-mini-btn profile-featured-apply" id="profile-featured-apply-btn">APLICAR URL</button><button type="button" class="vt-mini-btn" onclick="document.getElementById('profile-featured-image-upload').click()">ENVIAR IMAGEM</button></div>
+          <div id="profile-featured-image-error" class="profile-featured-error" aria-live="polite"></div>
+          <input id="profile-featured-image-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden><div id="profile-featured-upload-status" class="profile-upload-status">PNG, JPG, WebP e GIF. A imagem é decorativa e não altera nenhuma permissão. A prévia aparece imediatamente; clique em SALVAR PERFIL para gravar.</div>
         </section>
 
         <section class="card-ficha">
@@ -3759,7 +3760,21 @@ body.page-effect-static .catalise-page-effects::after{
       const featuredEmpty=document.getElementById('profile-featured-empty');
       const featuredInput=document.getElementById('profile-featured-image-url');
       if(featuredInput)featuredInput.value=featuredUrl;
-      if(featuredImg){if(featuredUrl){featuredImg.src=featuredUrl;featuredImg.style.display='block';if(featuredEmpty)featuredEmpty.style.display='none';}else{featuredImg.removeAttribute('src');featuredImg.style.display='none';if(featuredEmpty)featuredEmpty.style.display='block';}}
+      if(featuredImg){
+        const featuredStage=document.getElementById('profile-featured-stage');
+        const featuredError=document.getElementById('profile-featured-image-error');
+        const featuredLoading=document.getElementById('profile-featured-loading');
+        if(featuredUrl){
+          featuredImg.onload=()=>{featuredImg.style.display='block';if(featuredEmpty)featuredEmpty.style.display='none';featuredStage?.classList.remove('is-loading','is-error');featuredLoading&&(featuredLoading.style.display='none');featuredStage?.classList.add('has-image');if(featuredError){featuredError.textContent='';featuredError.classList.remove('show');}};
+          featuredImg.onerror=()=>{featuredImg.style.display='none';if(featuredEmpty)featuredEmpty.style.display='block';featuredStage?.classList.remove('is-loading','has-image');featuredLoading&&(featuredLoading.style.display='none');featuredStage?.classList.add('is-error');if(featuredError){featuredError.textContent='Não foi possível carregar esta imagem. Verifique se o link é público e acessível.';featuredError.classList.add('show');}};
+          featuredStage?.classList.add('is-loading');
+          if(featuredLoading)featuredLoading.style.display='none';
+          featuredImg.style.display='block';
+          featuredImg.src=featuredUrl;
+        }else{
+          featuredImg.removeAttribute('src');featuredImg.style.display='none';if(featuredEmpty)featuredEmpty.style.display='block';featuredStage?.classList.remove('is-loading','is-error','has-image');if(featuredLoading)featuredLoading.style.display='none';if(featuredError){featuredError.textContent='';featuredError.classList.remove('show');}
+        }
+      }
       const n=document.getElementById('profile-name-preview');if(n)n.textContent=nome.toUpperCase();
       const h=document.getElementById('profile-handle-preview');if(h)h.textContent='@'+String(nome).toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,24);
       const tp=document.getElementById('profile-title-preview');if(tp)tp.textContent=displayTitle;
@@ -3900,12 +3915,21 @@ body.page-effect-static .catalise-page-effects::after{
     function ehRotaPerfilPublico(){return new URLSearchParams(window.location.search).has('perfil');}
     function aplicarTemaPublicoNaPagina(theme,effect){document.body.classList.remove('theme-sangue','theme-capela','theme-abismo','theme-cinzas','theme-ouro');if(theme&&theme!=='padrao')document.body.classList.add('theme-'+theme);sincronizarEfeitoPagina(effect||'none');}
     function renderizarListaPublicaStandalone(agents,achievements){const wrap=document.getElementById('public-page-showcase'),grid=document.getElementById('public-page-agents'),list=Array.isArray(agents)?agents.slice(0,3):[];if(wrap&&grid){if(!list.length){wrap.style.display='none';grid.innerHTML='';}else{wrap.style.display='block';grid.innerHTML=list.map(a=>{const img=a.fotoUrl?`<img src="${String(a.fotoUrl).replace(/"/g,'&quot;')}" alt="">`:'<span class="public-agent-fallback">✦</span>';return `<article class="public-agent-card">${img}<div><b>${escaparHtml(String(a.nome||'Agente'))}</b><small>${escaparHtml(String(a.classe||'Investigador'))}</small></div></article>`;}).join('');}}const aw=document.getElementById('public-page-achievements'),ag=document.getElementById('public-page-achievement-list'),ach=Array.isArray(achievements)?achievements.slice(0,12):[];if(aw&&ag){if(!ach.length){aw.style.display='none';ag.innerHTML='';}else{aw.style.display='block';ag.innerHTML=ach.map(a=>`<span class="public-achievement-chip">${escaparHtml(String(a.nome||a))}</span>`).join('');}}}
-    async function renderizarPerfilPublicoStandalone(uid){const page=document.getElementById('public-profile-page');if(!page)return;document.body.classList.add('public-route');page.setAttribute('aria-hidden','false');try{const snap=await getDoc(doc(db,'perfisPublicosVisiveis',String(uid)));if(!snap.exists()||snap.data().publicado===false){document.getElementById('public-page-name').textContent='ARQUIVO NÃO ENCONTRADO';document.getElementById('public-page-title').textContent='Este perfil público ainda não foi publicado.';document.getElementById('public-page-bio').textContent='O link pode estar incorreto ou o proprietário ainda não disponibilizou o arquivo.';return;}const p=snap.data(),card=document.getElementById('public-profile-page-card');aplicarTemaPublicoNaPagina(p.theme||'padrao',p.effect||'none');if(card)aplicarCosmeticosPerfilPublico(card,p);const banner=document.getElementById('public-page-banner');if(banner)banner.style.backgroundImage=p.bannerUrl?`url("${String(p.bannerUrl).replace(/"/g,'\"')}")`:'';const avatar=document.getElementById('public-page-avatar');if(avatar)avatar.src=p.avatarUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="160" height="160" fill="#071519"/><text x="80" y="94" text-anchor="middle" fill="#56b8a8" font-size="56">✦</text></svg>');document.getElementById('public-page-name').textContent=String(p.nome||'Investigador').toUpperCase();document.getElementById('public-page-handle').textContent='@'+String(p.nome||'investigador').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,24);document.getElementById('public-page-title').textContent=p.displayTitle||p.titulo||'Investigador do Catálise';document.getElementById('public-page-bio').textContent=p.bio||'Este arquivo não possui uma declaração registrada.';const badges=document.getElementById('public-page-badges'),tier=nomeDoTierPublico(p.supporterTier);badges.innerHTML='<span class="profile-badge">IDENTIDADE VERIFICADA</span>'+(tier?`<span class="profile-badge supporter-public-badge">${escaparHtml(tier)}</span>`:'');const fw=document.getElementById('public-profile-featured'),fi=document.getElementById('public-page-featured-image');if(fw&&fi){if(p.featuredImageUrl){fi.src=String(p.featuredImageUrl);fw.style.display='block';}else{fi.removeAttribute('src');fw.style.display='none';}}renderizarListaPublicaStandalone(p.featuredAgents||[],p.achievements||[]);}catch(e){console.error(e);document.getElementById('public-page-name').textContent='ARQUIVO INACESSÍVEL';document.getElementById('public-page-bio').textContent='Não foi possível carregar este perfil público.';}}
+    function aplicarCosmeticosPerfilPublico(card,p){
+      if(!card)return;
+      const safeFrame=['none','sanctum','thorn','reliquary','obsidian'].includes(String(p?.frame||'none'))?String(p.frame):'none';
+      const safeEffect=['none','embers','dust','fog','static'].includes(String(p?.effect||'none'))?String(p.effect):'none';
+      const safeTier=['none','devoto','oficiante','arquiteto','arauto'].includes(String(p?.supporterTier||'none'))?String(p.supporterTier):'none';
+      card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','effect-none','effect-embers','effect-dust','effect-fog','effect-static','tier-none','tier-devoto','tier-oficiante','tier-arquiteto','tier-arauto');
+      card.classList.add('frame-'+safeFrame,'effect-'+safeEffect,'tier-'+safeTier);
+    }
+
+    async function renderizarPerfilPublicoStandalone(uid){const page=document.getElementById('public-profile-page');if(!page)return;document.body.classList.add('public-route');page.setAttribute('aria-hidden','false');try{const snap=await getDoc(doc(db,'perfisPublicosVisiveis',String(uid)));if(!snap.exists()||snap.data().publicado===false){document.getElementById('public-page-name').textContent='ARQUIVO NÃO ENCONTRADO';document.getElementById('public-page-title').textContent='Este perfil público ainda não foi publicado.';document.getElementById('public-page-bio').textContent='O link pode estar incorreto ou o proprietário ainda não disponibilizou o arquivo.';return;}const p=snap.data(),card=document.getElementById('public-profile-page-card');aplicarTemaPublicoNaPagina(p.theme||'padrao',p.effect||'none');if(card)aplicarCosmeticosPerfilPublico(card,p);const banner=document.getElementById('public-page-banner');if(banner){banner.style.backgroundImage='';if(p.bannerUrl){try{const u=new URL(String(p.bannerUrl));if(/^https?:$/i.test(u.protocol))banner.style.backgroundImage=`url("${u.href.replace(/"/g,'\"')}")`;}catch(_){}}}const avatar=document.getElementById('public-page-avatar');if(avatar){const fallback='data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="160" height="160" fill="#071519"/><text x="80" y="94" text-anchor="middle" fill="#56b8a8" font-size="56">✦</text></svg>');avatar.alt='Foto de perfil';avatar.onerror=()=>{avatar.onerror=null;avatar.src=fallback;};avatar.src=p.avatarUrl||fallback;}document.getElementById('public-page-name').textContent=String(p.nome||'Investigador').toUpperCase();document.getElementById('public-page-handle').textContent='@'+String(p.nome||'investigador').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,24);document.getElementById('public-page-title').textContent=p.displayTitle||p.titulo||'Investigador do Catálise';document.getElementById('public-page-bio').textContent=p.bio||'Este arquivo não possui uma declaração registrada.';const badges=document.getElementById('public-page-badges'),tier=nomeDoTierPublico(p.supporterTier);badges.innerHTML='<span class="profile-badge">IDENTIDADE VERIFICADA</span>'+(tier?`<span class="profile-badge supporter-public-badge">${escaparHtml(tier)}</span>`:'');const fw=document.getElementById('public-profile-featured'),fi=document.getElementById('public-page-featured-image');if(fw&&fi){if(p.featuredImageUrl){fi.src=String(p.featuredImageUrl);fw.style.display='block';}else{fi.removeAttribute('src');fw.style.display='none';}}renderizarListaPublicaStandalone(p.featuredAgents||[],p.achievements||[]);}catch(e){console.error(e);document.getElementById('public-page-name').textContent='ARQUIVO INACESSÍVEL';document.getElementById('public-page-bio').textContent='Não foi possível carregar este perfil público.';}}
     window.abrirPerfilPublico=async function(uid){if(!uid)return;const url=new URL(window.location.href);url.search='';url.hash='';url.searchParams.set('perfil',String(uid));window.location.href=url.toString();};
     window.abrirMeuPerfilPublico=function(){if(window.usuarioId)window.abrirPerfilPublico(window.usuarioId);};
     window.copiarLinkPerfil=async function(){if(!window.usuarioId)return;const url=new URL(window.location.href);url.search='';url.hash='';url.searchParams.set('perfil',window.usuarioId);try{await navigator.clipboard.writeText(url.toString());await sitePopup('Link do seu arquivo público copiado para a área de transferência.',{title:'LINK COPIADO',okText:'CONTINUAR'});}catch(e){sitePopup(url.toString(),{title:'LINK DO PERFIL',okText:'FECHAR'});}};
     window.voltarDoPerfilPublico=function(){if(window.history.length>1)window.history.back();else{const url=new URL(window.location.href);url.search='';window.location.href=url.toString();}};
-    async function verificarPerfilPublicoSolicitado(){const uid=new URLSearchParams(location.search).get('perfil');if(uid)await renderizarPerfilPublicoStandalone(uid);}
+    async function verificarPerfilPublicoSolicitado(){const uid=new URLSearchParams(location.search).get('perfil');if(uid){document.body.classList.add('public-route');await renderizarPerfilPublicoStandalone(uid);}}
 
     const SUPPORTER_RANK={none:0,devoto:1,oficiante:2,arquiteto:3,arauto:4};
     const SUPPORTER_LABEL={none:'INVESTIGADOR',devoto:'☽ DEVOTO',oficiante:'☩ OFICIANTE',arquiteto:'🩸 ARQUITETO',arauto:'👁 ARAUTO'};
@@ -4418,7 +4442,7 @@ body.page-effect-static .catalise-page-effects::after{
           }
         });
       }
-      if(fi&&!fi.dataset.bound){fi.dataset.bound='1';fi.addEventListener('change',async()=>{const f=fi.files?.[0];if(!f)return;try{fi.disabled=true;if(featuredStatus){featuredStatus.textContent='ENVIANDO IMAGEM DE DESTAQUE PARA O CLOUDINARY...';featuredStatus.classList.add('is-uploading');featuredStatus.classList.remove('is-error','is-success');}const url=await uploadPerfilCloudinary(f,'destaques');const input=document.getElementById('profile-featured-image-url');if(input)input.value=url;renderizarPerfilUI();if(featuredStatus){featuredStatus.textContent='✓ Imagem enviada. Clique em SALVAR PERFIL para gravar a alteração.';featuredStatus.classList.remove('is-uploading','is-error');featuredStatus.classList.add('is-success');}}catch(e){if(featuredStatus){featuredStatus.textContent=e?.message||'Não foi possível enviar a imagem.';featuredStatus.classList.remove('is-uploading','is-success');featuredStatus.classList.add('is-error');}sitePopup(e.message,{title:'IMAGEM DE DESTAQUE'});}finally{fi.disabled=false;fi.value='';}});}
+      if(fi&&!fi.dataset.bound){fi.dataset.bound='1';fi.addEventListener('change',async()=>{const f=fi.files?.[0];if(!f)return;try{fi.disabled=true;if(featuredStatus){featuredStatus.textContent='ENVIANDO IMAGEM DE DESTAQUE PARA O CLOUDINARY...';featuredStatus.classList.add('is-uploading');featuredStatus.classList.remove('is-error','is-success');}const url=await uploadPerfilCloudinary(f,'destaques');const input=document.getElementById('profile-featured-image-url');if(input){input.value=url;input.dispatchEvent(new Event('input',{bubbles:true}));}if(featuredStatus){featuredStatus.textContent='✓ Imagem enviada e pré-visualizada. Clique em SALVAR PERFIL para gravar a alteração.';featuredStatus.classList.remove('is-uploading','is-error');featuredStatus.classList.add('is-success');}}catch(e){if(featuredStatus){featuredStatus.textContent=e?.message||'Não foi possível enviar a imagem.';featuredStatus.classList.remove('is-uploading','is-success');featuredStatus.classList.add('is-error');}sitePopup(e.message,{title:'IMAGEM DE DESTAQUE'});}finally{fi.disabled=false;fi.value='';}});}
 
     }
 
@@ -6256,7 +6280,35 @@ body.page-effect-static .catalise-page-effects::after{
         void temp;
       };
       [theme,frame,effect].forEach(el=>el?.addEventListener('change',apply));
-      document.getElementById('profile-featured-image-url')?.addEventListener('change',()=>renderizarPerfilUI());
+      const featuredUrlInput=document.getElementById('profile-featured-image-url');
+      const featuredApply=document.getElementById('profile-featured-apply-btn');
+      const previewFeaturedUrl=()=>{
+        const url=String(featuredUrlInput?.value||'').trim();
+        const img=document.getElementById('profile-featured-image-preview');
+        const empty=document.getElementById('profile-featured-empty');
+        const stage=document.getElementById('profile-featured-stage');
+        const error=document.getElementById('profile-featured-image-error');
+        const loading=document.getElementById('profile-featured-loading');
+        if(!img||!stage)return;
+        stage.classList.remove('is-error','is-loading','has-image');
+        if(error){error.textContent='';error.classList.remove('show');}
+        if(!url){img.removeAttribute('src');img.style.display='none';if(empty)empty.style.display='block';return;}
+        if(!/^https?:\/\//i.test(url)){
+          img.removeAttribute('src');img.style.display='none';if(empty)empty.style.display='block';
+          if(error){error.textContent='Use uma URL http(s) válida para a imagem.';error.classList.add('show');}
+          return;
+        }
+        if(empty)empty.style.display='none';
+        stage.classList.add('is-loading');
+        img.style.display='block';
+        img.onload=()=>{stage.classList.remove('is-loading','is-error');stage.classList.add('has-image');if(error){error.textContent='';error.classList.remove('show');}};
+        img.onerror=()=>{stage.classList.remove('is-loading','has-image');stage.classList.add('is-error');img.style.display='none';if(empty)empty.style.display='block';if(error){error.textContent='Não foi possível carregar esta imagem. Verifique se o link é público e termina em um arquivo/imagem acessível.';error.classList.add('show');}};
+        img.src=url;
+      };
+      featuredUrlInput?.addEventListener('input',previewFeaturedUrl);
+      featuredUrlInput?.addEventListener('change',previewFeaturedUrl);
+      featuredApply?.addEventListener('click',previewFeaturedUrl);
+      previewFeaturedUrl();
     }
 
     // Re-liga o preview depois que o DOM existir.
