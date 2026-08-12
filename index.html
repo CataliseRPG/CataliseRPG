@@ -922,7 +922,13 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 }
 </style>
 
-</head>
+<style id="catalise-profile-cloudinary-v4-css">
+.profile-upload-status{margin-top:-2px;padding:8px 10px;border:1px solid rgba(86,184,168,.18);background:rgba(6,18,21,.55);color:#78a8a0;font-size:.72rem;line-height:1.45;letter-spacing:.02em;border-radius:4px}
+.profile-upload-status.is-uploading{color:#e8d39a;border-color:rgba(232,211,154,.25)}
+.profile-upload-status.is-success{color:#70d4bc;border-color:rgba(112,212,188,.28)}
+.profile-upload-status.is-error{color:#ff8d95;border-color:rgba(255,141,149,.28)}
+#profile-banner-preview.has-banner{background-size:cover;background-position:center;background-repeat:no-repeat}
+</style></head>
 <body>
   <header class="site-header">
     <div class="header-inner">
@@ -1111,7 +1117,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
               </label>
               <button type="button" class="vt-mini-btn" onclick="document.getElementById('profile-avatar-upload').click()">ENVIAR IMAGEM</button>
             </div>
-            <input id="profile-avatar-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+            <input id="profile-avatar-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
             <div class="profile-upload-row">
               <label>Banner / imagem animada
                 <input id="profile-banner-url" type="url" placeholder="URL de JPG, PNG, GIF ou WebP" data-enter-ready>
@@ -1119,6 +1125,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
               <button type="button" class="vt-mini-btn" onclick="document.getElementById('profile-banner-upload').click()">ENVIAR BANNER</button>
             </div>
             <input id="profile-banner-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+            <div id="profile-banner-upload-status" class="profile-upload-status">JPG, PNG, WebP e GIF são aceitos. GIF/WebP animado preserva a animação.</div>
             <label>Tema do Sanctum
               <select id="profile-theme">
                 <option value="padrao">Catálise — Padrão</option>
@@ -2181,7 +2188,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       if(file.size>8*1024*1024)throw new Error('A imagem precisa ter no máximo 8 MB.');
       const body=new FormData();
       body.append('file',file);
-      body.append('upload_preset',CLOUDINARY_UPLOAD_PRESET);
+      body.append('upload_preset',CLOUDINARY_PROFILE_UPLOAD_PRESET);
       body.append('folder',`catalise/perfis/${folder}`);
       const response=await fetch(CLOUDINARY_UPLOAD_URL,{method:'POST',body});
       const result=await response.json().catch(()=>null);
@@ -2380,8 +2387,63 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     function bindProfileUploads(){
       const av=document.getElementById('profile-avatar-upload');
       const ba=document.getElementById('profile-banner-upload');
-      if(av&&!av.dataset.bound){av.dataset.bound='1';av.addEventListener('change',async()=>{const f=av.files?.[0];if(!f)return;try{av.disabled=true;const url=await uploadPerfilCloudinary(f,'avatares');document.getElementById('profile-avatar-url').value=url;renderizarPerfilUI();}catch(e){sitePopup(e.message,{title:'FOTO DE PERFIL'});}finally{av.disabled=false;av.value='';}});}
-      if(ba&&!ba.dataset.bound){ba.dataset.bound='1';ba.addEventListener('change',async()=>{const f=ba.files?.[0];if(!f)return;try{ba.disabled=true;const url=await uploadPerfilCloudinary(f,'banners');document.getElementById('profile-banner-url').value=url;renderizarPerfilUI();}catch(e){sitePopup(e.message,{title:'BANNER'});}finally{ba.disabled=false;ba.value='';}});}
+      const bannerStatus=document.getElementById('profile-banner-upload-status');
+
+      if(av&&!av.dataset.bound){
+        av.dataset.bound='1';
+        av.addEventListener('change',async()=>{
+          const f=av.files?.[0];
+          if(!f)return;
+          try{
+            av.disabled=true;
+            const url=await uploadPerfilCloudinary(f,'avatares');
+            document.getElementById('profile-avatar-url').value=url;
+            renderizarPerfilUI();
+          }catch(e){
+            sitePopup(e.message,{title:'FOTO DE PERFIL'});
+          }finally{
+            av.disabled=false;
+            av.value='';
+          }
+        });
+      }
+
+      if(ba&&!ba.dataset.bound){
+        ba.dataset.bound='1';
+        ba.addEventListener('change',async()=>{
+          const f=ba.files?.[0];
+          if(!f)return;
+          try{
+            ba.disabled=true;
+            if(bannerStatus){
+              bannerStatus.textContent='ENVIANDO BANNER PARA O CLOUDINARY...';
+              bannerStatus.classList.add('is-uploading');
+              bannerStatus.classList.remove('is-error','is-success');
+            }
+
+            const url=await uploadPerfilCloudinary(f,'banners');
+            const input=document.getElementById('profile-banner-url');
+            if(input)input.value=url;
+            renderizarPerfilUI();
+
+            if(bannerStatus){
+              bannerStatus.textContent='✓ Banner enviado. Clique em SALVAR PERFIL para gravar a alteração na sua conta.';
+              bannerStatus.classList.remove('is-uploading','is-error');
+              bannerStatus.classList.add('is-success');
+            }
+          }catch(e){
+            if(bannerStatus){
+              bannerStatus.textContent=e?.message||'Não foi possível enviar o banner.';
+              bannerStatus.classList.remove('is-uploading','is-success');
+              bannerStatus.classList.add('is-error');
+            }
+            sitePopup(e.message,{title:'BANNER'});
+          }finally{
+            ba.disabled=false;
+            ba.value='';
+          }
+        });
+      }
     }
 
     async function migrarDadosLegados(user,nome){
@@ -3641,7 +3703,9 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     // Upload unsigned: não colocar API Secret no HTML.
     // =========================================================
     const CLOUDINARY_CLOUD_NAME = 'bp29599w';
-    const CLOUDINARY_UPLOAD_PRESET = 'catalise_tabletop';
+    const CLOUDINARY_TABLETOP_UPLOAD_PRESET = 'catalise_tabletop';
+    const CLOUDINARY_PROFILE_UPLOAD_PRESET = 'catalise_perfil';
+    // Presets separados. Nenhum API Secret é colocado no navegador.
     const CLOUDINARY_UPLOAD_URL = `https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`;
 
     async function vtUploadImage(file, folder, maxW, maxH, quality) {
@@ -3688,7 +3752,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         // Uma única chamada fetch para cada seleção de arquivo.
         const body = new FormData();
         body.append('file', blob, `${folder}_${Date.now()}.jpg`);
-        body.append('upload_preset', CLOUDINARY_UPLOAD_PRESET);
+        body.append('upload_preset', CLOUDINARY_TABLETOP_UPLOAD_PRESET);
         body.append('folder', `catalise/tabletop/${folder}`);
 
         const response = await fetch(CLOUDINARY_UPLOAD_URL, {
