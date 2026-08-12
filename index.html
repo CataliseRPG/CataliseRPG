@@ -742,6 +742,9 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
   .vt-popup-btn.danger:hover{border-color:#d27676;background:rgba(112,39,42,.48)}
   @keyframes vtPopupFade{from{opacity:0}to{opacity:1}}
   @media(max-width:600px){.vt-popup-overlay{padding:12px;align-items:flex-end}.vt-popup-card{width:100%;border-radius:12px 12px 8px 8px}.vt-popup-actions{padding-bottom:14px}.vt-popup-btn{min-height:42px}}
+  .vt-popup-overlay .vt-popup-btn:focus-visible{outline:2px solid #8ce5d7;outline-offset:2px}
+  .vt-popup-card{max-height:min(82vh,560px)}
+  .vt-popup-body{overflow:auto;overscroll-behavior:contain}
 </style>
 
 </head>
@@ -1880,7 +1883,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         window.agentes = [];
         snapshot.forEach((ds) => window.agentes.push(ds.data()));
         window.renderizarAgentes();
-      },err=>{console.error(err);alert('Não foi possível carregar seus agentes. Verifique sua autenticação.');});
+      },err=>{console.error(err);window.sitePopup('Não foi possível carregar seus agentes. Verifique sua autenticação.');});
     }
 
     window.abrirPopNovoAgente = function() {
@@ -1890,7 +1893,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
     window.confirmarCriarAgente = async function() {
       const nome = document.getElementById('pop-input-agente-nome').value.trim();
-      if (!nome) return alert("Digite o nome do agente!");
+      if (!nome) return window.sitePopup("Digite o nome do agente!");
 
       const id = Date.now().toString();
       const novoAgente = {
@@ -1947,7 +1950,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     };
 
     window.deletarAgente = async function(id) {
-      if (confirm("Deseja apagar este agente permanentemente da nuvem?")) {
+      if (await vtPopupConfirm("Deseja apagar este agente permanentemente da nuvem?", {title:"APAGAR AGENTE", okText:"APAGAR", cancelText:"CANCELAR", danger:true})) {
         await deleteDoc(doc(db, "agentes", id.toString()));
       }
     };
@@ -1967,7 +1970,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
     window.confirmarCriarCampanha = async function() {
       const nome = document.getElementById('pop-input-campanha-nome').value.trim();
-      if (!nome) return alert("Digite o nome da campanha!");
+      if (!nome) return window.sitePopup("Digite o nome da campanha!");
 
       const id = Date.now().toString();
       const codigo = "CAMP-" + Math.floor(100 + Math.random() * 900);
@@ -1993,7 +1996,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
     window.confirmarEditarCampanha = async function() {
       const novoNome = document.getElementById('pop-input-editar-campanha-nome').value.trim();
-      if (!novoNome) return alert("Digite o novo nome!");
+      if (!novoNome) return window.sitePopup("Digite o novo nome!");
 
       const c = window.campanhas.find(item => item.id == window.campanhaParaEditarId);
       if (!c) return;
@@ -2062,15 +2065,15 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     window.abrirPopEntrarCampanha=function(){document.getElementById('pop-input-entrar-campanha').value='';window.abrirPop('modal-entrar-campanha');};
     window.entrarEmCampanha=async function(){
       const codigo=document.getElementById('pop-input-entrar-campanha').value.trim().toUpperCase();
-      if(!codigo)return alert('Digite o código da campanha.');
+      if(!codigo)return window.sitePopup('Digite o código da campanha.');
       try{
         // O jogador pode ler o convite pelo código, mas ainda não é membro da campanha.
         // Portanto, não lemos a campanha antes de adicioná-lo como membro.
         const inv=await getDoc(doc(db,'convites',codigo));
-        if(!inv.exists())return alert('Código de campanha inválido ou expirado.');
+        if(!inv.exists())return window.sitePopup('Código de campanha inválido ou expirado.');
         const info=inv.data();
         const campanhaId=String(info.campanhaId||'');
-        if(!campanhaId)return alert('Este convite está inválido. Peça ao Mestre um novo código.');
+        if(!campanhaId)return window.sitePopup('Este convite está inválido. Peça ao Mestre um novo código.');
 
         const campRef=doc(db,'campanhas',campanhaId);
         const nomeCampanha=info.nome||'Campanha';
@@ -2084,7 +2087,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
         // Depois de entrar, a leitura da campanha passa a ser permitida pelas Rules.
         const campSnap=await getDoc(campRef);
-        if(!campSnap.exists())return alert('A campanha não existe mais.');
+        if(!campSnap.exists())return window.sitePopup('A campanha não existe mais.');
         const camp=campSnap.data();
 
         // Se houver exatamente uma ficha ainda sem campanha, vinculamos automaticamente.
@@ -2094,15 +2097,15 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         }
 
         window.fecharPop('modal-entrar-campanha');
-        alert(`Você entrou em "${camp.nome||nomeCampanha}". Agora você já pode abrir a mesa e vincular sua ficha à campanha.`);
+        window.sitePopup(`Você entrou em "${camp.nome||nomeCampanha}". Agora você já pode abrir a mesa e vincular sua ficha à campanha.`);
         await window.renderizarCampanhas();
       }catch(e){
         console.error('ERRO AO ENTRAR NA CAMPANHA:',e);
         const code=String(e?.code||'');
         if(code.includes('permission-denied')){
-          alert('O Firebase recusou sua entrada na campanha. Verifique se as Rules publicadas são as da versão atual.');
+          window.sitePopup('O Firebase recusou sua entrada na campanha. Verifique se as Rules publicadas são as da versão atual.');
         }else{
-          alert(`Não foi possível entrar na campanha. ${e?.message||'Verifique sua conexão.'}`);
+          window.sitePopup(`Não foi possível entrar na campanha. ${e?.message||'Verifique sua conexão.'}`);
         }
       }
     };
@@ -2136,11 +2139,11 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     window.abrirPainelCampanhaJogador = async function(codigo, nome, bannerUrl) {
       window.eMestreDaMesaAtual = false;
       const convite=await getDoc(doc(db,'convites',String(codigo).toUpperCase()));
-      if(!convite.exists())return alert('Convite da campanha não encontrado.');
+      if(!convite.exists())return window.sitePopup('Convite da campanha não encontrado.');
       const campanhaSnap=await getDoc(doc(db,'campanhas',String(convite.data().campanhaId)));
-      if(!campanhaSnap.exists())return alert('Campanha não encontrada na nuvem.');
+      if(!campanhaSnap.exists())return window.sitePopup('Campanha não encontrada na nuvem.');
       const campData=campanhaSnap.data();
-      if(!(campData.mestreUid===window.usuarioId || (Array.isArray(campData.membrosUids)&&campData.membrosUids.includes(window.usuarioId))))return alert('Sua conta não está vinculada a esta campanha.');
+      if(!(campData.mestreUid===window.usuarioId || (Array.isArray(campData.membrosUids)&&campData.membrosUids.includes(window.usuarioId))))return window.sitePopup('Sua conta não está vinculada a esta campanha.');
       window.campanhaAtualId=campanhaSnap.id.toString();
       document.getElementById('mestre-campanha-titulo').innerText = `CAMPANHA — ${nome.toUpperCase()}`;
       document.getElementById('mestre-campanha-codigo').innerText = codigo;
@@ -2224,7 +2227,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
     window.abrirFichaOutroJogador = async function(agenteId) {
       const docSnap = await getDoc(doc(db, "agentes", agenteId.toString()));
-      if (!docSnap.exists()) return alert("Erro ao carregar a ficha!");
+      if (!docSnap.exists()) return window.sitePopup("Erro ao carregar a ficha!");
 
       const ag = docSnap.data();
       window.agenteAtualDonoId = ag.donoId;
@@ -2385,7 +2388,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     window.adicionarItemBase = async function() {
       if (!window.podeEditarFichaAtual) return;
       const key = document.getElementById('select-item-base').value;
-      if (!key || !window.itensOficiais[key]) return alert("Selecione um item!");
+      if (!key || !window.itensOficiais[key]) return window.sitePopup("Selecione um item!");
 
       const ag = await obterAgenteEmEdicao();
       if (!ag) return;
@@ -2406,7 +2409,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       const dano = document.getElementById('novo-item-dano').value.trim();
       const efeito = document.getElementById('novo-item-efeito').value.trim();
 
-      if (!nome) return alert("Digite o nome do item!");
+      if (!nome) return window.sitePopup("Digite o nome do item!");
 
       const ag = await obterAgenteEmEdicao();
       if (!ag) return;
@@ -2508,7 +2511,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
       const key = document.getElementById('select-ritual-base').value;
       const ritual = window.rituaisOficiais[key];
-      if (!ritual) return alert("Selecione um ritual oficial!");
+      if (!ritual) return window.sitePopup("Selecione um ritual oficial!");
 
       const ag = await obterAgenteEmEdicao();
       if (!ag) return;
@@ -2517,7 +2520,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
       // Evita adicionar o mesmo ritual oficial duas vezes.
       if (ag.rituais.some(r => r.oficialId === key)) {
-        return alert("Este ritual oficial já está na ficha.");
+        return window.sitePopup("Este ritual oficial já está na ficha.");
       }
 
       ag.rituais.push({
@@ -2557,7 +2560,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       const descricao = document.getElementById('novo-ritual-desc').value.trim();
 
       if (!nome || !custo) {
-        return alert("Preencha ao menos o Nome e o Custo do ritual!");
+        return window.sitePopup("Preencha ao menos o Nome e o Custo do ritual!");
       }
 
       const ag = await obterAgenteEmEdicao();
@@ -2915,53 +2918,41 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       try{
         const meta={mapUrl:window.vtState.mapUrl||'',mapName:window.vtState.mapName||'',mapPath:window.vtState.mapPath||'',mapWidth:Number(window.vtState.mapWidth)||2000,mapHeight:Number(window.vtState.mapHeight)||1200,version:2,updatedBy:window.usuarioId};
         await setDoc(doc(db,'campanhas',String(window.campanhaAtualId),'tabletop','meta'),meta,{merge:true});
-        for(const token of (window.vtState.tokens||[])) await vtSaveTokenSecure(token);
+        // Tokens são documentos independentes. Nunca regrave a lista inteira aqui:
+        // isso poderia ressuscitar tokens que o Mestre já apagou. Cada operação
+        // de token (criar/editar/duplicar/remover) grava somente o documento afetado.
+        const selected=vtFindToken(window.vtSelectedTokenId);
+        if(selected) await vtSaveTokenSecure(selected);
         vtSetStatus('✓ TABLETOP SALVO · NUVEM · MESTRE');
       }catch(e){console.error('Falha ao salvar tabletop:',e);vtSetStatus('ERRO AO SALVAR NA NUVEM',true);}
       finally{window.vtSaving=false;if(window.vtPendingSave){window.vtPendingSave=false;setTimeout(()=>vtSaveState(),50);}}
     }
 
     async function vtDedupeNewTokenBurst(tokens){
-      // O Firestore é a fonte única de verdade. Se alguma versão anterior
-      // do código conseguiu gravar o mesmo token mais de uma vez, mantemos
-      // somente UM documento com os mesmos dados visuais.
-      //
-      // Importante: a versão anterior apagava os documentos duplicados, mas
-      // continuava renderizando o array antigo contendo as cópias. Isso fazia
-      // parecer que cada novo token ainda virava 3 ou mais tokens.
+      // Não colapsamos tokens apenas por terem o mesmo nome/cor/posição: é
+      // perfeitamente válido existir mais de um token idêntico numa mesa.
+      // A única duplicação segura de remover automaticamente é a que carrega
+      // exatamente a mesma creationKey, gerada pela mesma operação.
       const groups=new Map();
-      const signature=t=>JSON.stringify([
-        String(t.name||'').trim().toLowerCase(),
-        String(t.color||''),
-        String(t.image||''),
-        String(t.imagePath||''),
-        Math.round(Number(t.x)||0),
-        Math.round(Number(t.y)||0),
-        Number(t.size)||64,
-        Number(t.rotation)||0,
-        Array.isArray(t.editableBy)?[...t.editableBy].sort():[],
-        String(t.createdBy||'')
-      ]);
-      for(const t of tokens){
-        const sig=signature(t);
-        if(!groups.has(sig))groups.set(sig,[]);
-        groups.get(sig).push(t);
+      for(const token of tokens){
+        const key=String(token.creationKey||'');
+        if(!key) continue;
+        if(!groups.has(key)) groups.set(key,[]);
+        groups.get(key).push(token);
       }
-
-      const keepers=[];
+      const duplicateIds=new Set();
       for(const group of groups.values()){
-        group.sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0) || String(a.id).localeCompare(String(b.id)));
-        const keep=group[0];
-        keepers.push(keep);
-        for(const dup of group.slice(1)){
-          try{
-            await deleteDoc(doc(db,'campanhas',String(window.campanhaAtualId),'tabletopTokens',dup.id));
-          }catch(e){
-            console.warn('Não foi possível remover token duplicado:',dup.id,e);
-          }
+        if(group.length<2) continue;
+        group.sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0)||String(a.id).localeCompare(String(b.id)));
+        for(const dup of group.slice(1)) duplicateIds.add(String(dup.id));
+      }
+      if(duplicateIds.size){
+        for(const id of duplicateIds){
+          try{await deleteDoc(doc(db,'campanhas',String(window.campanhaAtualId),'tabletopTokens',id));}
+          catch(e){console.warn('Não foi possível remover token duplicado:',id,e);}
         }
       }
-      return keepers;
+      return tokens.filter(t=>!duplicateIds.has(String(t.id)));
     }
 
     let vtTokenDedupeQueue=Promise.resolve();
@@ -3318,14 +3309,44 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     };
 
     window.duplicarTokenTabletop=async function(id){
-      if(!window.eMestreDaMesaAtual)return;const token=vtFindToken(id);if(!token)return;
-      window.vtState.tokens.push({...token,id:`tok_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,x:(Number(token.x)||0)+90,y:(Number(token.y)||0)+90});vtRenderTokens();await vtSaveState();
+      if(!window.eMestreDaMesaAtual)return;
+      const token=vtFindToken(id);
+      if(!token)return;
+      const clone=vtNormalizeToken({
+        ...token,
+        id:`tok_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,
+        x:(Number(token.x)||0)+90,
+        y:(Number(token.y)||0)+90,
+        createdBy:window.usuarioId||'',
+        createdAt:Date.now(),
+        creationKey:`duplicate:${Date.now()}:${Math.random().toString(36).slice(2,8)}`
+      });
+      try{
+        await vtSaveTokenSecure(clone);
+        window.vtSelectedTokenId=clone.id;
+        vtSetStatus('✓ TOKEN DUPLICADO · AO VIVO');
+      }catch(e){
+        console.error('Falha ao duplicar token:',e);
+        vtPopup(`Não foi possível duplicar o token.\n\n${e?.message||'Verifique sua conexão e tente novamente.'}`,{title:'ERRO AO DUPLICAR TOKEN'});
+      }
     };
 
     window.removerTokenTabletop=async function(id){
-      if(!window.eMestreDaMesaAtual)return;const token=vtFindToken(id);if(!token)return;
+      if(!window.eMestreDaMesaAtual)return;
+      const token=vtFindToken(id);
+      if(!token)return;
       if(!(await vtPopupConfirm(`Remover o token "${token.name}" da mesa?`,{title:'REMOVER TOKEN',okText:'REMOVER',cancelText:'CANCELAR',danger:true})))return;
-      window.vtState.tokens=window.vtState.tokens.filter(t=>t.id!==id);if(window.vtSelectedTokenId===id)window.vtSelectedTokenId=null;vtRenderTokens();await vtSaveState();await vtDeleteStorageFile(token.imagePath);
+      try{
+        // Exclusão real no Firestore. Apenas remover do array local não basta:
+        // o documento antigo continuaria existindo e voltaria no próximo snapshot.
+        await deleteDoc(doc(db,'campanhas',String(window.campanhaAtualId),'tabletopTokens',String(id)));
+        if(window.vtSelectedTokenId===id)window.vtSelectedTokenId=null;
+        vtSetStatus('✓ TOKEN REMOVIDO · AO VIVO');
+        await vtDeleteStorageFile(token.imagePath);
+      }catch(e){
+        console.error('Falha ao remover token:',e);
+        vtPopup(`Não foi possível remover o token.\n\n${e?.message||'Verifique suas permissões e tente novamente.'}`,{title:'ERRO AO REMOVER TOKEN'});
+      }
     };
 
     function vtStartTokenDrag(ev){
@@ -3552,6 +3573,11 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     const ok=document.createElement('button'); ok.type='button'; ok.className='vt-popup-btn '+(opts.danger?'danger':'primary'); ok.textContent=opts.okText||'CONFIRMAR'; ok.onclick=()=>window.vtPopupClose(true);
     actions.append(cancel,ok); o.classList.add('show'); setTimeout(()=>ok.focus(),30);
     return new Promise(resolve=>{o._resolve=resolve;});
+  };
+  // Mesmo modal visual para mensagens de todo o site. Assim nenhum alert()
+  // nativo do navegador aparece no Catálise.
+  window.sitePopup=function(message,opts={}){
+    return window.vtPopup(String(message??''),{title:opts.title||'CATÁLISE',okText:opts.okText||'OK'});
   };
 })();
 </script>
