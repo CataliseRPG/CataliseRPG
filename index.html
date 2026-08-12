@@ -1433,7 +1433,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         <div class="subscription-head">
           <div>
             <h3 id="subscription-center-title">SEU APOIO À CATÁLISE</h3>
-            <p class="profile-help">Veja seu nível, origem e situação atual. O site não considera uma assinatura paga apenas porque um valor foi escolhido no navegador.</p>
+            <p class="profile-help">Veja seu nível, origem e situação atual. Concessões feitas pelo administrador aparecem separadas de assinaturas reais do Catarse.</p>
           </div>
           <div class="subscription-tier-badge" id="subscription-tier-badge">INVESTIGADOR</div>
         </div>
@@ -5304,7 +5304,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
   };
   const V8_STATUS = {
     none:'Sem assinatura', manual:'Manual / teste', active:'Ativa', pending:'Pendente',
-    cancelled:'Cancelada', expired:'Expirada'
+    cancelled:'Cancelada', expired:'Expirada', manual_admin:'Concessão manual / teste'
   };
   const V8_SOURCE = {
     catarse:'Catarse', manual_admin:'Manual — administrador', manual:'Manual / teste', '':'—'
@@ -5343,7 +5343,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
     if(badge)badge.textContent=info.badge;
     if(tierEl)tierEl.textContent=info.name;
-    if(statusEl)statusEl.textContent=V8_STATUS[p.subscriptionStatus] || (tier==='none'?'Sem assinatura':'Ativa');
+    if(statusEl)statusEl.textContent=V8_STATUS[p.subscriptionStatus] || (p.tierSource==='manual_admin'?'Concessão manual / teste':(tier==='none'?'Sem assinatura':'Ativa'));
     if(sourceEl)sourceEl.textContent=V8_SOURCE[p.tierSource] || (tier==='none'?'—':'Manual');
     if(updatedEl)updatedEl.textContent=formatDate(p.tierUpdatedAt || p.updatedAt);
 
@@ -5399,7 +5399,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
     set('subscription-tier-badge',info.badge);
     set('subscription-center-tier',info.name);
-    set('subscription-center-status',V8_STATUS[p.subscriptionStatus]||(tier==='none'?'Sem assinatura':'Ativa'));
+    set('subscription-center-status',V8_STATUS[p.subscriptionStatus]||(p.tierSource==='manual_admin'?'Concessão manual / teste':(tier==='none'?'Sem assinatura':'Ativa')));
     set('subscription-center-source',V8_SOURCE[p.tierSource]||(tier==='none'?'—':'Manual'));
     set('subscription-center-updated',formatDate(p.tierUpdatedAt||p.updatedAt));
     const b=document.getElementById('subscription-benefits-list');
