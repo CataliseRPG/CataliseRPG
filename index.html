@@ -727,8 +727,8 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 </style>
 
 <style id="vt-popup-theme">
-  .vt-popup-overlay{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,8,10,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
-  .vt-popup-overlay.show{display:flex;animation:vtPopupFade .16s ease-out}
+  .vt-popup-overlay{position:fixed;inset:0;z-index:100000;display:none;pointer-events:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,8,10,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .vt-popup-overlay.show{display:flex;pointer-events:auto;animation:vtPopupFade .16s ease-out}
   .vt-popup-card{width:min(440px,calc(100vw - 34px));background:linear-gradient(145deg,rgba(7,28,30,.98),rgba(4,18,21,.99));border:1px solid rgba(73,194,179,.42);border-radius:12px;box-shadow:0 18px 55px rgba(0,0,0,.62),0 0 0 1px rgba(0,0,0,.45) inset;color:#dcebea;overflow:hidden;font-family:inherit}
   .vt-popup-head{display:flex;align-items:center;gap:11px;padding:16px 18px 12px;border-bottom:1px solid rgba(73,194,179,.16)}
   .vt-popup-mark{width:30px;height:30px;border:1px solid rgba(83,202,186,.5);border-radius:50%;display:grid;place-items:center;color:#65cbbd;font-size:14px;flex:0 0 auto;background:rgba(54,151,143,.09)}
@@ -2964,9 +2964,13 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       return keepers;
     }
 
+    let vtTokenDedupeQueue=Promise.resolve();
+    let vtTokenSnapshotSerial=0;
+
     function vtSubscribeCampaign(){
       if(Array.isArray(window.vtUnsubscribe)){window.vtUnsubscribe.forEach(fn=>{try{fn();}catch(_){}});}
       window.vtUnsubscribe=[];
+      vtTokenSnapshotSerial++;
       if(!window.campanhaAtualId)return;
       const metaRef=doc(db,'campanhas',String(window.campanhaAtualId),'tabletop','meta');
       const tokensRef=collection(db,'campanhas',String(window.campanhaAtualId),'tabletopTokens');
@@ -2987,13 +2991,20 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
           }catch(e){console.error(e);}
         }
       },err=>{console.error(err);vtSetStatus('SEM ACESSO À MESA',true);});
-      const u2=onSnapshot(tokensRef,async snap=>{
+      const u2=onSnapshot(tokensRef,snap=>{
         let tokens=[];snap.forEach(ds=>tokens.push(vtNormalizeToken(ds.data())));
-        tokens=await vtDedupeNewTokenBurst(tokens);
-        if(!window.vtState)window.vtState=vtDefaultState();
-        window.vtState.tokens=tokens;
-        if(window.vtSelectedTokenId&&!tokens.some(t=>t.id===window.vtSelectedTokenId))window.vtSelectedTokenId=null;
-        vtRenderTokens();
+        const serial=vtTokenSnapshotSerial;
+        // Serializa a limpeza: vários snapshots podem chegar quase juntos quando
+        // versões antigas do código criaram 2–5 documentos para um único clique.
+        // Assim nunca renderizamos o array intermediário com as duplicatas.
+        vtTokenDedupeQueue=vtTokenDedupeQueue.then(async()=>{
+          const cleaned=await vtDedupeNewTokenBurst(tokens);
+          if(serial!==vtTokenSnapshotSerial || String(window.vtCampaignKey||'')==='')return;
+          if(!window.vtState)window.vtState=vtDefaultState();
+          window.vtState.tokens=cleaned;
+          if(window.vtSelectedTokenId&&!cleaned.some(t=>t.id===window.vtSelectedTokenId))window.vtSelectedTokenId=null;
+          vtRenderTokens();
+        }).catch(e=>{console.error('Falha ao sincronizar tokens:',e);});
       },err=>{console.error(err);vtSetStatus('SEM ACESSO AOS TOKENS',true);});
       window.vtUnsubscribe.push(u1,u2);
     }
@@ -3245,9 +3256,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       token.name=document.getElementById('vt-edit-name').value.trim()||token.name;token.color=document.getElementById('vt-edit-color').value||token.color;token.size=Number(document.getElementById('vt-edit-size').value)||64;token.rotation=Number(document.getElementById('vt-edit-rotation').value)||0;
       const file=document.getElementById('vt-edit-image-upload').files?.[0];
       if(file){
-        vtSetStatus('ENVIANDO IMAGEM…');try{const result=await vtUploadImage(file,'tokens',500,500,.86);const old=token.imagePath;token.image=result.url;token.imagePath=result.path;await vtDeleteStorageFile(old);}catch(e){console.error(e);vtPopup('Não foi possível enviar a imagem do token.
-
-'+(e?.message||'Verifique sua conexão e tente novamente.'),{title:'IMAGEM DO TOKEN'});return;}document.getElementById('vt-edit-image-upload').value='';
+        vtSetStatus('ENVIANDO IMAGEM…');try{const result=await vtUploadImage(file,'tokens',500,500,.86);const old=token.imagePath;token.image=result.url;token.imagePath=result.path;await vtDeleteStorageFile(old);}catch(e){console.error(e);vtPopup('Não foi possível enviar a imagem do token.\n\n'+(e?.message||'Verifique sua conexão e tente novamente.'),{title:'IMAGEM DO TOKEN'});return;}document.getElementById('vt-edit-image-upload').value='';
       }
       vtRenderTokens();await vtSaveState();
     };
@@ -3506,8 +3515,16 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     </div>`;
     document.body.appendChild(overlay);
     overlay.addEventListener('click',e=>{if(e.target===overlay) window.vtPopupClose?.(false);});
+    overlay.addEventListener('pointerdown',e=>e.stopPropagation());
+    overlay.addEventListener('click',e=>e.stopPropagation());
     return overlay;
   }
+  document.addEventListener('keydown',e=>{
+    if(e.key==='Escape'){
+      const o=document.getElementById('vt-popup-overlay');
+      if(o?.classList.contains('show')){e.preventDefault();e.stopPropagation();window.vtPopupClose?.(false);}
+    }
+  },true);
   window.vtPopupClose=function(value){
     const o=document.getElementById('vt-popup-overlay'); if(!o)return;
     o.classList.remove('show');
