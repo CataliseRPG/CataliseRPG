@@ -1658,7 +1658,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cat-accent)!important
 
 <style id="catalise-four-existing-frames-art-v2">
 /* =========================================================
-   CATÁLISE — AS 4 MOLDURAS ORIGINAIS, REFINADAS
+   CATÁLISE — MOLDURAS OFICIAIS, REFINADAS
    IMPORTANTE: não cria novas molduras.
    Mantém apenas: Sanctum, Espinhos, Relicário e Obsidiana.
    Arte 2D feita em CSS, com camadas, ornamentos e efeitos leves.
@@ -2475,7 +2475,7 @@ body.page-effect-static .catalise-page-effects::after{
           </div>
           <div class="profile-main">
             <div class="profile-identity">
-              <div class="profile-avatar-shell frame-art-shell" aria-hidden="false"><img id="profile-avatar-preview" class="profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div>
+              <div class="profile-avatar-shell frame-art-shell" aria-hidden="false"><img id="profile-avatar-preview" class="profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra seraphim-extra" aria-hidden="true"><b class="seraphim-wing wing-left"></b><b class="seraphim-wing wing-right"></b><i class="seraphim-halo">✦</i><i class="seraphim-feather sf1">⌁</i><i class="seraphim-feather sf2">⌁</i><i class="seraphim-feather sf3">⌁</i></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div>
               <div>
                 <h2 id="profile-name-preview" class="profile-name">INVESTIGADOR</h2>
                 <div id="profile-handle-preview" class="profile-handle">@investigador</div>
@@ -2545,6 +2545,7 @@ body.page-effect-static .catalise-page-effects::after{
                   <option value="thorn" data-min-tier="devoto">Espinhos · Sangue</option>
                   <option value="reliquary" data-min-tier="oficiante">Relicário · Capela Rosa</option>
                   <option value="obsidian" data-min-tier="arquiteto">Obsidiana · Abismo Roxo</option>
+                  <option value="seraphim" data-min-tier="arauto">Serafim · Ouro Profano</option>
                 </select>
               </label>
               <label>Efeito do arquivo
@@ -2554,6 +2555,7 @@ body.page-effect-static .catalise-page-effects::after{
                   <option value="dust" data-min-tier="devoto">Poeira · Devoto</option>
                   <option value="fog" data-min-tier="oficiante">Névoa · Oficiante</option>
                   <option value="static" data-min-tier="arquiteto">Ruído ritual · Arquiteto</option>
+                  <option value="seraphic" data-min-tier="arauto">Ascensão Serafim · Arauto</option>
                 </select>
               </label>
             </div>
@@ -2767,14 +2769,14 @@ body.page-effect-static .catalise-page-effects::after{
 </div>
   </main>
 
-  <section id="public-profile-page" class="public-profile-page" aria-hidden="true"><div class="public-profile-page-inner"><div class="public-profile-page-top"><div class="public-profile-page-brand">✦ ARQUIVO PÚBLICO · CATÁLISE</div><button class="public-profile-back" type="button" onclick="voltarDoPerfilPublico()">← VOLTAR AO ARQUIVO</button></div><article id="public-profile-page-card" class="public-profile-card public-profile-page-card"><div id="public-page-banner" class="public-profile-banner"></div><div class="public-profile-body"><div class="public-avatar-shell frame-art-shell"><img id="public-page-avatar" class="public-profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div><div class="public-profile-heading"><div><h2 id="public-page-name">INVESTIGADOR</h2><div id="public-page-handle" class="profile-handle">@investigador</div></div><div id="public-page-badges" class="profile-badges"></div></div><div id="public-page-title" class="public-profile-title"></div><p id="public-page-bio" class="public-profile-bio"></p><div id="public-profile-featured" class="public-profile-featured" style="display:none;"><div class="public-section-title">✦ FRAGMENTO DO ARQUIVO</div><img id="public-page-featured-image" alt="Imagem de destaque do arquivo"></div><div id="public-page-showcase" class="public-profile-showcase" style="display:none;"><div class="public-section-title">✦ AGENTES EM EXIBIÇÃO</div><div id="public-page-agents" class="public-agent-grid"></div></div><div id="public-page-achievements" class="public-profile-showcase" style="display:none;"><div class="public-section-title">✦ MARCAS DO ARQUIVO</div><div id="public-page-achievement-list" class="public-achievement-grid"></div></div><div class="public-profile-seal">✦ ARQUIVO PÚBLICO · CATÁLISE</div></div></article></div></section>
+  <section id="public-profile-page" class="public-profile-page" aria-hidden="true"><div class="public-profile-page-inner"><div class="public-profile-page-top"><div class="public-profile-page-brand">✦ ARQUIVO PÚBLICO · CATÁLISE</div><button class="public-profile-back" type="button" onclick="voltarDoPerfilPublico()">← VOLTAR AO ARQUIVO</button></div><article id="public-profile-page-card" class="public-profile-card public-profile-page-card"><div id="public-page-banner" class="public-profile-banner"></div><div class="public-profile-body"><div class="public-avatar-shell frame-art-shell"><img id="public-page-avatar" class="public-profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra seraphim-extra" aria-hidden="true"><b class="seraphim-wing wing-left"></b><b class="seraphim-wing wing-right"></b><i class="seraphim-halo">✦</i><i class="seraphim-feather sf1">⌁</i><i class="seraphim-feather sf2">⌁</i><i class="seraphim-feather sf3">⌁</i></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div><div class="public-profile-heading"><div><h2 id="public-page-name">INVESTIGADOR</h2><div id="public-page-handle" class="profile-handle">@investigador</div></div><div id="public-page-badges" class="profile-badges"></div></div><div id="public-page-title" class="public-profile-title"></div><p id="public-page-bio" class="public-profile-bio"></p><div id="public-profile-featured" class="public-profile-featured" style="display:none;"><div class="public-section-title">✦ FRAGMENTO DO ARQUIVO</div><img id="public-page-featured-image" alt="Imagem de destaque do arquivo"></div><div id="public-page-showcase" class="public-profile-showcase" style="display:none;"><div class="public-section-title">✦ AGENTES EM EXIBIÇÃO</div><div id="public-page-agents" class="public-agent-grid"></div></div><div id="public-page-achievements" class="public-profile-showcase" style="display:none;"><div class="public-section-title">✦ MARCAS DO ARQUIVO</div><div id="public-page-achievement-list" class="public-achievement-grid"></div></div><div class="public-profile-seal">✦ ARQUIVO PÚBLICO · CATÁLISE</div></div></article></div></section>
 
   <div id="modal-perfil-publico" class="modal modal-dialog public-profile-modal" aria-hidden="true">
     <div class="public-profile-card">
       <button class="public-profile-close" type="button" onclick="fecharPerfilPublico()" aria-label="Fechar">×</button>
       <div id="public-profile-banner" class="public-profile-banner"></div>
       <div class="public-profile-body">
-        <div class="public-avatar-shell frame-art-shell"><img id="public-profile-avatar" class="public-profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div>
+        <div class="public-avatar-shell frame-art-shell"><img id="public-profile-avatar" class="public-profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra seraphim-extra" aria-hidden="true"><b class="seraphim-wing wing-left"></b><b class="seraphim-wing wing-right"></b><i class="seraphim-halo">✦</i><i class="seraphim-feather sf1">⌁</i><i class="seraphim-feather sf2">⌁</i><i class="seraphim-feather sf3">⌁</i></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div>
         <div class="public-profile-heading">
           <div>
             <h2 id="public-profile-name">INVESTIGADOR</h2>
@@ -3679,7 +3681,7 @@ body.page-effect-static .catalise-page-effects::after{
       if(!layer)return;
       layer.innerHTML='';
       const value=String(effect||'none');
-      if(!['embers','dust','fog','static'].includes(value))return;
+      if(!['embers','dust','fog','static','seraphic'].includes(value))return;
 
       const frag=document.createDocumentFragment();
       const count=value==='embers'?30:value==='dust'?72:value==='fog'?6:2;
@@ -3700,6 +3702,27 @@ body.page-effect-static .catalise-page-effects::after{
           const el=document.createElement('span');
           el.className='fx-static-band';
           el.style.setProperty('--fx-delay',`${i*-2.5}s`);
+          frag.appendChild(el);
+        }
+      }else if(value==='seraphic'){
+        for(let i=0;i<24;i++){
+          const el=document.createElement('span');
+          el.className='fx-feather';
+          el.style.setProperty('--fx-x',`${Math.random()*100}%`);
+          el.style.setProperty('--fx-y',`${4+Math.random()*94}%`);
+          el.style.setProperty('--fx-size',`${10+Math.random()*15}px`);
+          el.style.setProperty('--fx-d',`${5.5+Math.random()*5}s`);
+          el.style.setProperty('--fx-delay',`${-Math.random()*9}s`);
+          el.style.setProperty('--fx-dx',`${(Math.random()-.5)*20}vw`);
+          el.style.setProperty('--fx-dy',`${-(8+Math.random()*22)}vh`);
+          el.style.setProperty('--fx-r',`${-45+Math.random()*90}deg`);
+          frag.appendChild(el);
+        }
+        for(let i=0;i<6;i++){
+          const el=document.createElement('span');
+          el.className='fx-divine-ray';
+          el.style.setProperty('--fx-ray-delay',`${-i*1.2}s`);
+          el.style.setProperty('--fx-ray-angle',`${i*30-75}deg`);
           frag.appendChild(el);
         }
       }else{
@@ -3724,8 +3747,8 @@ body.page-effect-static .catalise-page-effects::after{
     function sincronizarEfeitoPagina(effect='none'){
       const body=document.body;
       if(!body)return;
-      body.classList.remove('page-effect-active','page-effect-embers','page-effect-dust','page-effect-fog','page-effect-static');
-      const safe=['embers','dust','fog','static'];
+      body.classList.remove('page-effect-active','page-effect-embers','page-effect-dust','page-effect-fog','page-effect-static','page-effect-seraphic');
+      const safe=['embers','dust','fog','static','seraphic'];
       const value=String(effect||'none');
       if(safe.includes(value)) body.classList.add('page-effect-active','page-effect-'+value);
       renderizarParticulasPagina(value);
@@ -3744,11 +3767,11 @@ body.page-effect-static .catalise-page-effects::after{
       const profileCard=document.querySelector('.profile-card');
       const bannerPreview=document.getElementById('profile-banner-preview');
       if(profileCard){
-        profileCard.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','effect-none','effect-embers','effect-dust','effect-fog','effect-static');
+        profileCard.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','frame-seraphim','effect-none','effect-embers','effect-dust','effect-fog','effect-static','effect-seraphic');
         profileCard.classList.add('frame-'+String(frame),'effect-'+String(effect));
       }
       if(bannerPreview){
-        bannerPreview.classList.remove('effect-none','effect-embers','effect-dust','effect-fog','effect-static');
+        bannerPreview.classList.remove('effect-none','effect-embers','effect-dust','effect-fog','effect-static','effect-seraphic');
         bannerPreview.classList.add('effect-'+String(effect));
       }
       const avatarEl=document.getElementById('profile-avatar-preview');
@@ -3917,10 +3940,10 @@ body.page-effect-static .catalise-page-effects::after{
     function renderizarListaPublicaStandalone(agents,achievements){const wrap=document.getElementById('public-page-showcase'),grid=document.getElementById('public-page-agents'),list=Array.isArray(agents)?agents.slice(0,3):[];if(wrap&&grid){if(!list.length){wrap.style.display='none';grid.innerHTML='';}else{wrap.style.display='block';grid.innerHTML=list.map(a=>{const img=a.fotoUrl?`<img src="${String(a.fotoUrl).replace(/"/g,'&quot;')}" alt="">`:'<span class="public-agent-fallback">✦</span>';return `<article class="public-agent-card">${img}<div><b>${escaparHtml(String(a.nome||'Agente'))}</b><small>${escaparHtml(String(a.classe||'Investigador'))}</small></div></article>`;}).join('');}}const aw=document.getElementById('public-page-achievements'),ag=document.getElementById('public-page-achievement-list'),ach=Array.isArray(achievements)?achievements.slice(0,12):[];if(aw&&ag){if(!ach.length){aw.style.display='none';ag.innerHTML='';}else{aw.style.display='block';ag.innerHTML=ach.map(a=>`<span class="public-achievement-chip">${escaparHtml(String(a.nome||a))}</span>`).join('');}}}
     function aplicarCosmeticosPerfilPublico(card,p){
       if(!card)return;
-      const safeFrame=['none','sanctum','thorn','reliquary','obsidian'].includes(String(p?.frame||'none'))?String(p.frame):'none';
-      const safeEffect=['none','embers','dust','fog','static'].includes(String(p?.effect||'none'))?String(p.effect):'none';
+      const safeFrame=['none','sanctum','thorn','reliquary','obsidian','seraphim'].includes(String(p?.frame||'none'))?String(p.frame):'none';
+      const safeEffect=['none','embers','dust','fog','static','seraphic'].includes(String(p?.effect||'none'))?String(p.effect):'none';
       const safeTier=['none','devoto','oficiante','arquiteto','arauto'].includes(String(p?.supporterTier||'none'))?String(p.supporterTier):'none';
-      card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','effect-none','effect-embers','effect-dust','effect-fog','effect-static','tier-none','tier-devoto','tier-oficiante','tier-arquiteto','tier-arauto');
+      card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','frame-seraphim','effect-none','effect-embers','effect-dust','effect-fog','effect-static','effect-seraphic','tier-none','tier-devoto','tier-oficiante','tier-arquiteto','tier-arauto');
       card.classList.add('frame-'+safeFrame,'effect-'+safeEffect,'tier-'+safeTier);
     }
 
@@ -3938,7 +3961,7 @@ body.page-effect-static .catalise-page-effects::after{
       devoto:['Tudo do Investigador','Tema Sangue','Moldura Espinhos','Brasas e Poeira','Selo de apoiador'],
       oficiante:['Tudo do Devoto','Tema Capela · Fairy','Moldura Relicário','Névoa','Galeria e destaques avançados'],
       arquiteto:['Tudo do Oficiante','Tema Abismo · Roxo','Moldura Obsidiana','Ruído Ritual','Recursos experimentais'],
-      arauto:['Todos os temas','Todas as 4 molduras','Todos os efeitos','Distintivo raro','Reconhecimento especial no Arquivo']
+      arauto:['Todos os temas','Todas as molduras','Todos os efeitos','Distintivo raro','Reconhecimento especial no Arquivo']
     };
 
 
@@ -6210,8 +6233,8 @@ body.page-effect-static .catalise-page-effects::after{
        PERSONALIZAÇÃO FINAL V2
        ========================================================= */
     const CAT_THEME_LABELS={padrao:'Catálise · Padrão',sangue:'Sangue',capela:'Capela',abismo:'Abismo',cinzas:'Cinzas',ouro:'Ouro Profano'};
-    const CAT_FRAME_LABELS={none:'Sem moldura',sanctum:'Sanctum',thorn:'Espinhos',reliquary:'Relicário',obsidian:'Obsidiana'};
-    const CAT_EFFECT_LABELS={none:'Nenhum',embers:'Brasas',dust:'Poeira',fog:'Névoa',static:'Ruído ritual'};
+    const CAT_FRAME_LABELS={none:'Sem moldura',sanctum:'Sanctum',thorn:'Espinhos',reliquary:'Relicário',obsidian:'Obsidiana',seraphim:'Serafim · Ouro Profano'};
+    const CAT_EFFECT_LABELS={none:'Nenhum',embers:'Brasas',dust:'Poeira',fog:'Névoa',static:'Ruído ritual',seraphic:'Ascensão Serafim'};
 
     function atualizarBadgeTierPerfil(){
       const tier=String(window.perfilAtual?.supporterTier||'none').toLowerCase();
@@ -6263,12 +6286,12 @@ body.page-effect-static .catalise-page-effects::after{
         const nextEffect=effect?.value||p.effect||'none';
         const card=document.querySelector('.profile-card');
         if(card){
-          card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','effect-none','effect-embers','effect-dust','effect-fog','effect-static');
+          card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','frame-seraphim','effect-none','effect-embers','effect-dust','effect-fog','effect-static','effect-seraphic');
           card.classList.add('frame-'+nextFrame,'effect-'+nextEffect);
         }
         const banner=document.getElementById('profile-banner-preview');
         if(banner){
-          banner.classList.remove('effect-none','effect-embers','effect-dust','effect-fog','effect-static');
+          banner.classList.remove('effect-none','effect-embers','effect-dust','effect-fog','effect-static','effect-seraphic');
           banner.classList.add('effect-'+nextEffect);
         }
         aplicarTemaCatálise(nextTheme);
@@ -6400,13 +6423,98 @@ body.page-effect-static .catalise-page-effects::after{
 
 <div id="catalise-build-mark" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;">CATÁLISE FINAL — manual tiers + perfil + tabletop + efeitos visuais</div>
 
+<style id="catalise-final-seraphim-polish-v1">
+/* =========================================================
+   CATÁLISE — ÚLTIMO POLIMENTO VISUAL
+   Serafim = divino / asas / halo / ouro profano
+   Efeitos de página mais presentes e responsivos.
+   ========================================================= */
+.seraphim-extra{position:absolute;inset:-58px;pointer-events:none;z-index:9;display:none;overflow:visible}
+.frame-seraphim .seraphim-extra{display:block}
+.seraphim-wing{position:absolute;top:48px;width:64px;height:82px;opacity:.98;filter:drop-shadow(0 0 7px rgba(227,184,95,.48));background:
+  linear-gradient(135deg,rgba(255,245,196,.98),rgba(227,184,95,.72) 46%,rgba(102,69,18,.9));
+  border:1px solid rgba(255,240,180,.82);
+}
+.seraphim-wing::before{content:"";position:absolute;inset:7px;background:
+  repeating-linear-gradient(155deg,transparent 0 9px,rgba(255,244,191,.7) 9px 10px,transparent 10px 17px);
+  opacity:.82}
+.seraphim-wing::after{content:"";position:absolute;inset:10px;background:linear-gradient(90deg,transparent,rgba(255,255,220,.42),transparent);filter:blur(3px)}
+.seraphim-wing.wing-left{left:-8px;transform-origin:right center;clip-path:polygon(100% 50%,80% 37%,67% 20%,47% 7%,31% 0,35% 21%,13% 16%,24% 38%,0 40%,22% 55%,4% 69%,31% 67%,18% 88%,47% 78%,42% 100%,66% 82%,80% 66%);animation:seraphWingLeft 4.2s ease-in-out infinite alternate}
+.seraphim-wing.wing-right{right:-8px;transform-origin:left center;clip-path:polygon(0 50%,20% 37%,33% 20%,53% 7%,69% 0,65% 21%,87% 16%,76% 38%,100% 40%,78% 55%,96% 69%,69% 67%,82% 88%,53% 78%,58% 100%,34% 82%,20% 66%);animation:seraphWingRight 4.2s ease-in-out -1.2s infinite alternate}
+.seraphim-halo{position:absolute;left:50%;top:0;transform:translateX(-50%);width:82px;height:28px;border:3px solid #fff0b4;border-bottom-color:transparent;border-radius:50%;color:#fff7d0;font:700 18px/20px 'Cormorant Garamond',serif;text-align:center;text-shadow:0 0 8px #e3b85f,0 0 18px rgba(227,184,95,.8);box-shadow:0 0 16px rgba(227,184,95,.45);animation:seraphHalo 3.4s ease-in-out infinite alternate}
+.seraphim-feather{position:absolute;color:#fff1b0;font:700 21px/1 'Cormorant Garamond',serif;text-shadow:0 0 7px #e3b85f,0 0 16px rgba(227,184,95,.8);opacity:.9}
+.seraphim-feather.sf1{left:4%;top:28%;transform:rotate(-42deg);animation:seraphFeather1 4.6s ease-in-out infinite}
+.seraphim-feather.sf2{right:3%;top:38%;transform:rotate(40deg);animation:seraphFeather2 5.2s ease-in-out -1s infinite}
+.seraphim-feather.sf3{left:43%;bottom:1%;transform:rotate(75deg);animation:seraphFeather3 4.8s ease-in-out -1.7s infinite}
+@keyframes seraphWingLeft{from{transform:rotate(-3deg) scale(.96)}to{transform:rotate(3deg) scale(1.04)}}
+@keyframes seraphWingRight{from{transform:rotate(3deg) scale(.96)}to{transform:rotate(-3deg) scale(1.04)}}
+@keyframes seraphHalo{from{transform:translateX(-50%) translateY(2px) scale(.92);opacity:.62}to{transform:translateX(-50%) translateY(-5px) scale(1.08);opacity:1}}
+@keyframes seraphFeather1{0%,100%{translate:0 0;opacity:.3}50%{translate:-5px -10px;opacity:1}}
+@keyframes seraphFeather2{0%,100%{translate:0 0;opacity:.3}50%{translate:6px -8px;opacity:1}}
+@keyframes seraphFeather3{0%,100%{translate:0 0;opacity:.25}50%{translate:2px -9px;opacity:1}}
+
+/* Aro mais "celestial" e medalhão dourado para a moldura do Arauto. */
+.frame-seraphim .profile-avatar-shell,.frame-seraphim .public-avatar-shell{
+  box-shadow:0 0 0 1px rgba(255,241,180,.95),0 0 0 5px rgba(227,184,95,.18),0 0 34px rgba(227,184,95,.48),0 16px 38px rgba(0,0,0,.62)!important;
+  background:
+    radial-gradient(circle at 50% 4%,#fff8d6 0 3px,#e3b85f 4px 7px,transparent 8px),
+    radial-gradient(circle at 15% 22%,#fff1b0 0 2px,transparent 3px),
+    radial-gradient(circle at 85% 22%,#fff1b0 0 2px,transparent 3px),
+    radial-gradient(circle at 50% 96%,#fff1b0 0 2px,transparent 3px),
+    repeating-conic-gradient(from 0deg,transparent 0 11deg,rgba(255,240,180,.9) 11deg 13deg,transparent 13deg 22.5deg),
+    conic-gradient(from 0deg,#5b4214,#e3b85f 8deg,#fff0b4 13deg,#7c5a19 19deg,#3a280b 28deg,#d2a948 38deg,#fff0b4 44deg,#5b4214 54deg,#5b4214 90deg,#d2a948 130deg,#fff0b4 137deg,#5b4214 150deg,#5b4214 180deg,#d2a948 220deg,#fff0b4 227deg,#5b4214 240deg,#5b4214 270deg,#d2a948 310deg,#fff0b4 317deg,#5b4214 330deg,#5b4214 360deg);
+}
+.frame-seraphim .profile-avatar-shell::before,.frame-seraphim .public-avatar-shell::before{
+  inset:-23px!important;border:1px solid rgba(255,241,180,.86);box-shadow:0 0 0 4px rgba(227,184,95,.1),0 0 30px rgba(227,184,95,.42);
+  background:
+    repeating-conic-gradient(from 0deg,transparent 0 18deg,rgba(255,240,180,.82) 18deg 20deg,transparent 20deg 36deg),
+    linear-gradient(45deg,transparent 47%,rgba(255,240,180,.28) 49% 51%,transparent 53%),
+    linear-gradient(-45deg,transparent 47%,rgba(227,184,95,.24) 49% 51%,transparent 53%);
+  -webkit-mask:radial-gradient(circle,transparent 0 69%,#000 70% 100%);mask:radial-gradient(circle,transparent 0 69%,#000 70% 100%);
+  animation:seraphRing 14s linear infinite;
+}
+.frame-seraphim .profile-avatar-shell::after,.frame-seraphim .public-avatar-shell::after{
+  inset:-39px!important;background:
+    radial-gradient(circle at 6% 28%,#fff6cf 0 2px,transparent 3px),
+    radial-gradient(circle at 94% 28%,#fff6cf 0 2px,transparent 3px),
+    radial-gradient(circle at 88% 83%,#ffe8a0 0 2px,transparent 3px),
+    radial-gradient(circle at 12% 83%,#ffe8a0 0 2px,transparent 3px),
+    radial-gradient(circle at 50% 1%,#fffbe2 0 2px,transparent 3px);
+  -webkit-mask:radial-gradient(circle,transparent 0 78%,#000 79%);mask:radial-gradient(circle,transparent 0 78%,#000 79%);
+  filter:drop-shadow(0 0 8px #e3b85f);animation:seraphParticles 3.8s ease-in-out infinite alternate;
+}
+@keyframes seraphRing{to{transform:rotate(360deg)}}
+@keyframes seraphParticles{from{opacity:.35;transform:scale(.94)}to{opacity:1;transform:scale(1.06)}}
+
+/* Efeitos antigos: mais rápidos, maiores e com contraste suficiente para realmente aparecerem. */
+.profile-card.effect-embers:after,.public-profile-card.effect-embers:after{animation-duration:3.4s!important;opacity:.9!important}
+.profile-card.effect-dust:after,.public-profile-card.effect-dust:after{animation-duration:7s!important;opacity:.72!important}
+.profile-card.effect-fog:after,.public-profile-card.effect-fog:after{animation-duration:4.8s!important;opacity:.8!important}
+.profile-card.effect-static:after,.public-profile-card.effect-static:after{animation-duration:.72s!important;opacity:.82!important}
+.effect-embers:before{opacity:.62!important;animation-duration:3.8s!important}
+.effect-dust:before{opacity:.72!important;animation-duration:7s!important}
+.effect-fog:before{opacity:.62!important;animation-duration:4.5s!important}
+.effect-static:before{opacity:.72!important}
+
+/* Novo efeito do Arauto: ASCENSÃO SERAFIM — asas de luz, penas e feixes dourados. */
+.fx-feather{position:absolute;left:var(--fx-x);top:var(--fx-y);width:var(--fx-size);height:calc(var(--fx-size)*1.8);border-radius:80% 12% 80% 12%;background:linear-gradient(145deg,rgba(255,248,206,.95),var(--cat-fx2) 52%,rgba(125,88,20,.62));box-shadow:0 0 7px var(--cat-fx2),0 0 22px var(--cat-fx-glow);opacity:0;transform:rotate(var(--fx-r));filter:drop-shadow(0 0 4px var(--cat-fx));animation:fxFeatherRise var(--fx-d) ease-in-out var(--fx-delay) infinite}
+.fx-feather::after{content:"";position:absolute;left:48%;top:5%;width:1px;height:90%;background:rgba(255,255,230,.78);box-shadow:0 0 4px var(--cat-fx2)}
+.fx-divine-ray{position:absolute;left:50%;top:50%;width:42vw;height:2px;background:linear-gradient(90deg,transparent,var(--cat-fx2),transparent);filter:blur(2px);opacity:.45;transform-origin:left center;transform:rotate(var(--fx-ray-angle));animation:fxRayPulse 3.2s ease-in-out var(--fx-ray-delay) infinite alternate}
+body.page-effect-seraphic .catalise-page-effects::before{content:"";position:absolute;inset:-20%;background:radial-gradient(ellipse at 50% 8%,var(--cat-fx-glow),transparent 30%),radial-gradient(ellipse at 50% 92%,var(--cat-fx-soft),transparent 35%);filter:blur(28px);mix-blend-mode:screen;animation:fxSeraphAura 4.5s ease-in-out infinite alternate}
+body.page-effect-seraphic .catalise-page-effects::after{content:"";position:absolute;inset:0;background:conic-gradient(from 270deg at 50% 50%,transparent 0 36deg,var(--cat-fx-soft) 42deg,transparent 48deg 86deg,var(--cat-fx-soft) 92deg,transparent 98deg 180deg,var(--cat-fx-soft) 186deg,transparent 192deg 270deg,var(--cat-fx-soft) 276deg,transparent 282deg);mix-blend-mode:screen;opacity:.6;animation:fxSeraphHalo 8s linear infinite}
+@keyframes fxFeatherRise{0%{transform:translate3d(0,0,0) rotate(var(--fx-r)) scale(.55);opacity:0}12%{opacity:.72}55%{transform:translate3d(var(--fx-dx),var(--fx-dy),0) rotate(calc(var(--fx-r) + 24deg)) scale(1);opacity:1}88%{opacity:.42}100%{transform:translate3d(calc(var(--fx-dx)*1.2),calc(var(--fx-dy)*1.2),0) rotate(calc(var(--fx-r) - 18deg)) scale(.45);opacity:0}}
+@keyframes fxRayPulse{from{opacity:.12;transform:rotate(var(--fx-ray-angle)) scaleX(.72)}to{opacity:.72;transform:rotate(calc(var(--fx-ray-angle) + 5deg)) scaleX(1.08)}}
+@keyframes fxSeraphAura{from{opacity:.32;transform:scale(.94)}to{opacity:.88;transform:scale(1.08)}}
+@keyframes fxSeraphHalo{to{transform:rotate(360deg)}}
+@media(prefers-reduced-motion:reduce){.seraphim-wing,.seraphim-halo,.seraphim-feather,.frame-seraphim .profile-avatar-shell::before,.frame-seraphim .profile-avatar-shell::after,.frame-seraphim .public-avatar-shell::before,.frame-seraphim .public-avatar-shell::after,.fx-feather,.fx-divine-ray{animation:none!important}}
+</style>
 <style id="catalise-final-release-guard">
-/* RELEASE FINAL — somente as 4 molduras oficiais. */
+/* RELEASE FINAL — molduras e efeitos oficiais. */
 .frame-extra{pointer-events:none}
 .frame-rosarium .profile-avatar-shell,.frame-eclipse .profile-avatar-shell,
-.frame-fracture .profile-avatar-shell,.frame-seraphim .profile-avatar-shell,
+.frame-fracture .profile-avatar-shell,
 .frame-rosarium .public-avatar-shell,.frame-eclipse .public-avatar-shell,
-.frame-fracture .public-avatar-shell,.frame-seraphim .public-avatar-shell{display:none!important}
+.frame-fracture .public-avatar-shell{display:none!important}
 body.theme-capela{
   --cat-bg:#160912;--cat-surface:#29101f;--cat-surface2:#190a14;--cat-surface3:#3b172c;
   --cat-accent:#ef6fb2;--cat-accent2:#ffb4d7;--cat-cyan:#c989d8;--cat-line:#743452;
@@ -6418,10 +6526,23 @@ body.theme-abismo{
   --cat-text:#eee6ff;--cat-muted:#aa9ac8;
 }
 </style>
+<script id="catalise-final-effect-guard-v1">
+(function(){
+  const allowed=new Set(['none','embers','dust','fog','static','seraphic']);
+  window.__catAllowedEffects=allowed;
+  const originalSync=window.sincronizarEfeitoPagina;
+  if(typeof originalSync==='function'){
+    window.sincronizarEfeitoPagina=function(effect){
+      const safe=allowed.has(String(effect||''))?String(effect):'none';
+      return originalSync(safe);
+    };
+  }
+})();
+</script>
 <script>
 /* Release guard: never expose accidental extra frame values from older saved profiles. */
 (function(){
-  const allowed=new Set(['none','sanctum','thorn','reliquary','obsidian']);
+  const allowed=new Set(['none','sanctum','thorn','reliquary','obsidian','seraphim']);
   const cleanFrame=(v)=>allowed.has(String(v||''))?String(v):'none';
   const oldOpen=window.aplicarCosmeticosPerfilPublico;
   if(typeof oldOpen==='function'){
