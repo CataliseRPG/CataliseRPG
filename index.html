@@ -1016,6 +1016,115 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
   .admin-tier-grid,.admin-tier-controls{grid-template-columns:1fr}
 }
 </style>
+
+<style id="catalise-v8-subscription-css">
+.subscription-center{
+  margin-top:18px;
+  border-color:rgba(86,184,168,.22);
+  background:linear-gradient(145deg,rgba(8,23,25,.82),rgba(4,13,15,.68));
+}
+.subscription-kicker{
+  color:#5db9aa;
+  font-size:.68rem;
+  letter-spacing:.18em;
+  margin-bottom:8px;
+}
+.subscription-head{
+  display:flex;
+  align-items:flex-start;
+  justify-content:space-between;
+  gap:18px;
+}
+.subscription-tier-badge{
+  flex:0 0 auto;
+  border:1px solid rgba(86,184,168,.28);
+  padding:8px 12px;
+  color:#d8ebe6;
+  font-size:.68rem;
+  letter-spacing:.12em;
+  background:rgba(86,184,168,.07);
+}
+.subscription-status-grid{
+  display:grid;
+  grid-template-columns:repeat(4,1fr);
+  gap:9px;
+  margin-top:16px;
+}
+.subscription-status-box{
+  min-height:68px;
+  padding:11px;
+  border:1px solid rgba(86,184,168,.13);
+  background:rgba(3,12,14,.48);
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.subscription-status-box span{
+  font-size:.61rem;
+  letter-spacing:.12em;
+  color:#668b84;
+}
+.subscription-status-box strong{
+  color:#d9e8e4;
+  font-size:.78rem;
+  margin-top:8px;
+  overflow-wrap:anywhere;
+}
+.subscription-section-label{
+  color:#759d95;
+  font-size:.62rem;
+  letter-spacing:.16em;
+  margin-bottom:9px;
+}
+.subscription-benefits{margin-top:16px}
+.subscription-benefits-list{
+  display:flex;
+  flex-wrap:wrap;
+  gap:7px;
+}
+.subscription-benefit{
+  padding:7px 9px;
+  border:1px solid rgba(86,184,168,.14);
+  background:rgba(86,184,168,.045);
+  color:#a8c6bf;
+  font-size:.68rem;
+}
+.subscription-empty{color:#68867f;font-size:.7rem}
+.subscription-history{
+  margin-top:15px;
+  padding-top:13px;
+  border-top:1px solid rgba(86,184,168,.1);
+}
+.subscription-history #subscription-history-text{
+  color:#6f9189;
+  font-size:.68rem;
+  line-height:1.5;
+}
+.subscription-actions{
+  display:flex;
+  gap:9px;
+  flex-wrap:wrap;
+  margin-top:17px;
+}
+.subscription-actions .secondary{
+  opacity:.82;
+}
+.subscription-message{
+  min-height:1.1em;
+  margin-top:9px;
+  color:#6d9990;
+  font-size:.68rem;
+}
+.subscription-message.is-error{color:#ff8d95}
+.subscription-message.is-success{color:#70d4bc}
+@media(max-width:760px){
+  .subscription-head{flex-direction:column}
+  .subscription-status-grid{grid-template-columns:1fr 1fr}
+}
+@media(max-width:480px){
+  .subscription-status-grid{grid-template-columns:1fr}
+}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -1317,6 +1426,57 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       </div>
 
       <!-- ADMINISTRAÇÃO: visível exclusivamente dentro da aba "Apoie o Projeto" -->
+      
+      <!-- CENTRAL DE ASSINATURA V8: pública para o usuário autenticado; administração continua abaixo -->
+      <section id="subscription-center" class="card-ficha subscription-center" aria-labelledby="subscription-center-title">
+        <div class="subscription-kicker">05 // CENTRAL DE ASSINATURA</div>
+        <div class="subscription-head">
+          <div>
+            <h3 id="subscription-center-title">SEU APOIO À CATÁLISE</h3>
+            <p class="profile-help">Veja seu nível, origem e situação atual. O site não considera uma assinatura paga apenas porque um valor foi escolhido no navegador.</p>
+          </div>
+          <div class="subscription-tier-badge" id="subscription-tier-badge">INVESTIGADOR</div>
+        </div>
+
+        <div class="subscription-status-grid">
+          <div class="subscription-status-box">
+            <span>NÍVEL ATUAL</span>
+            <strong id="subscription-center-tier">Investigador</strong>
+          </div>
+          <div class="subscription-status-box">
+            <span>STATUS</span>
+            <strong id="subscription-center-status">Sem assinatura</strong>
+          </div>
+          <div class="subscription-status-box">
+            <span>ORIGEM</span>
+            <strong id="subscription-center-source">—</strong>
+          </div>
+          <div class="subscription-status-box">
+            <span>ÚLTIMA ATUALIZAÇÃO</span>
+            <strong id="subscription-center-updated">—</strong>
+          </div>
+        </div>
+
+        <div class="subscription-benefits">
+          <div class="subscription-section-label">BENEFÍCIOS DISPONÍVEIS</div>
+          <div id="subscription-benefits-list" class="subscription-benefits-list">
+            <span class="subscription-empty">Entre na conta para carregar seus benefícios.</span>
+          </div>
+        </div>
+
+        <div class="subscription-history" id="subscription-history" style="display:none;">
+          <div class="subscription-section-label">REGISTRO</div>
+          <div id="subscription-history-text"></div>
+        </div>
+
+        <div class="subscription-actions">
+          <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR NO CATARSE</button>
+          <button class="vt-mini-btn secondary" type="button" onclick="atualizarCentralAssinatura()">ATUALIZAR STATUS</button>
+        </div>
+
+        <div id="subscription-center-message" class="subscription-message" aria-live="polite"></div>
+      </section>
+
       <div class="support-admin-divider" aria-hidden="true"><span>ADMINISTRAÇÃO DO APOIO</span></div>
       <section id="admin-tier-panel" class="card-ficha admin-tier-panel" style="display:none;">
           <div class="admin-tier-kicker">☩ ÁREA DE ADMINISTRAÇÃO</div>
@@ -5132,5 +5292,144 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 })();
 </script>
 
+
+<script id="catalise-v8-subscription-js">
+(function(){
+  const V8_TIERS = {
+    none:{name:'Investigador', badge:'INVESTIGADOR', benefits:['Acesso aos recursos gratuitos']},
+    devoto:{name:'Devoto', badge:'DEVOTO', benefits:['Tema Ritual do Devoto','Benefícios básicos de apoiador']},
+    oficiante:{name:'Oficiante', badge:'OFICIANTE', benefits:['Tudo do Devoto','Moldura Relicário','Efeitos e personalizações adicionais']},
+    arquiteto:{name:'Arquiteto', badge:'ARQUITETO', benefits:['Tudo do Oficiante','Recursos experimentais','Votações de desenvolvimento','Pacotes especiais para Mestres']},
+    arauto:{name:'Arauto', badge:'ARAUTO', benefits:['Tudo dos níveis anteriores','Distintivo raro','Bastidores e testes fechados','Reconhecimento especial nos créditos']}
+  };
+  const V8_STATUS = {
+    none:'Sem assinatura', manual:'Manual / teste', active:'Ativa', pending:'Pendente',
+    cancelled:'Cancelada', expired:'Expirada'
+  };
+  const V8_SOURCE = {
+    catarse:'Catarse', manual_admin:'Manual — administrador', manual:'Manual / teste', '':'—'
+  };
+
+  function getProfileData(){
+    return window.perfilAtual || window.currentUserData || window.userData || {};
+  }
+
+  function formatDate(value){
+    if(!value)return '—';
+    try{
+      if(typeof value?.toDate === 'function') value=value.toDate();
+      const d=value instanceof Date?value:new Date(value);
+      if(Number.isNaN(d.getTime()))return '—';
+      return d.toLocaleString('pt-BR',{dateStyle:'short',timeStyle:'short'});
+    }catch(_){return '—';}
+  }
+
+  window.atualizarCentralAssinatura=function(){
+    const root=document.getElementById('subscription-center');
+    if(!root)return;
+    const p=getProfileData();
+    const tier=V8_TIERS[p.supporterTier] ? p.supporterTier : 'none';
+    const info=V8_TIERS[tier];
+
+    const badge=document.getElementById('subscription-tier-badge');
+    const tierEl=document.getElementById('subscription-center-tier');
+    const statusEl=document.getElementById('subscription-center-status');
+    const sourceEl=document.getElementById('subscription-center-source');
+    const updatedEl=document.getElementById('subscription-center-updated');
+    const benefits=document.getElementById('subscription-benefits-list');
+    const history=document.getElementById('subscription-history');
+    const historyText=document.getElementById('subscription-history-text');
+    const msg=document.getElementById('subscription-center-message');
+
+    if(badge)badge.textContent=info.badge;
+    if(tierEl)tierEl.textContent=info.name;
+    if(statusEl)statusEl.textContent=V8_STATUS[p.subscriptionStatus] || (tier==='none'?'Sem assinatura':'Ativa');
+    if(sourceEl)sourceEl.textContent=V8_SOURCE[p.tierSource] || (tier==='none'?'—':'Manual');
+    if(updatedEl)updatedEl.textContent=formatDate(p.tierUpdatedAt || p.updatedAt);
+
+    if(benefits){
+      benefits.innerHTML=info.benefits.map(x=>`<span class="subscription-benefit">${String(x).replace(/[<>&"]/g,m=>({'<':'&lt;','>':'&gt;','&':'&amp;','"':'&quot;'}[m]))}</span>`).join('');
+    }
+
+    const hasHistory=!!(p.tierUpdatedAt || p.tierUpdatedBy || p.tierReason);
+    if(history){
+      history.style.display=hasHistory?'block':'none';
+      if(hasHistory && historyText){
+        const who=p.tierUpdatedBy?'Administrador: '+String(p.tierUpdatedBy):'';
+        const reason=p.tierReason?'Motivo: '+String(p.tierReason):'';
+        historyText.textContent=[who,reason].filter(Boolean).join(' • ') || 'Última atualização registrada.';
+      }
+    }
+    if(msg && !window.usuarioId){
+      msg.textContent='Faça login para consultar o status da sua conta.';
+      msg.classList.remove('is-success','is-error');
+    }
+  };
+
+  // Não inventa uma sincronização com o Catarse: este botão apenas recarrega
+  // os dados já disponíveis no Firestore. A integração real será adicionada
+  // quando houver um endpoint oficial/backend para isso.
+  window.atualizarCentralAssinatura=function(){
+    const msg=document.getElementById('subscription-center-message');
+    if(msg){
+      msg.textContent='Consultando os dados atuais da sua conta...';
+      msg.classList.remove('is-error','is-success');
+    }
+    try{
+      window.atualizarCentralAssinaturaUI?.();
+    }catch(_){}
+    setTimeout(()=>{
+      if(msg){
+        msg.textContent='Status atualizado com os dados disponíveis na conta.';
+        msg.classList.add('is-success');
+      }
+    },180);
+    if(typeof renderizarPerfilUI==='function'){
+      try{renderizarPerfilUI();}catch(_){}
+    }
+    setTimeout(()=>{ try{ renderizarCentralV8(); }catch(_){} },220);
+  };
+
+  function renderizarCentralV8(){
+    const root=document.getElementById('subscription-center');
+    if(!root)return;
+    const p=getProfileData();
+    const tier=V8_TIERS[p.supporterTier]?p.supporterTier:'none';
+    const info=V8_TIERS[tier];
+    const set=(id,v)=>{const e=document.getElementById(id);if(e)e.textContent=v;};
+    set('subscription-tier-badge',info.badge);
+    set('subscription-center-tier',info.name);
+    set('subscription-center-status',V8_STATUS[p.subscriptionStatus]||(tier==='none'?'Sem assinatura':'Ativa'));
+    set('subscription-center-source',V8_SOURCE[p.tierSource]||(tier==='none'?'—':'Manual'));
+    set('subscription-center-updated',formatDate(p.tierUpdatedAt||p.updatedAt));
+    const b=document.getElementById('subscription-benefits-list');
+    if(b)b.innerHTML=info.benefits.map(x=>`<span class="subscription-benefit">${x}</span>`).join('');
+    const h=document.getElementById('subscription-history');
+    const ht=document.getElementById('subscription-history-text');
+    const has=!!(p.tierUpdatedAt||p.tierUpdatedBy||p.tierReason);
+    if(h)h.style.display=has?'block':'none';
+    if(ht&&has)ht.textContent=[p.tierUpdatedBy?'Administrador: '+p.tierUpdatedBy:'',p.tierReason?'Motivo: '+p.tierReason:''].filter(Boolean).join(' • ')||'Última atualização registrada.';
+  }
+
+  window.renderizarCentralV8=renderizarCentralV8;
+  window.atualizarCentralAssinaturaUI=renderizarCentralV8;
+
+  // Atualiza quando a aba de apoio é aberta e depois de alterações de perfil.
+  const oldMudarAba=window.mudarAba;
+  if(typeof oldMudarAba==='function'){
+    window.mudarAba=function(aba){
+      const r=oldMudarAba.apply(this,arguments);
+      if(aba==='apoio')setTimeout(renderizarCentralV8,80);
+      return r;
+    };
+  }
+
+  document.addEventListener('DOMContentLoaded',()=>{
+    renderizarCentralV8();
+    setTimeout(renderizarCentralV8,600);
+  });
+  setTimeout(renderizarCentralV8,1200);
+})();
+</script>
 </body>
 </html>
