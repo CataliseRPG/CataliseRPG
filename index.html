@@ -2619,8 +2619,7 @@ body.page-effect-static .catalise-page-effects::after{
         </div>
         <div id="catarse-link-meta" class="support-link-meta"></div>
         <p id="catarse-link-help" class="support-link-help">
-          Depois do vínculo, a confirmação do plano será feita pelo mecanismo de integração do projeto.
-          Enquanto isso, nenhuma assinatura é considerada ativa apenas por informar um e-mail.
+          Depois de enviar o vínculo, a administração confere esse e-mail no Catarse. Se a assinatura existir e estiver regular, o vínculo será confirmado e o tier correspondente será liberado manualmente. Informar um e-mail, sozinho, nunca concede benefício.
         </p>
       </section>
 
@@ -2661,6 +2660,44 @@ body.page-effect-static .catalise-page-effects::after{
 
       <!-- ADMINISTRAÇÃO: visível exclusivamente dentro da aba "Apoie o Projeto" -->
       <div id="support-admin-divider" class="support-admin-divider" aria-hidden="true" style="display:none;"><span>ADMINISTRAÇÃO DO APOIO</span></div>
+      <section id="admin-catarse-panel" class="card-ficha admin-tier-panel" style="display:none;">
+          <div class="admin-tier-kicker">✦ CONFERÊNCIA CATARSE</div>
+          <h3 style="margin-top:4px;">VALIDAR VÍNCULO DE APOIO</h3>
+          <p class="profile-help">Pesquise pelo e-mail informado no Catarse. A confirmação aqui apenas valida o vínculo; o tier continua sendo concedido separadamente pelo painel de gerenciamento manual.</p>
+
+          <div class="admin-tier-grid">
+            <label>E-mail informado no Catarse
+              <input id="admin-catarse-email" type="email" placeholder="apoiador@exemplo.com" autocomplete="off" data-enter-ready>
+            </label>
+            <button type="button" class="vt-mini-btn admin-tier-search-btn" id="admin-catarse-search-btn" onclick="buscarVinculoCatarseAdmin()">LOCALIZAR VÍNCULO</button>
+          </div>
+
+          <div id="admin-catarse-target-card" class="admin-tier-target-card" style="display:none;">
+            <div>
+              <strong id="admin-catarse-target-name">—</strong>
+              <small id="admin-catarse-target-email">—</small>
+              <small id="admin-catarse-target-uid">—</small>
+            </div>
+            <div class="admin-tier-meta">
+              <div class="meta-box"><b>STATUS</b><span id="admin-catarse-status-label">—</span></div>
+              <div class="meta-box"><b>PLANO REGISTRADO</b><span id="admin-catarse-plan-label">—</span></div>
+            </div>
+            <div class="profile-help" style="margin-top:12px;">E-mail do Catarse: <strong id="admin-catarse-link-email">—</strong><br>Solicitado em: <strong id="admin-catarse-requested-at">—</strong></div>
+            <label style="display:grid;gap:7px;margin-top:12px;">Plano confirmado no Catarse (opcional)
+              <input id="admin-catarse-plan" type="text" maxlength="120" placeholder="Ex.: Oficiante / R$ 15 por mês">
+            </label>
+            <label style="display:grid;gap:7px;margin-top:12px;">Observação da conferência (opcional)
+              <input id="admin-catarse-note" type="text" maxlength="180" placeholder="Ex.: assinatura ativa conferida em 12/08/2026">
+            </label>
+            <div class="admin-tier-actions">
+              <button type="button" class="btn-main" id="admin-catarse-verify-btn" onclick="confirmarVinculoCatarseAdmin()">✓ CONFIRMAR VÍNCULO</button>
+              <button type="button" class="vt-mini-btn btn-danger" id="admin-catarse-unlink-btn" onclick="desvincularCatarseAdmin()">DESVINCULAR</button>
+              <button type="button" class="vt-mini-btn" onclick="limparVinculoCatarseAdmin()">LIMPAR</button>
+            </div>
+            <div id="admin-catarse-status" class="admin-tier-status" aria-live="polite"></div>
+          </div>
+      </section>
+
       <section id="admin-tier-panel" class="card-ficha admin-tier-panel" style="display:none;">
           <div class="admin-tier-kicker">☩ ÁREA DE ADMINISTRAÇÃO</div>
           <h3 style="margin-top:4px;">GERENCIAR APOIADORES</h3>
@@ -3942,12 +3979,22 @@ body.page-effect-static .catalise-page-effects::after{
         console.error('Erro ao salvar vínculo Catarse:',e);
         sitePopup(e?.message||'Não foi possível registrar o vínculo com o Catarse.',{title:'ERRO NO VÍNCULO'});
       }finally{
-        if(btn){btn.disabled=false;btn.textContent='VINCULAR CONTA';}
+        if(btn){btn.disabled=false;btn.textContent=(window.perfilAtual?.catarseLinkStatus==='verified'?'ATUALIZAR VÍNCULO':'VINCULAR CONTA');}
       }
     };
 
     function atualizarAcessoAssinatura(){
       renderizarVinculoCatarse();
+      const adminCatarse=document.getElementById('admin-catarse-panel');
+      const adminDivider=document.getElementById('support-admin-divider');
+      const adminTier=document.getElementById('admin-tier-panel');
+      if(adminCatarse||adminTier||adminDivider){
+        usuarioEhAdministrador().then(ok=>{
+          if(adminCatarse)adminCatarse.style.display=ok?'block':'none';
+          if(adminTier)adminTier.style.display=ok?'block':'none';
+          if(adminDivider)adminDivider.style.display=ok?'flex':'none';
+        }).catch(()=>{});
+      }
       const tier=String(window.perfilAtual?.supporterTier||'none').toLowerCase();
       const rank=SUPPORTER_RANK[tier]??0;
       const tierEl=document.getElementById('support-current-tier');
@@ -3986,6 +4033,84 @@ body.page-effect-static .catalise-page-effects::after{
       el.innerHTML=`<button class="header-user-button" type="button" onclick="mudarAba('perfil')">${img}<span class="status-dot"></span><span>${String(window.usuarioAtual||'Investigador').replace(/</g,'&lt;')}</span></button><button onclick="fazerLogout()" style="background:none;border:none;color:#ff8d95;cursor:pointer;font-size:0.8em;margin-left:5px;">[Sair]</button>`;
     }
 
+
+    function formatarDataAdmin(value){
+      if(!value)return '—';
+      try{
+        if(typeof value?.toDate==='function')return value.toDate().toLocaleString('pt-BR');
+        const d=new Date(value); if(Number.isNaN(d.getTime()))return String(value); return d.toLocaleString('pt-BR');
+      }catch(e){return String(value);}
+    }
+
+    function limparVinculoCatarseAdmin(){
+      window.adminCatarseTarget=null;
+      ['admin-catarse-target-card','admin-catarse-plan','admin-catarse-note'].forEach(id=>{const el=document.getElementById(id);if(el&&id==='admin-catarse-target-card')el.style.display='none';else if(el)el.value='';});
+      const input=document.getElementById('admin-catarse-email');if(input){input.value='';input.focus();}
+      const status=document.getElementById('admin-catarse-status');if(status){status.textContent='';status.classList.remove('is-success');}
+    }
+
+    function mostrarVinculoCatarseAdmin(data){
+      window.adminCatarseTarget=data;
+      const card=document.getElementById('admin-catarse-target-card');if(card)card.style.display='block';
+      const name=document.getElementById('admin-catarse-target-name');if(name)name.textContent=String(data.nome||'Investigador');
+      const email=document.getElementById('admin-catarse-target-email');if(email)email.textContent=String(data.email||'Sem e-mail da conta');
+      const uid=document.getElementById('admin-catarse-target-uid');if(uid)uid.textContent='UID: '+String(data.uid||'');
+      const status=document.getElementById('admin-catarse-status-label');
+      const statusValue=String(data.catarseLinkStatus||'unlinked');
+      if(status)status.textContent=statusValue==='verified'?'CONFIRMADO':statusValue==='pending'?'AGUARDANDO CONFERÊNCIA':'NÃO VINCULADO';
+      const plan=document.getElementById('admin-catarse-plan-label');if(plan)plan.textContent=String(data.catarseVerifiedPlan||data.catarsePlan||'—');
+      const linkEmail=document.getElementById('admin-catarse-link-email');if(linkEmail)linkEmail.textContent=String(data.catarseEmail||'—');
+      const requested=document.getElementById('admin-catarse-requested-at');if(requested)requested.textContent=formatarDataAdmin(data.catarseLinkRequestedAt||data.catarseLinkedAt);
+      const planInput=document.getElementById('admin-catarse-plan');if(planInput)planInput.value=String(data.catarseVerifiedPlan||'');
+      const note=document.getElementById('admin-catarse-note');if(note)note.value=String(data.catarseAdminNote||'');
+      const msg=document.getElementById('admin-catarse-status');if(msg){msg.textContent=statusValue==='verified'?'Vínculo já confirmado. Você pode atualizar a conferência ou desvincular.':'Conta localizada. Confira a assinatura no Catarse e confirme o vínculo.';msg.classList.remove('is-success');}
+    }
+
+    window.buscarVinculoCatarseAdmin=async function(){
+      if(!(await usuarioEhAdministrador()))return sitePopup('Sua conta não possui permissão administrativa.',{title:'ACESSO RESTRITO'});
+      const raw=String(document.getElementById('admin-catarse-email')?.value||'').trim().toLowerCase();
+      if(!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(raw))return sitePopup('Digite um e-mail válido do Catarse.',{title:'CONFERÊNCIA CATARSE'});
+      const btn=document.getElementById('admin-catarse-search-btn');if(btn){btn.disabled=true;btn.textContent='LOCALIZANDO…';}
+      try{
+        const q=query(collection(db,'usuarios'),where('catarseEmail','==',raw));
+        const result=await getDocs(q);
+        if(result.empty){limparVinculoCatarseAdmin();return sitePopup('Nenhuma conta do Catálise informou esse e-mail como e-mail do Catarse.',{title:'VÍNCULO NÃO ENCONTRADO'});}
+        const snap=result.docs[0];mostrarVinculoCatarseAdmin({uid:snap.id,...snap.data()});
+      }catch(e){console.error('Erro ao localizar vínculo Catarse:',e);sitePopup(e?.message||'Não foi possível localizar o vínculo.',{title:'ERRO NA CONFERÊNCIA'});}
+      finally{if(btn){btn.disabled=false;btn.textContent='LOCALIZAR VÍNCULO';}}
+    };
+
+    window.confirmarVinculoCatarseAdmin=async function(){
+      if(!(await usuarioEhAdministrador()))return sitePopup('Sua conta não possui permissão administrativa.',{title:'ACESSO RESTRITO'});
+      const target=window.adminCatarseTarget;if(!target?.uid)return sitePopup('Primeiro localize um vínculo.',{title:'CONFERÊNCIA CATARSE'});
+      const plan=(document.getElementById('admin-catarse-plan')?.value||'').trim();
+      const note=(document.getElementById('admin-catarse-note')?.value||'').trim();
+      const ok=await window.vtPopupConfirm(`Confirmar o vínculo do e-mail ${target.catarseEmail||'informado'} com a conta ${target.nome||'selecionada'}?\n\nIsso apenas valida a assinatura; o tier continuará sendo concedido pelo painel manual.`,{title:'CONFIRMAR VÍNCULO CATARSE',okText:'CONFIRMAR',cancelText:'CANCELAR'});
+      if(!ok)return;
+      const btn=document.getElementById('admin-catarse-verify-btn');if(btn){btn.disabled=true;btn.textContent='CONFIRMANDO…';}
+      const payload={catarseLinkStatus:'verified',catarseVerifiedAt:serverTimestamp(),catarseVerifiedBy:window.usuarioId,catarseVerifiedEmail:String(target.catarseEmail||''),catarseVerifiedPlan:plan,catarseAdminNote:note||'Vínculo confirmado manualmente pelo administrador.'};
+      try{
+        await setDoc(doc(db,'usuarios',target.uid),payload,{merge:true});
+        window.adminCatarseTarget={...target,...payload};
+        mostrarVinculoCatarseAdmin(window.adminCatarseTarget);
+        if(target.uid===window.usuarioId){window.perfilAtual={...window.perfilAtual,...payload};renderizarVinculoCatarse();}
+        const msg=document.getElementById('admin-catarse-status');if(msg){msg.textContent='✓ Vínculo confirmado. Agora, se necessário, aplique o tier no painel de gerenciamento abaixo.';msg.classList.add('is-success');}
+      }catch(e){console.error('Erro ao confirmar vínculo:',e);sitePopup(e?.message||'Não foi possível confirmar o vínculo.',{title:'ERRO AO CONFIRMAR'});}
+      finally{if(btn){btn.disabled=false;btn.textContent='✓ CONFIRMAR VÍNCULO';}}
+    };
+
+    window.desvincularCatarseAdmin=async function(){
+      if(!(await usuarioEhAdministrador()))return sitePopup('Sua conta não possui permissão administrativa.',{title:'ACESSO RESTRITO'});
+      const target=window.adminCatarseTarget;if(!target?.uid)return sitePopup('Primeiro localize um vínculo.',{title:'CONFERÊNCIA CATARSE'});
+      const ok=await window.vtPopupConfirm(`Desvincular o Catarse da conta ${target.nome||'selecionada'}?\n\nIsso remove a confirmação do vínculo, mas não altera automaticamente o tier já concedido.`,{title:'DESVINCULAR CATARSE',okText:'DESVINCULAR',cancelText:'CANCELAR',danger:true});
+      if(!ok)return;
+      try{
+        const payload={catarseLinkStatus:'unlinked',catarseVerifiedAt:null,catarseVerifiedBy:null,catarseVerifiedEmail:'',catarseVerifiedPlan:'',catarseAdminNote:'Vínculo removido manualmente pelo administrador.'};
+        await setDoc(doc(db,'usuarios',target.uid),payload,{merge:true});
+        window.adminCatarseTarget={...target,...payload};mostrarVinculoCatarseAdmin(window.adminCatarseTarget);
+        const msg=document.getElementById('admin-catarse-status');if(msg){msg.textContent='Vínculo removido. O tier não foi alterado automaticamente.';msg.classList.add('is-success');}
+      }catch(e){console.error('Erro ao desvincular Catarse:',e);sitePopup(e?.message||'Não foi possível desvincular o Catarse.',{title:'ERRO AO DESVINCULAR'});}
+    };
 
     // =========================================================
     // ADMINISTRAÇÃO DE TIERS — V5
