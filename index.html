@@ -928,7 +928,68 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 .profile-upload-status.is-success{color:#70d4bc;border-color:rgba(112,212,188,.28)}
 .profile-upload-status.is-error{color:#ff8d95;border-color:rgba(255,141,149,.28)}
 #profile-banner-preview.has-banner{background-size:cover;background-position:center;background-repeat:no-repeat}
-</style></head>
+</style>
+<style id="catalise-v5-admin-tier-css">
+.admin-tier-panel{
+  border-color:rgba(212,181,96,.28);
+  background:linear-gradient(145deg,rgba(16,25,26,.98),rgba(9,17,19,.98));
+}
+.admin-tier-kicker{
+  color:#d4b560;
+  font-size:.68rem;
+  letter-spacing:.18em;
+  font-weight:800;
+}
+.admin-tier-grid{
+  display:grid;
+  grid-template-columns:minmax(0,1fr) auto;
+  gap:12px;
+  align-items:end;
+}
+.admin-tier-grid label,
+.admin-tier-controls label{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.admin-tier-target-card{
+  margin-top:14px;
+  padding:14px;
+  border:1px solid rgba(86,184,168,.18);
+  background:rgba(4,13,15,.65);
+  border-radius:6px;
+}
+.admin-tier-target-card>div:first-child{
+  display:flex;
+  flex-direction:column;
+  gap:4px;
+  margin-bottom:12px;
+}
+.admin-tier-target-card strong{font-size:.95rem;color:#dce9e5}
+.admin-tier-target-card small{font-size:.72rem;color:#75958e}
+.admin-tier-controls{
+  display:grid;
+  grid-template-columns:1fr 1fr;
+  gap:12px;
+}
+.admin-tier-actions{
+  display:flex;
+  gap:10px;
+  margin-top:14px;
+  flex-wrap:wrap;
+}
+.admin-tier-status{
+  margin-top:10px;
+  min-height:1.2em;
+  font-size:.72rem;
+  color:#7da49b;
+}
+.admin-tier-status.is-success{color:#70d4bc}
+@media(max-width:700px){
+  .admin-tier-grid,.admin-tier-controls{grid-template-columns:1fr}
+}
+</style>
+</head>
 <body>
   <header class="site-header">
     <div class="header-inner">
@@ -1180,6 +1241,53 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         </section>
       </div>
     </div>
+
+
+        <section id="admin-tier-panel" class="card-ficha admin-tier-panel" style="display:none;">
+          <div class="admin-tier-kicker">☩ ÁREA DE ADMINISTRAÇÃO</div>
+          <h3 style="margin-top:4px;">GERENCIAR APOIADORES</h3>
+          <p class="profile-help">Use esta área para testes e concessões manuais. Somente contas marcadas como administradoras no Firestore conseguem alterar tiers.</p>
+
+          <div class="admin-tier-grid">
+            <label>UID ou e-mail da conta
+              <input id="admin-tier-target" type="text" placeholder="UID ou e-mail do usuário" data-enter-ready>
+            </label>
+            <button type="button" class="vt-mini-btn admin-tier-search-btn" onclick="buscarUsuarioParaTier()">LOCALIZAR CONTA</button>
+          </div>
+
+          <div id="admin-tier-target-card" class="admin-tier-target-card" style="display:none;">
+            <div>
+              <strong id="admin-tier-target-name">—</strong>
+              <small id="admin-tier-target-email">—</small>
+              <small id="admin-tier-target-uid">—</small>
+            </div>
+            <div class="admin-tier-controls">
+              <label>Nível
+                <select id="admin-tier-select">
+                  <option value="none">Nenhum / gratuito</option>
+                  <option value="devoto">Devoto · R$ 5</option>
+                  <option value="oficiante">Oficiante · R$ 15</option>
+                  <option value="arquiteto">Arquiteto · R$ 30</option>
+                  <option value="arauto">Arauto · R$ 50</option>
+                </select>
+              </label>
+              <label>Status da assinatura
+                <select id="admin-subscription-status">
+                  <option value="manual">Manual / teste</option>
+                  <option value="active">Ativa</option>
+                  <option value="pending">Pendente</option>
+                  <option value="cancelled">Cancelada</option>
+                  <option value="expired">Expirada</option>
+                </select>
+              </label>
+            </div>
+            <div class="admin-tier-actions">
+              <button type="button" class="btn-main" onclick="salvarTierAdministrativo()">✦ APLICAR NÍVEL</button>
+              <button type="button" class="vt-mini-btn" onclick="limparAlvoTier()">LIMPAR</button>
+            </div>
+            <div id="admin-tier-status" class="admin-tier-status"></div>
+          </div>
+        </section>
 
     <div id="aba-apoio" class="tab-content">
       <section class="card-ficha support-hero">
@@ -2384,6 +2492,147 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       el.innerHTML=`<button class="header-user-button" type="button" onclick="mudarAba('perfil')">${img}<span class="status-dot"></span><span>${String(window.usuarioAtual||'Investigador').replace(/</g,'&lt;')}</span></button><button onclick="fazerLogout()" style="background:none;border:none;color:#ff8d95;cursor:pointer;font-size:0.8em;margin-left:5px;">[Sair]</button>`;
     }
 
+
+    // =========================================================
+    // ADMINISTRAÇÃO DE TIERS — V5
+    // A segurança real fica nas Firestore Rules. Este painel
+    // apenas chama o Firestore; ele não contém credenciais secretas.
+    // Para criar o primeiro administrador, crie manualmente:
+    // administradores/{UID} = { ativo: true }
+    // no Firebase Console. O próprio documento não pode ser criado
+    // pelo navegador.
+    // =========================================================
+    const ADMIN_TIER_VALUES = new Set(['none','devoto','oficiante','arquiteto','arauto']);
+    const ADMIN_STATUS_VALUES = new Set(['manual','active','pending','cancelled','expired']);
+
+    async function usuarioEhAdministrador(uid=window.usuarioId){
+      if(!uid)return false;
+      try{
+        const snap=await getDoc(doc(db,'administradores',String(uid)));
+        return snap.exists() && snap.data()?.ativo===true;
+      }catch(e){
+        console.warn('Não foi possível verificar administrador:',e);
+        return false;
+      }
+    }
+
+    async function atualizarPainelAdministrador(){
+      const panel=document.getElementById('admin-tier-panel');
+      if(!panel)return;
+      const admin=await usuarioEhAdministrador();
+      panel.style.display=admin?'block':'none';
+      window.ehAdministrador=admin;
+    }
+
+    function limparAlvoTier(){
+      window.adminTierTarget=null;
+      const card=document.getElementById('admin-tier-target-card');
+      if(card)card.style.display='none';
+      const input=document.getElementById('admin-tier-target');
+      if(input)input.value='';
+      const status=document.getElementById('admin-tier-status');
+      if(status)status.textContent='';
+    }
+
+    function mostrarAlvoTier(data){
+      window.adminTierTarget=data;
+      const card=document.getElementById('admin-tier-target-card');
+      if(card)card.style.display='block';
+      const name=document.getElementById('admin-tier-target-name');
+      const email=document.getElementById('admin-tier-target-email');
+      const uid=document.getElementById('admin-tier-target-uid');
+      if(name)name.textContent=String(data.nome||'Investigador');
+      if(email)email.textContent=String(data.email||'Sem e-mail registrado');
+      if(uid)uid.textContent='UID: '+String(data.uid||'');
+      const tier=document.getElementById('admin-tier-select');
+      if(tier)tier.value=ADMIN_TIER_VALUES.has(String(data.supporterTier||'none'))?String(data.supporterTier):'none';
+      const status=document.getElementById('admin-subscription-status');
+      if(status)status.value=ADMIN_STATUS_VALUES.has(String(data.subscriptionStatus||'manual'))?String(data.subscriptionStatus):'manual';
+      const msg=document.getElementById('admin-tier-status');
+      if(msg)msg.textContent='Conta localizada. Escolha o nível e aplique a alteração.';
+    }
+
+    window.buscarUsuarioParaTier=async function(){
+      if(!(await usuarioEhAdministrador())){
+        return sitePopup('Sua conta não possui permissão administrativa.',{title:'ACESSO RESTRITO'});
+      }
+      const raw=document.getElementById('admin-tier-target')?.value.trim();
+      if(!raw)return sitePopup('Digite o UID ou o e-mail da conta.',{title:'GERENCIAR TIERS'});
+
+      try{
+        let snap=null;
+        if(raw.includes('@')){
+          const q=query(collection(db,'usuarios'),where('email','==',raw.toLowerCase()));
+          const result=await getDocs(q);
+          if(!result.empty)snap=result.docs[0];
+        }else{
+          const direct=await getDoc(doc(db,'usuarios',raw));
+          if(direct.exists())snap=direct;
+        }
+
+        if(!snap){
+          return sitePopup('Nenhuma conta foi encontrada com esse UID/e-mail.',{title:'CONTA NÃO ENCONTRADA'});
+        }
+
+        mostrarAlvoTier({uid:snap.id,...snap.data()});
+      }catch(e){
+        console.error(e);
+        sitePopup(e?.message||'Não foi possível localizar a conta.',{title:'ERRO AO LOCALIZAR'});
+      }
+    };
+
+    window.salvarTierAdministrativo=async function(){
+      if(!(await usuarioEhAdministrador())){
+        return sitePopup('Sua conta não possui permissão administrativa.',{title:'ACESSO RESTRITO'});
+      }
+      const target=window.adminTierTarget;
+      if(!target?.uid)return sitePopup('Primeiro localize uma conta.',{title:'GERENCIAR TIERS'});
+
+      const tier=document.getElementById('admin-tier-select')?.value||'none';
+      const subscriptionStatus=document.getElementById('admin-subscription-status')?.value||'manual';
+      if(!ADMIN_TIER_VALUES.has(tier)||!ADMIN_STATUS_VALUES.has(subscriptionStatus)){
+        return sitePopup('Nível ou status inválido.',{title:'DADOS INVÁLIDOS'});
+      }
+
+      const now=new Date().toISOString();
+      const payload={
+        supporterTier:tier,
+        subscriptionStatus,
+        subscriptionPlan:tier,
+        tierSource:'manual_admin',
+        tierUpdatedAt:now,
+        tierUpdatedBy:window.usuarioId
+      };
+
+      try{
+        await setDoc(doc(db,'usuarios',target.uid),payload,{merge:true});
+        await setDoc(doc(db,'perfisPublicos',target.uid),payload,{merge:true});
+        window.adminTierTarget={...target,...payload};
+
+        const msg=document.getElementById('admin-tier-status');
+        if(msg){
+          msg.textContent=`✓ ${SUPPORTER_LABEL[tier]||'INVESTIGADOR'} aplicado.`;
+          msg.classList.add('is-success');
+        }
+
+        // Se o administrador estiver alterando o próprio usuário,
+        // atualiza a interface imediatamente.
+        if(target.uid===window.usuarioId){
+          window.perfilAtual={...window.perfilAtual,...payload};
+          renderizarPerfilUI();
+          atualizarAcessoAssinatura();
+        }
+
+        await sitePopup(
+          `${SUPPORTER_LABEL[tier]||'INVESTIGADOR'} foi aplicado à conta selecionada.`,
+          {title:'TIER ATUALIZADO',okText:'CONTINUAR'}
+        );
+      }catch(e){
+        console.error(e);
+        sitePopup(e?.message||'Não foi possível atualizar o tier.',{title:'ERRO AO ATUALIZAR'});
+      }
+    };
+
     function bindProfileUploads(){
       const av=document.getElementById('profile-avatar-upload');
       const ba=document.getElementById('profile-banner-upload');
@@ -2528,6 +2777,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       const nome=user.displayName||user.email?.split('@')[0]||'Investigador';
       await criarPerfilUsuario(user,nome);
       await carregarPerfilUsuario(user);
+      await atualizarPainelAdministrador();
       bindProfileUploads();
       await verificarPerfilPublicoSolicitado();
       await migrarDadosLegados(user,nome);
