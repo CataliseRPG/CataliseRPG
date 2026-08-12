@@ -725,6 +725,25 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 .vt-cloud-badge{color:#6ed8c1;font:600 8px 'DM Mono';letter-spacing:.06em}
 
 </style>
+
+<style id="vt-popup-theme">
+  .vt-popup-overlay{position:fixed;inset:0;z-index:100000;display:none;align-items:center;justify-content:center;padding:20px;background:rgba(0,8,10,.72);backdrop-filter:blur(6px);-webkit-backdrop-filter:blur(6px)}
+  .vt-popup-overlay.show{display:flex;animation:vtPopupFade .16s ease-out}
+  .vt-popup-card{width:min(440px,calc(100vw - 34px));background:linear-gradient(145deg,rgba(7,28,30,.98),rgba(4,18,21,.99));border:1px solid rgba(73,194,179,.42);border-radius:12px;box-shadow:0 18px 55px rgba(0,0,0,.62),0 0 0 1px rgba(0,0,0,.45) inset;color:#dcebea;overflow:hidden;font-family:inherit}
+  .vt-popup-head{display:flex;align-items:center;gap:11px;padding:16px 18px 12px;border-bottom:1px solid rgba(73,194,179,.16)}
+  .vt-popup-mark{width:30px;height:30px;border:1px solid rgba(83,202,186,.5);border-radius:50%;display:grid;place-items:center;color:#65cbbd;font-size:14px;flex:0 0 auto;background:rgba(54,151,143,.09)}
+  .vt-popup-title{font-size:12px;letter-spacing:1.4px;text-transform:uppercase;font-weight:800;color:#72d0c0}
+  .vt-popup-body{padding:17px 18px 18px;font-size:13px;line-height:1.55;color:#c8d9d7;white-space:pre-line}
+  .vt-popup-actions{display:flex;justify-content:flex-end;gap:9px;padding:0 18px 16px}
+  .vt-popup-btn{appearance:none;border:1px solid rgba(75,190,177,.42);border-radius:7px;padding:9px 16px;background:rgba(14,57,60,.55);color:#d8ebe8;font:700 11px/1 inherit;letter-spacing:.7px;text-transform:uppercase;cursor:pointer;transition:.15s ease;min-width:82px}
+  .vt-popup-btn:hover{border-color:#59c9bb;background:rgba(28,91,91,.72);transform:translateY(-1px)}
+  .vt-popup-btn.primary{background:linear-gradient(180deg,#217d7c,#176467);border-color:#4fc4b7;color:#effffc;box-shadow:0 4px 16px rgba(39,159,148,.18)}
+  .vt-popup-btn.danger{border-color:rgba(201,93,93,.48);color:#f1caca;background:rgba(89,30,32,.32)}
+  .vt-popup-btn.danger:hover{border-color:#d27676;background:rgba(112,39,42,.48)}
+  @keyframes vtPopupFade{from{opacity:0}to{opacity:1}}
+  @media(max-width:600px){.vt-popup-overlay{padding:12px;align-items:flex-end}.vt-popup-card{width:100%;border-radius:12px 12px 8px 8px}.vt-popup-actions{padding-bottom:14px}.vt-popup-btn{min-height:42px}}
+</style>
+
 </head>
 <body>
   <header class="site-header">
@@ -2903,27 +2922,46 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     }
 
     async function vtDedupeNewTokenBurst(tokens){
-      // Limpa cópias idênticas criadas quase no mesmo instante por versões
-      // anteriores do botão. Só considera documentos criados em uma janela
-      // curta e com exatamente os mesmos dados visuais, preservando um deles.
+      // O Firestore é a fonte única de verdade. Se alguma versão anterior
+      // do código conseguiu gravar o mesmo token mais de uma vez, mantemos
+      // somente UM documento com os mesmos dados visuais.
+      //
+      // Importante: a versão anterior apagava os documentos duplicados, mas
+      // continuava renderizando o array antigo contendo as cópias. Isso fazia
+      // parecer que cada novo token ainda virava 3 ou mais tokens.
       const groups=new Map();
+      const signature=t=>JSON.stringify([
+        String(t.name||'').trim().toLowerCase(),
+        String(t.color||''),
+        String(t.image||''),
+        String(t.imagePath||''),
+        Math.round(Number(t.x)||0),
+        Math.round(Number(t.y)||0),
+        Number(t.size)||64,
+        Number(t.rotation)||0,
+        Array.isArray(t.editableBy)?[...t.editableBy].sort():[],
+        String(t.createdBy||'')
+      ]);
       for(const t of tokens){
-        if(!t.createdAt || !t.creationKey) continue;
-        const sig=JSON.stringify([t.name,t.color,t.image,t.imagePath,Math.round(t.x),Math.round(t.y),t.size,t.rotation,JSON.stringify(t.editableBy||[]),t.createdBy]);
+        const sig=signature(t);
         if(!groups.has(sig))groups.set(sig,[]);
         groups.get(sig).push(t);
       }
+
+      const keepers=[];
       for(const group of groups.values()){
-        if(group.length<2)continue;
-        const times=group.map(t=>t.createdAt).sort((a,b)=>a-b);
-        if(times[times.length-1]-times[0]>5000)continue;
-        const keep=group.slice().sort((a,b)=>a.createdAt-b.createdAt)[0];
-        for(const dup of group){
-          if(dup.id===keep.id)continue;
-          try{await deleteDoc(doc(db,'campanhas',String(window.campanhaAtualId),'tabletopTokens',dup.id));}
-          catch(e){console.warn('Não foi possível remover cópia duplicada do token:',e);}
+        group.sort((a,b)=>Number(a.createdAt||0)-Number(b.createdAt||0) || String(a.id).localeCompare(String(b.id)));
+        const keep=group[0];
+        keepers.push(keep);
+        for(const dup of group.slice(1)){
+          try{
+            await deleteDoc(doc(db,'campanhas',String(window.campanhaAtualId),'tabletopTokens',dup.id));
+          }catch(e){
+            console.warn('Não foi possível remover token duplicado:',dup.id,e);
+          }
         }
       }
+      return keepers;
     }
 
     function vtSubscribeCampaign(){
@@ -2950,8 +2988,8 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         }
       },err=>{console.error(err);vtSetStatus('SEM ACESSO À MESA',true);});
       const u2=onSnapshot(tokensRef,async snap=>{
-        const tokens=[];snap.forEach(ds=>tokens.push(vtNormalizeToken(ds.data())));
-        await vtDedupeNewTokenBurst(tokens);
+        let tokens=[];snap.forEach(ds=>tokens.push(vtNormalizeToken(ds.data())));
+        tokens=await vtDedupeNewTokenBurst(tokens);
         if(!window.vtState)window.vtState=vtDefaultState();
         window.vtState.tokens=tokens;
         if(window.vtSelectedTokenId&&!tokens.some(t=>t.id===window.vtSelectedTokenId))window.vtSelectedTokenId=null;
@@ -3105,7 +3143,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     };
 
     window.limparMapaTabletop=async function(){
-      if(!window.vtState||!window.eMestreDaMesaAtual)return alert('Somente o Mestre pode remover o mapa.');
+      if(!window.vtState||!window.eMestreDaMesaAtual){vtPopup('Somente o Mestre pode trocar o mapa nesta campanha.',{title:'MAPA'});return;}
       const oldPath=window.vtState.mapPath;
       window.vtState.mapUrl='';window.vtState.mapPath='';window.vtState.mapName='';window.vtState.mapWidth=2000;window.vtState.mapHeight=1200;
       vtInitialiseMap();window.resetarCameraTabletop();await vtSaveState();await vtDeleteStorageFile(oldPath);
@@ -3207,13 +3245,15 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       token.name=document.getElementById('vt-edit-name').value.trim()||token.name;token.color=document.getElementById('vt-edit-color').value||token.color;token.size=Number(document.getElementById('vt-edit-size').value)||64;token.rotation=Number(document.getElementById('vt-edit-rotation').value)||0;
       const file=document.getElementById('vt-edit-image-upload').files?.[0];
       if(file){
-        vtSetStatus('ENVIANDO IMAGEM…');try{const result=await vtUploadImage(file,'tokens',500,500,.86);const old=token.imagePath;token.image=result.url;token.imagePath=result.path;await vtDeleteStorageFile(old);}catch(e){console.error(e);alert('Não foi possível enviar a imagem do token.');return;}document.getElementById('vt-edit-image-upload').value='';
+        vtSetStatus('ENVIANDO IMAGEM…');try{const result=await vtUploadImage(file,'tokens',500,500,.86);const old=token.imagePath;token.image=result.url;token.imagePath=result.path;await vtDeleteStorageFile(old);}catch(e){console.error(e);vtPopup('Não foi possível enviar a imagem do token.
+
+'+(e?.message||'Verifique sua conexão e tente novamente.'),{title:'IMAGEM DO TOKEN'});return;}document.getElementById('vt-edit-image-upload').value='';
       }
       vtRenderTokens();await vtSaveState();
     };
 
     window.criarTokenTabletop=async function(){
-      if(!window.vtState||!window.eMestreDaMesaAtual){alert('Somente o Mestre pode criar tokens neste momento.');return;}
+      if(!window.vtState||!window.eMestreDaMesaAtual){vtPopup('Somente o Mestre pode criar tokens neste momento.',{title:'TOKEN'});return;}
       // Trava dupla: evita criação múltipla por toque duplo, Enter + clique,
       // ou eventos repetidos enquanto o upload/Firestore ainda está processando.
       if(window.vtCreatingToken)return;
@@ -3221,11 +3261,16 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       if(addButton?.dataset.uploading==='1')return;
       const nameEl=document.getElementById('vt-token-name'),colorEl=document.getElementById('vt-token-color'),fileEl=document.getElementById('vt-token-upload');
       const name=nameEl?.value.trim();
-      if(!name){alert('Digite o nome do token.');nameEl?.focus();return;}
-      if(!window.campanhaAtualId){alert('A campanha ainda não foi identificada. Feche e abra a campanha novamente.');return;}
+      if(!name){vtPopup('Digite o nome do token para continuar.',{title:'NOVO TOKEN'});nameEl?.focus();return;}
+      if(!window.campanhaAtualId){vtPopup('A campanha ainda não foi identificada. Feche e abra a campanha novamente.',{title:'CAMPANHA'});return;}
+      // Bloqueio síncrono antes de qualquer await. Também existe um pequeno
+      // cooldown para impedir duplo-toque/duplo-clique em celulares e trackpads.
+      const now=Date.now();
+      if(window.vtLastCreateStartedAt && now-window.vtLastCreateStartedAt<1200)return;
+      window.vtLastCreateStartedAt=now;
       window.vtCreatingToken=true;
-      if(addButton){addButton.dataset.uploading='1';addButton.disabled=true;}
-      const creationKey=`${window.campanhaAtualId}:${Date.now()}:${Math.random().toString(36).slice(2,8)}`;
+      if(addButton){addButton.dataset.uploading='1';addButton.disabled=true;addButton.setAttribute('aria-disabled','true');}
+      const creationKey=`${window.campanhaAtualId}:${now}:${Math.random().toString(36).slice(2,8)}`;
       window.vtLastTokenCreationKey=creationKey;
       let token=null;
       try{
@@ -3256,7 +3301,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         console.error('Falha ao criar token:',e);
         if(token?.imagePath){try{await vtDeleteStorageFile(token.imagePath);}catch(_){} }
         vtSetStatus('ERRO AO CRIAR TOKEN',true);
-        alert(`Não foi possível criar o token.\n\n${e?.code||''} ${e?.message||'Verifique as permissões do Firestore e tente novamente.'}`);
+        vtPopup(`Não foi possível criar o token.\n\n${e?.code||''} ${e?.message||'Verifique as permissões do Firestore e tente novamente.'}`,{title:'ERRO AO CRIAR TOKEN'});
       }finally{
         window.vtCreatingToken=false;
         if(addButton){addButton.dataset.uploading='0';addButton.disabled=false;}
@@ -3270,7 +3315,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
     window.removerTokenTabletop=async function(id){
       if(!window.eMestreDaMesaAtual)return;const token=vtFindToken(id);if(!token)return;
-      if(!confirm(`Remover o token "${token.name}" da mesa?`))return;
+      if(!(await vtPopupConfirm(`Remover o token "${token.name}" da mesa?`,{title:'REMOVER TOKEN',okText:'REMOVER',cancelText:'CANCELAR',danger:true})))return;
       window.vtState.tokens=window.vtState.tokens.filter(t=>t.id!==id);if(window.vtSelectedTokenId===id)window.vtSelectedTokenId=null;vtRenderTokens();await vtSaveState();await vtDeleteStorageFile(token.imagePath);
     };
 
@@ -3383,7 +3428,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       const mapInput=document.getElementById('vt-map-upload'),tokenInput=document.getElementById('vt-token-upload'),viewport=document.getElementById('vt-viewport'),size=document.getElementById('vt-edit-size'),rotation=document.getElementById('vt-edit-rotation');
       if(size&&!size.dataset.bound){size.dataset.bound='1';size.addEventListener('input',()=>{const t=vtFindToken(window.vtSelectedTokenId);if(t&&vtCanEditToken(t)){t.size=Number(size.value);document.getElementById('vt-edit-size-label').textContent=`${t.size}px`;vtRenderTokens();}});}
       if(rotation&&!rotation.dataset.bound){rotation.dataset.bound='1';rotation.addEventListener('input',()=>{const t=vtFindToken(window.vtSelectedTokenId);if(t&&vtCanEditToken(t)){t.rotation=Number(rotation.value);document.getElementById('vt-edit-rotation-label').textContent=`${t.rotation}°`;vtRenderTokens();}});}
-      if(mapInput&&!mapInput.dataset.bound){mapInput.dataset.bound='1';mapInput.addEventListener('change',async()=>{if(!window.eMestreDaMesaAtual)return alert('Somente o Mestre pode trocar o mapa.');const file=mapInput.files?.[0];if(!file)return;if(mapInput.dataset.uploading==='1')return;mapInput.dataset.uploading='1';mapInput.disabled=true;vtSetStatus('ENVIANDO MAPA…');try{const r=await vtUploadImage(file,'mapas',2400,1800,.86);const old=window.vtState.mapPath;window.vtState.mapUrl=r.url;window.vtState.mapPath=r.path;window.vtState.mapName=file.name;window.vtState.mapWidth=r.width;window.vtState.mapHeight=r.height;vtInitialiseMap();window.resetarCameraTabletop();await vtSaveState();await vtDeleteStorageFile(old);mapInput.value='';}catch(e){console.error(e);alert(`Não foi possível enviar o mapa para a nuvem. ${e?.message||''}`);vtSetStatus('ERRO NO UPLOAD DO MAPA',true);}finally{mapInput.dataset.uploading='0';mapInput.disabled=false;}});}
+      if(mapInput&&!mapInput.dataset.bound){mapInput.dataset.bound='1';mapInput.addEventListener('change',async()=>{if(!window.eMestreDaMesaAtual){vtPopup('Somente o Mestre pode trocar o mapa nesta campanha.',{title:'MAPA'});return;}const file=mapInput.files?.[0];if(!file)return;if(mapInput.dataset.uploading==='1')return;mapInput.dataset.uploading='1';mapInput.disabled=true;vtSetStatus('ENVIANDO MAPA…');try{const r=await vtUploadImage(file,'mapas',2400,1800,.86);const old=window.vtState.mapPath;window.vtState.mapUrl=r.url;window.vtState.mapPath=r.path;window.vtState.mapName=file.name;window.vtState.mapWidth=r.width;window.vtState.mapHeight=r.height;vtInitialiseMap();window.resetarCameraTabletop();await vtSaveState();await vtDeleteStorageFile(old);mapInput.value='';}catch(e){console.error(e);vtPopup(`Não foi possível enviar o mapa para a nuvem.\n\n${e?.message||'Tente novamente.'}`,{title:'ERRO AO ENVIAR MAPA'});vtSetStatus('ERRO NO UPLOAD DO MAPA',true);}finally{mapInput.dataset.uploading='0';mapInput.disabled=false;}});}
       if(tokenInput&&!tokenInput.dataset.bound){tokenInput.dataset.bound='1';tokenInput.addEventListener('change',()=>{const file=tokenInput.files?.[0],label=document.querySelector('label[for="vt-token-upload"]');if(label)label.textContent=file?`▣ ${file.name}`:'▣ IMAGEM / AVATAR OPCIONAL';});}
       const editUpload=document.getElementById('vt-edit-image-upload');if(editUpload&&!editUpload.dataset.bound){editUpload.dataset.bound='1';editUpload.addEventListener('change',()=>{if(editUpload.files?.[0])salvarTokenEditadoTabletop();});}
       if(viewport&&!viewport.dataset.bound){viewport.dataset.bound='1';
@@ -3446,5 +3491,53 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       }
     });
   </script>
+
+<script>
+(function(){
+  function ensureVtPopup(){
+    let overlay=document.getElementById('vt-popup-overlay');
+    if(overlay)return overlay;
+    overlay=document.createElement('div');
+    overlay.id='vt-popup-overlay'; overlay.className='vt-popup-overlay';
+    overlay.innerHTML=`<div class="vt-popup-card" role="dialog" aria-modal="true" aria-labelledby="vt-popup-title">
+      <div class="vt-popup-head"><div class="vt-popup-mark">✦</div><div class="vt-popup-title" id="vt-popup-title">TABLETOP</div></div>
+      <div class="vt-popup-body" id="vt-popup-body"></div>
+      <div class="vt-popup-actions" id="vt-popup-actions"></div>
+    </div>`;
+    document.body.appendChild(overlay);
+    overlay.addEventListener('click',e=>{if(e.target===overlay) window.vtPopupClose?.(false);});
+    return overlay;
+  }
+  window.vtPopupClose=function(value){
+    const o=document.getElementById('vt-popup-overlay'); if(!o)return;
+    o.classList.remove('show');
+    const resolve=o._resolve; o._resolve=null;
+    if(resolve)resolve(value);
+  };
+  window.vtPopup=function(message,opts={}){
+    const o=ensureVtPopup();
+    const title=opts.title||'TABLETOP';
+    const kind=opts.kind||'info';
+    document.getElementById('vt-popup-title').textContent=title;
+    document.getElementById('vt-popup-body').textContent=String(message??'');
+    const actions=document.getElementById('vt-popup-actions'); actions.innerHTML='';
+    const btn=document.createElement('button'); btn.type='button'; btn.className='vt-popup-btn primary'; btn.textContent=opts.okText||'OK';
+    btn.onclick=()=>window.vtPopupClose(true); actions.appendChild(btn);
+    o.classList.add('show'); setTimeout(()=>btn.focus(),30);
+    return new Promise(resolve=>{o._resolve=resolve;});
+  };
+  window.vtPopupConfirm=function(message,opts={}){
+    const o=ensureVtPopup();
+    document.getElementById('vt-popup-title').textContent=opts.title||'CONFIRMAR AÇÃO';
+    document.getElementById('vt-popup-body').textContent=String(message??'');
+    const actions=document.getElementById('vt-popup-actions'); actions.innerHTML='';
+    const cancel=document.createElement('button'); cancel.type='button'; cancel.className='vt-popup-btn'; cancel.textContent=opts.cancelText||'CANCELAR'; cancel.onclick=()=>window.vtPopupClose(false);
+    const ok=document.createElement('button'); ok.type='button'; ok.className='vt-popup-btn '+(opts.danger?'danger':'primary'); ok.textContent=opts.okText||'CONFIRMAR'; ok.onclick=()=>window.vtPopupClose(true);
+    actions.append(cancel,ok); o.classList.add('show'); setTimeout(()=>ok.focus(),30);
+    return new Promise(resolve=>{o._resolve=resolve;});
+  };
+})();
+</script>
+
 </body>
 </html>
