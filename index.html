@@ -1398,7 +1398,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-firestore.js";
     import {
       getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword,
-      signOut, onAuthStateChanged, sendEmailVerification,
+      signOut, onAuthStateChanged, sendEmailVerification, setPersistence, browserLocalPersistence,
       sendPasswordResetEmail, updateProfile
     } from "https://www.gstatic.com/firebasejs/10.8.0/firebase-auth.js";
 
@@ -1415,6 +1415,12 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     const app = initializeApp(firebaseConfig);
     const db = getFirestore(app);
     const auth = getAuth(app);
+    // Força a sessão persistente também em celulares/tablets.
+    // O padrão do SDK pode variar conforme o navegador/ambiente; aqui
+    // garantimos explicitamente que o login sobreviva ao recarregamento.
+    const authPersistenceReady = setPersistence(auth, browserLocalPersistence).catch(err => {
+      console.warn('Não foi possível ativar a persistência local da sessão:', err);
+    });
 
     window.usuarioAtual = null;
     window.usuarioId = null;
@@ -1772,6 +1778,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       if(senha!==senha2)return authMessage('As senhas não conferem.','error');
       try{
         authMessage('Criando identidade segura…');
+        await authPersistenceReady;
         const cred=await createUserWithEmailAndPassword(auth,email,senha);
         await updateProfile(cred.user,{displayName:nome});
         await criarPerfilUsuario(cred.user,nome);
@@ -1790,6 +1797,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       if(!email||!senha)return authMessage('Informe e-mail e senha.','error');
       try{
         authMessage('Autenticando…');
+        await authPersistenceReady;
         const cred=await signInWithEmailAndPassword(auth,email,senha);
         if(!cred.user.emailVerified){
           await sendEmailVerification(cred.user).catch(()=>{});
@@ -2814,6 +2822,8 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     window.vtSaving = false;
     window.vtPendingSave = false;
     window.vtUploadLocks = { mapa:false, tokens:false, editToken:false };
+    window.vtCreatingToken = false;
+    window.vtLastTokenCreationKey = null;
     window.vtLocalWriteId = null;
 
     function vtDefaultState() {
@@ -2844,7 +2854,10 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         y: Number(token.y) || 100,
         size: Math.max(28, Math.min(180, Number(token.size) || 64)),
         rotation: Math.max(-180, Math.min(180, Number(token.rotation) || 0)),
-        editableBy: Array.isArray(token.editableBy) ? token.editableBy : []
+        editableBy: Array.isArray(token.editableBy) ? token.editableBy : [],
+        createdBy: token.createdBy || '',
+        createdAt: Number(token.createdAt) || 0,
+        creationKey: token.creationKey || ''
       };
     }
 
@@ -2889,6 +2902,30 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       finally{window.vtSaving=false;if(window.vtPendingSave){window.vtPendingSave=false;setTimeout(()=>vtSaveState(),50);}}
     }
 
+    async function vtDedupeNewTokenBurst(tokens){
+      // Limpa cópias idênticas criadas quase no mesmo instante por versões
+      // anteriores do botão. Só considera documentos criados em uma janela
+      // curta e com exatamente os mesmos dados visuais, preservando um deles.
+      const groups=new Map();
+      for(const t of tokens){
+        if(!t.createdAt || !t.creationKey) continue;
+        const sig=JSON.stringify([t.name,t.color,t.image,t.imagePath,Math.round(t.x),Math.round(t.y),t.size,t.rotation,JSON.stringify(t.editableBy||[]),t.createdBy]);
+        if(!groups.has(sig))groups.set(sig,[]);
+        groups.get(sig).push(t);
+      }
+      for(const group of groups.values()){
+        if(group.length<2)continue;
+        const times=group.map(t=>t.createdAt).sort((a,b)=>a-b);
+        if(times[times.length-1]-times[0]>5000)continue;
+        const keep=group.slice().sort((a,b)=>a.createdAt-b.createdAt)[0];
+        for(const dup of group){
+          if(dup.id===keep.id)continue;
+          try{await deleteDoc(doc(db,'campanhas',String(window.campanhaAtualId),'tabletopTokens',dup.id));}
+          catch(e){console.warn('Não foi possível remover cópia duplicada do token:',e);}
+        }
+      }
+    }
+
     function vtSubscribeCampaign(){
       if(Array.isArray(window.vtUnsubscribe)){window.vtUnsubscribe.forEach(fn=>{try{fn();}catch(_){}});}
       window.vtUnsubscribe=[];
@@ -2912,8 +2949,9 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
           }catch(e){console.error(e);}
         }
       },err=>{console.error(err);vtSetStatus('SEM ACESSO À MESA',true);});
-      const u2=onSnapshot(tokensRef,snap=>{
+      const u2=onSnapshot(tokensRef,async snap=>{
         const tokens=[];snap.forEach(ds=>tokens.push(vtNormalizeToken(ds.data())));
+        await vtDedupeNewTokenBurst(tokens);
         if(!window.vtState)window.vtState=vtDefaultState();
         window.vtState.tokens=tokens;
         if(window.vtSelectedTokenId&&!tokens.some(t=>t.id===window.vtSelectedTokenId))window.vtSelectedTokenId=null;
@@ -3176,13 +3214,19 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
     window.criarTokenTabletop=async function(){
       if(!window.vtState||!window.eMestreDaMesaAtual){alert('Somente o Mestre pode criar tokens neste momento.');return;}
+      // Trava dupla: evita criação múltipla por toque duplo, Enter + clique,
+      // ou eventos repetidos enquanto o upload/Firestore ainda está processando.
+      if(window.vtCreatingToken)return;
       const addButton=document.querySelector('.vt-add-token');
       if(addButton?.dataset.uploading==='1')return;
       const nameEl=document.getElementById('vt-token-name'),colorEl=document.getElementById('vt-token-color'),fileEl=document.getElementById('vt-token-upload');
       const name=nameEl?.value.trim();
       if(!name){alert('Digite o nome do token.');nameEl?.focus();return;}
       if(!window.campanhaAtualId){alert('A campanha ainda não foi identificada. Feche e abra a campanha novamente.');return;}
-      if(addButton)addButton.dataset.uploading='1';
+      window.vtCreatingToken=true;
+      if(addButton){addButton.dataset.uploading='1';addButton.disabled=true;}
+      const creationKey=`${window.campanhaAtualId}:${Date.now()}:${Math.random().toString(36).slice(2,8)}`;
+      window.vtLastTokenCreationKey=creationKey;
       let token=null;
       try{
         vtSetStatus('CRIANDO TOKEN…');
@@ -3196,7 +3240,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         const viewport=document.getElementById('vt-viewport');
         const centerX=((viewport?.clientWidth||800)/2-window.vtPanX)/Math.max(window.vtZoom,.001);
         const centerY=((viewport?.clientHeight||600)/2-window.vtPanY)/Math.max(window.vtZoom,.001);
-        token={id:`tok_${Date.now()}_${Math.random().toString(36).slice(2,9)}`,name,color:colorEl?.value||'#43b6a3',image,imagePath,x:centerX,y:centerY,size:64,rotation:0,editableBy:[]};
+        token={id:`tok_${Date.now()}_${Math.random().toString(36).slice(2,9)}`,name,color:colorEl?.value||'#43b6a3',image,imagePath,x:centerX,y:centerY,size:64,rotation:0,editableBy:[],createdBy:window.usuarioId||'',createdAt:Date.now(),creationKey};
         // Salva o token diretamente. Assim a criação não depende de salvar
         // novamente todos os tokens existentes da campanha.
         // O onSnapshot de tabletopTokens é a única fonte de verdade.
@@ -3214,7 +3258,8 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         vtSetStatus('ERRO AO CRIAR TOKEN',true);
         alert(`Não foi possível criar o token.\n\n${e?.code||''} ${e?.message||'Verifique as permissões do Firestore e tente novamente.'}`);
       }finally{
-        if(addButton)addButton.dataset.uploading='0';
+        window.vtCreatingToken=false;
+        if(addButton){addButton.dataset.uploading='0';addButton.disabled=false;}
       }
     };
 
@@ -3383,6 +3428,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     };
 
     onAuthStateChanged(auth,async user=>{
+      await authPersistenceReady;
       window.authReady=true;window.usuarioAuth=user||null;
       if(user){
         if(!user.emailVerified){
