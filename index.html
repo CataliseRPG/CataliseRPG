@@ -2037,23 +2037,47 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       const codigo=document.getElementById('pop-input-entrar-campanha').value.trim().toUpperCase();
       if(!codigo)return alert('Digite o código da campanha.');
       try{
+        // O jogador pode ler o convite pelo código, mas ainda não é membro da campanha.
+        // Portanto, não lemos a campanha antes de adicioná-lo como membro.
         const inv=await getDoc(doc(db,'convites',codigo));
         if(!inv.exists())return alert('Código de campanha inválido ou expirado.');
         const info=inv.data();
-        const campRef=doc(db,'campanhas',String(info.campanhaId));
+        const campanhaId=String(info.campanhaId||'');
+        if(!campanhaId)return alert('Este convite está inválido. Peça ao Mestre um novo código.');
+
+        const campRef=doc(db,'campanhas',campanhaId);
+        const nomeCampanha=info.nome||'Campanha';
+        const emailMembro=window.usuarioEmail||auth.currentUser?.email||window.usuarioAtual||'Jogador';
+
+        // Adiciona somente o próprio UID. arrayUnion evita duplicatas e não exige leitura prévia.
+        await updateDoc(campRef,{
+          membrosUids: arrayUnion(window.usuarioId),
+          [`membros.${window.usuarioId}`]: emailMembro
+        });
+
+        // Depois de entrar, a leitura da campanha passa a ser permitida pelas Rules.
         const campSnap=await getDoc(campRef);
         if(!campSnap.exists())return alert('A campanha não existe mais.');
         const camp=campSnap.data();
-        const membros=Array.isArray(camp.membrosUids)?camp.membrosUids:[];
-        const nomes={...(camp.membros||{})};
-        if(!membros.includes(window.usuarioId)){membros.push(window.usuarioId);nomes[window.usuarioId]=window.usuarioEmail||window.usuarioAtual;await updateDoc(campRef,{membrosUids:membros,membros:nomes});}
-        // Mantém a ficha existente vinculada ao código; se não houver, o jogador pode criar uma depois.
+
+        // Se houver exatamente uma ficha ainda sem campanha, vinculamos automaticamente.
         const meus=window.agentes.filter(a=>!a.campanhaCodigo);
-        if(meus.length===1)await updateDoc(doc(db,'agentes',meus[0].id),{campanhaCodigo:codigo});
+        if(meus.length===1){
+          await updateDoc(doc(db,'agentes',meus[0].id),{campanhaCodigo:codigo});
+        }
+
         window.fecharPop('modal-entrar-campanha');
-        alert(`Você entrou em "${camp.nome}". Agora selecione/crie uma ficha e use o código ${codigo}.`);
-        window.renderizarCampanhas();
-      }catch(e){console.error(e);alert('Não foi possível entrar na campanha. Verifique sua conexão.');}
+        alert(`Você entrou em "${camp.nome||nomeCampanha}". Agora você já pode abrir a mesa e vincular sua ficha à campanha.`);
+        await window.renderizarCampanhas();
+      }catch(e){
+        console.error('ERRO AO ENTRAR NA CAMPANHA:',e);
+        const code=String(e?.code||'');
+        if(code.includes('permission-denied')){
+          alert('O Firebase recusou sua entrada na campanha. Verifique se as Rules publicadas são as da versão atual.');
+        }else{
+          alert(`Não foi possível entrar na campanha. ${e?.message||'Verifique sua conexão.'}`);
+        }
+      }
     };
 
     window.abrirPainelCampanha = function(campId, eMestre) {
@@ -3175,8 +3199,11 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         token={id:`tok_${Date.now()}_${Math.random().toString(36).slice(2,9)}`,name,color:colorEl?.value||'#43b6a3',image,imagePath,x:centerX,y:centerY,size:64,rotation:0,editableBy:[]};
         // Salva o token diretamente. Assim a criação não depende de salvar
         // novamente todos os tokens existentes da campanha.
+        // O onSnapshot de tabletopTokens é a única fonte de verdade.
+        // Não adicionamos o token manualmente aqui, porque o setDoc acima
+        // dispara o snapshot e adicioná-lo localmente causava duplicações
+        // visuais (e, em alguns casos, múltiplas cópias na mesa).
         await vtSaveTokenSecure(token);
-        window.vtState.tokens.push(token);
         if(nameEl)nameEl.value='';
         if(fileEl){fileEl.value='';const label=document.querySelector('label[for="vt-token-upload"]');if(label)label.textContent='▣ IMAGEM / AVATAR OPCIONAL';}
         vtRenderTokens();
