@@ -752,6 +752,13 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
 .profile-cosmetics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.profile-showcase-box{padding:14px;border:1px solid rgba(67,182,163,.18);background:rgba(2,11,13,.34);border-radius:8px}.profile-section-kicker,.public-section-title{color:#6bc9b7;font:700 9px 'DM Mono';letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}.profile-agent-selector{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.profile-agent-option{display:flex!important;grid-template-columns:none!important;align-items:center;gap:9px;padding:8px;border:1px solid rgba(67,182,163,.16);background:rgba(7,23,26,.7);cursor:pointer;text-transform:none!important;letter-spacing:0!important}.profile-agent-option input{width:auto}.profile-agent-option-visual{width:38px;height:38px;border-radius:7px;overflow:hidden;display:grid;place-items:center;background:#071519;border:1px solid rgba(67,182,163,.25);flex:none}.profile-agent-option-visual img{width:100%;height:100%;object-fit:cover}.profile-agent-option small{display:block;color:#6e908b;font:500 8px 'DM Mono';margin-top:2px}.profile-agent-fallback,.public-agent-fallback{color:#58b7a6}.profile-empty{color:#64847f;font:500 9px 'DM Mono';padding:8px}.profile-achievement-preview,.public-achievement-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.achievement-chip,.public-achievement-chip{padding:7px 9px;border:1px solid rgba(191,158,76,.32);background:rgba(130,101,38,.08);color:#d6ba6f;font:700 8px 'DM Mono';letter-spacing:.06em;text-transform:uppercase}.public-profile-showcase{margin-top:22px;padding-top:18px;border-top:1px solid rgba(74,176,157,.16)}.public-agent-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.public-agent-card{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid rgba(67,182,163,.18);background:rgba(2,11,13,.38);min-width:0}.public-agent-card>img,.public-agent-fallback{width:48px;height:48px;border-radius:8px;object-fit:cover;display:grid;place-items:center;background:#071519;border:1px solid rgba(67,182,163,.25);flex:none}.public-agent-card b{display:block;color:#dcece8;font-size:12px}.public-agent-card small{display:block;color:#6f918c;font:500 8px 'DM Mono';margin-top:3px}.frame-sanctum .public-profile-avatar{box-shadow:0 0 0 3px #0b2b2f,0 0 0 5px rgba(84,193,176,.55),0 12px 35px rgba(0,0,0,.55)}.frame-thorn .public-profile-avatar{box-shadow:0 0 0 3px #20100f,0 0 0 5px rgba(154,59,69,.7),0 12px 35px rgba(0,0,0,.55)}.frame-reliquary .public-profile-avatar{box-shadow:0 0 0 3px #241b0c,0 0 0 5px rgba(197,163,76,.72),0 12px 35px rgba(0,0,0,.55)}.frame-obsidian .public-profile-avatar{box-shadow:0 0 0 3px #111719,0 0 0 5px rgba(139,164,166,.55),0 12px 35px rgba(0,0,0,.55)}.effect-embers:before,.effect-dust:before,.effect-fog:before,.effect-static:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.3}.effect-embers:before{background:radial-gradient(circle at 20% 80%,rgba(214,81,57,.22),transparent 18%),radial-gradient(circle at 70% 40%,rgba(214,81,57,.16),transparent 14%);animation:profileDrift 7s ease-in-out infinite alternate}.effect-dust:before{background-image:radial-gradient(circle,rgba(210,224,215,.22) 0 1px,transparent 1.5px);background-size:24px 24px;animation:profileDust 12s linear infinite}.effect-fog:before{background:linear-gradient(110deg,transparent,rgba(157,208,199,.1),transparent);filter:blur(10px);animation:profileFog 6s ease-in-out infinite}.effect-static:before{background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 1px,transparent 1px 4px);mix-blend-mode:screen}@keyframes profileDrift{from{transform:translateY(0)}to{transform:translateY(-10px) scale(1.03)}}@keyframes profileDust{from{background-position:0 0}to{background-position:48px -48px}}@keyframes profileFog{from{transform:translateX(-12%)}to{transform:translateX(12%)}}
 @media(max-width:700px){.profile-cosmetics-grid,.profile-agent-selector,.public-agent-grid{grid-template-columns:1fr}.profile-upload-row{grid-template-columns:1fr}.profile-identity{align-items:flex-start;flex-direction:column;gap:8px}.profile-avatar{margin-top:-48px}}
+
+<style id="catalise-v6-admin-apoio-css">
+.support-admin-divider{display:flex;align-items:center;gap:12px;margin:28px 0 14px;color:#63817c;font:700 9px/1 'DM Mono';letter-spacing:.14em;text-transform:uppercase}
+.support-admin-divider::before,.support-admin-divider::after{content:"";height:1px;flex:1;background:rgba(67,182,163,.16)}
+.support-admin-divider span{white-space:nowrap}
+#admin-tier-panel{margin-top:0}
+</style>
 </style>
 
 <style id="vt-popup-theme">
@@ -1243,51 +1250,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     </div>
 
 
-        <section id="admin-tier-panel" class="card-ficha admin-tier-panel" style="display:none;">
-          <div class="admin-tier-kicker">☩ ÁREA DE ADMINISTRAÇÃO</div>
-          <h3 style="margin-top:4px;">GERENCIAR APOIADORES</h3>
-          <p class="profile-help">Use esta área para testes e concessões manuais. Somente contas marcadas como administradoras no Firestore conseguem alterar tiers.</p>
 
-          <div class="admin-tier-grid">
-            <label>UID ou e-mail da conta
-              <input id="admin-tier-target" type="text" placeholder="UID ou e-mail do usuário" data-enter-ready>
-            </label>
-            <button type="button" class="vt-mini-btn admin-tier-search-btn" onclick="buscarUsuarioParaTier()">LOCALIZAR CONTA</button>
-          </div>
-
-          <div id="admin-tier-target-card" class="admin-tier-target-card" style="display:none;">
-            <div>
-              <strong id="admin-tier-target-name">—</strong>
-              <small id="admin-tier-target-email">—</small>
-              <small id="admin-tier-target-uid">—</small>
-            </div>
-            <div class="admin-tier-controls">
-              <label>Nível
-                <select id="admin-tier-select">
-                  <option value="none">Nenhum / gratuito</option>
-                  <option value="devoto">Devoto · R$ 5</option>
-                  <option value="oficiante">Oficiante · R$ 15</option>
-                  <option value="arquiteto">Arquiteto · R$ 30</option>
-                  <option value="arauto">Arauto · R$ 50</option>
-                </select>
-              </label>
-              <label>Status da assinatura
-                <select id="admin-subscription-status">
-                  <option value="manual">Manual / teste</option>
-                  <option value="active">Ativa</option>
-                  <option value="pending">Pendente</option>
-                  <option value="cancelled">Cancelada</option>
-                  <option value="expired">Expirada</option>
-                </select>
-              </label>
-            </div>
-            <div class="admin-tier-actions">
-              <button type="button" class="btn-main" onclick="salvarTierAdministrativo()">✦ APLICAR NÍVEL</button>
-              <button type="button" class="vt-mini-btn" onclick="limparAlvoTier()">LIMPAR</button>
-            </div>
-            <div id="admin-tier-status" class="admin-tier-status"></div>
-          </div>
-        </section>
 
     <div id="aba-apoio" class="tab-content">
       <section class="card-ficha support-hero">
@@ -1332,6 +1295,55 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
           <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR</button>
         </article>
       </div>
+
+      <!-- ADMINISTRAÇÃO: visível exclusivamente dentro da aba "Apoie o Projeto" -->
+      <div class="support-admin-divider" aria-hidden="true"><span>ADMINISTRAÇÃO DO APOIO</span></div>
+      <section id="admin-tier-panel" class="card-ficha admin-tier-panel" style="display:none;">
+          <div class="admin-tier-kicker">☩ ÁREA DE ADMINISTRAÇÃO</div>
+          <h3 style="margin-top:4px;">GERENCIAR APOIADORES</h3>
+          <p class="profile-help">Use esta área para testes e concessões manuais. Somente contas marcadas como administradoras no Firestore conseguem alterar tiers.</p>
+
+          <div class="admin-tier-grid">
+            <label>UID ou e-mail da conta
+              <input id="admin-tier-target" type="text" placeholder="UID ou e-mail do usuário" data-enter-ready>
+            </label>
+            <button type="button" class="vt-mini-btn admin-tier-search-btn" onclick="buscarUsuarioParaTier()">LOCALIZAR CONTA</button>
+          </div>
+
+          <div id="admin-tier-target-card" class="admin-tier-target-card" style="display:none;">
+            <div>
+              <strong id="admin-tier-target-name">—</strong>
+              <small id="admin-tier-target-email">—</small>
+              <small id="admin-tier-target-uid">—</small>
+            </div>
+            <div class="admin-tier-controls">
+              <label>Nível
+                <select id="admin-tier-select">
+                  <option value="none">Nenhum / gratuito</option>
+                  <option value="devoto">Devoto · R$ 5</option>
+                  <option value="oficiante">Oficiante · R$ 15</option>
+                  <option value="arquiteto">Arquiteto · R$ 30</option>
+                  <option value="arauto">Arauto · R$ 50</option>
+                </select>
+              </label>
+              <label>Status da assinatura
+                <select id="admin-subscription-status">
+                  <option value="manual">Manual / teste</option>
+                  <option value="active">Ativa</option>
+                  <option value="pending">Pendente</option>
+                  <option value="cancelled">Cancelada</option>
+                  <option value="expired">Expirada</option>
+                </select>
+              </label>
+            </div>
+            <div class="admin-tier-actions">
+              <button type="button" class="btn-main" onclick="salvarTierAdministrativo()">✦ APLICAR NÍVEL</button>
+              <button type="button" class="vt-mini-btn" onclick="limparAlvoTier()">LIMPAR</button>
+            </div>
+            <div id="admin-tier-status" class="admin-tier-status"></div>
+          </div>
+      </section>
+
     </div>
 </div>
   </main>
