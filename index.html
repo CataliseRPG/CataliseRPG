@@ -4219,103 +4219,160 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
 
 <script id="catalise-premium-v2-js">
-/* ===== CATÁLISE PREMIUM V2 =====
-   This layer only handles UI/preferences.
-   Subscription authority remains in Firestore/backend.
-*/
-(function(){
+/* =========================================================
+   CATÁLISE PREMIUM V3
+   Preferências cosméticas persistidas no Firebase.
+
+   IMPORTANTE:
+   - Este código NÃO grava supporterTier/status/since.
+   - Esses campos continuam protegidos pelas Firestore Rules.
+   - Somente preferências cosméticas são salvas pelo usuário.
+   ========================================================= */
+(function () {
   const TIERS = {
-    none:      {level:0, name:"Sem assinatura", icon:""},
-    devoto:    {level:1, name:"Devoto", icon:"☽"},
-    oficiante: {level:2, name:"Oficiante", icon:"☩"},
-    arquiteto: {level:3, name:"Arquiteto", icon:"⚒"},
-    arauto:    {level:4, name:"Arauto", icon:"👁"}
+    none:      { level: 0, name: "Sem assinatura", icon: "" },
+    devoto:    { level: 1, name: "Devoto", icon: "☽" },
+    oficiante: { level: 2, name: "Oficiante", icon: "☩" },
+    arquiteto: { level: 3, name: "Arquiteto", icon: "⚒" },
+    arauto:    { level: 4, name: "Arauto", icon: "👁" }
   };
 
-  const PREMIUM_OPTIONS = {
+  const OPTIONS = {
     themes: [
-      {id:"default", label:"Catálise — Verde Profundo", min:0},
-      {id:"devoto", label:"Ritual do Devoto", min:1},
-      {id:"oficiante", label:"Câmara do Oficiante", min:2},
-      {id:"arquiteto", label:"Oficina do Arquiteto", min:3},
-      {id:"arauto", label:"Olho do Arauto", min:4}
+      { id: "default",   label: "Catálise — Verde Profundo", min: 0 },
+      { id: "devoto",    label: "Ritual do Devoto",         min: 1 },
+      { id: "oficiante", label: "Câmara do Oficiante",      min: 2 },
+      { id: "arquiteto", label: "Oficina do Arquiteto",     min: 3 },
+      { id: "arauto",    label: "Olho do Arauto",           min: 4 }
     ],
     frames: [
-      {id:"none", label:"Sem moldura", min:0},
-      {id:"relicario", label:"Relicário", min:2},
-      {id:"espinhos", label:"Espinhos", min:3},
-      {id:"olho", label:"Olho Ritual", min:4}
+      { id: "none",      label: "Sem moldura", min: 0 },
+      { id: "relicario", label: "Relicário",    min: 2 },
+      { id: "espinhos",  label: "Espinhos",     min: 3 },
+      { id: "olho",      label: "Olho Ritual",  min: 4 }
     ],
     effects: [
-      {id:"none", label:"Nenhum", min:0},
-      {id:"mist", label:"Névoa", min:2},
-      {id:"embers", label:"Cinzas", min:3},
-      {id:"void", label:"Vazio", min:4}
+      { id: "none",   label: "Nenhum", min: 0 },
+      { id: "mist",   label: "Névoa",  min: 2 },
+      { id: "embers", label: "Cinzas", min: 3 },
+      { id: "void",   label: "Vazio",  min: 4 }
     ]
   };
 
-  function tierLevel(tier){
+  let firebaseDb = null;
+  let firebaseAuth = null;
+  let firebaseReady = false;
+  let firebaseInitPromise = null;
+
+  function getTierFromKnownData() {
+    const candidates = [
+      window.currentUserData?.supporterTier,
+      window.userData?.supporterTier,
+      window.usuarioAtual?.supporterTier,
+      document.body?.dataset?.supporterTier
+    ];
+
+    const tier = candidates.find(v => typeof v === "string" && TIERS[v]);
+    return tier || "none";
+  }
+
+  function level(tier) {
     return TIERS[tier]?.level ?? 0;
   }
 
-  function currentTier(){
-    /* O HTML existente pode expor currentUserData/userData.
-       Se não existir, usamos none. Nunca concedemos tier pelo cliente. */
-    const candidate =
-      window.currentUserData?.supporterTier ??
-      window.userData?.supporterTier ??
-      document.body.dataset.supporterTier ??
-      "none";
+  function sanitizePreferences(data) {
+    const safe = {};
 
-    return TIERS[candidate] ? candidate : "none";
+    if (OPTIONS.themes.some(o => o.id === data.theme)) {
+      safe.theme = data.theme;
+    }
+
+    if (OPTIONS.frames.some(o => o.id === data.frame)) {
+      safe.frame = data.frame;
+    }
+
+    if (OPTIONS.effects.some(o => o.id === data.effect)) {
+      safe.effect = data.effect;
+    }
+
+    return safe;
   }
 
-  function optionMarkup(options, tier){
-    const level = tierLevel(tier);
-    return options.map(o => {
-      const unlocked = level >= o.min;
-      const selected = unlocked ? "" : " disabled";
+  function isUnlocked(type, value, tier) {
+    const option = OPTIONS[type]?.find(o => o.id === value);
+    return !!option && level(tier) >= option.min;
+  }
+
+  function buildOptions(type, tier, current) {
+    return OPTIONS[type].map(option => {
+      const unlocked = level(tier) >= option.min;
+      const selected = option.id === current ? " selected" : "";
+      const disabled = unlocked ? "" : " disabled";
       const lock = unlocked ? "" : " 🔒";
-      return `<option value="${o.id}"${selected}>${o.label}${lock}</option>`;
+
+      return `<option value="${option.id}"${selected}${disabled}>${option.label}${lock}</option>`;
     }).join("");
   }
 
-  function panelHtml(tier){
+  function panelHtml(tier, prefs) {
     const t = TIERS[tier];
+
     return `
       <section class="premium-profile-panel" id="catalisePremiumPanel">
-        <div class="premium-tier-badge">${t.icon ? t.icon+" " : ""}${t.name}</div>
+        <div class="premium-tier-badge">
+          ${t.icon ? t.icon + " " : ""}${t.name}
+        </div>
+
         <h3 style="margin-top:12px">PERSONALIZAÇÃO DO ARQUIVO</h3>
+
         <p class="premium-subtitle">
-          Personalize a aparência do seu perfil com os benefícios desbloqueados.
+          Suas escolhas ficam vinculadas à sua conta e acompanham você
+          quando entrar novamente.
         </p>
 
         <div class="premium-grid">
+
           <div class="premium-control">
             <label for="premiumTheme">Tema</label>
-            <select id="premiumTheme">${optionMarkup(PREMIUM_OPTIONS.themes,tier)}</select>
+            <select id="premiumTheme">
+              ${buildOptions("themes", tier, prefs.theme)}
+            </select>
           </div>
 
           <div class="premium-control">
             <label for="premiumFrame">Moldura</label>
-            <select id="premiumFrame">${optionMarkup(PREMIUM_OPTIONS.frames,tier)}</select>
+            <select id="premiumFrame">
+              ${buildOptions("frames", tier, prefs.frame)}
+            </select>
           </div>
 
           <div class="premium-control">
             <label for="premiumEffect">Efeito</label>
-            <select id="premiumEffect">${optionMarkup(PREMIUM_OPTIONS.effects,tier)}</select>
+            <select id="premiumEffect">
+              ${buildOptions("effects", tier, prefs.effect)}
+            </select>
           </div>
 
           <div class="premium-control premium-locked">
             <label>Banner animado</label>
-            <input type="text" value="Disponível a partir do Arquiteto" disabled>
+            <input
+              type="text"
+              value="Disponível a partir do Arquiteto"
+              disabled
+            >
             <span class="premium-lock-note">🔒 Arquiteto</span>
           </div>
+
         </div>
 
         <div class="premium-save-row">
           <span class="premium-save-status" id="premiumSaveStatus"></span>
-          <button type="button" class="btn-primary" id="premiumSaveBtn">
+
+          <button
+            type="button"
+            class="btn-primary"
+            id="premiumSaveBtn"
+          >
             SALVAR PERSONALIZAÇÃO
           </button>
         </div>
@@ -4323,93 +4380,363 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
     `;
   }
 
-  async function savePreferences(){
-    const status = document.getElementById("premiumSaveStatus");
-    if(status) status.textContent = "Salvando...";
+  /*
+   * Tenta localizar o Firebase já carregado pelo HTML principal.
+   * Não cria outra aplicação Firebase, evitando o problema de
+   * initializeApp() duplicado.
+   */
+  async function getFirebase() {
+    if (firebaseReady) {
+      return {
+        db: firebaseDb,
+        auth: firebaseAuth
+      };
+    }
 
-    const data = {
+    if (firebaseInitPromise) {
+      return firebaseInitPromise;
+    }
+
+    firebaseInitPromise = (async () => {
+      /*
+       * Firebase compat, caso o HTML atual esteja usando
+       * firebase.initializeApp().
+       */
+      if (window.firebase) {
+        try {
+          if (typeof window.firebase.firestore === "function") {
+            firebaseDb = window.firebase.firestore();
+          }
+
+          if (typeof window.firebase.auth === "function") {
+            firebaseAuth = window.firebase.auth();
+          }
+
+          if (firebaseDb || firebaseAuth) {
+            firebaseReady = true;
+            return {
+              db: firebaseDb,
+              auth: firebaseAuth
+            };
+          }
+        } catch (error) {
+          console.warn("Catálise Premium: Firebase compat indisponível.", error);
+        }
+      }
+
+      /*
+       * Firebase modular, caso o HTML exponha db/auth globalmente.
+       */
+      firebaseDb =
+        window.db ||
+        window.firestoreDb ||
+        window.firebaseDb ||
+        null;
+
+      firebaseAuth =
+        window.auth ||
+        window.firebaseAuth ||
+        null;
+
+      firebaseReady = !!(firebaseDb || firebaseAuth);
+
+      return {
+        db: firebaseDb,
+        auth: firebaseAuth
+      };
+    })();
+
+    return firebaseInitPromise;
+  }
+
+  async function getCurrentUser() {
+    const fb = await getFirebase();
+
+    if (fb.auth?.currentUser) {
+      return fb.auth.currentUser;
+    }
+
+    /*
+     * Alguns layouts existentes mantêm o usuário globalmente.
+     */
+    return window.currentUser ||
+           window.usuarioAtual ||
+           window.user ||
+           null;
+  }
+
+  async function loadPreferences(uid) {
+    /*
+     * Preferimos Firebase.
+     */
+    const fb = await getFirebase();
+
+    if (fb.db && uid) {
+      try {
+        const ref = fb.db.collection("usuarios").doc(uid);
+        const snap = await ref.get();
+
+        if (snap.exists) {
+          const data = snap.data() || {};
+
+          return {
+            theme: data.profileTheme || data.theme || "default",
+            frame: data.profileFrame || data.frame || "none",
+            effect: data.profileEffect || data.effect || "none"
+          };
+        }
+      } catch (error) {
+        console.warn("Catálise Premium: não foi possível ler preferências.", error);
+      }
+    }
+
+    /*
+     * Fallback apenas para compatibilidade com uma sessão antiga.
+     */
+    try {
+      const local = JSON.parse(
+        localStorage.getItem("catalise_profile_preferences") || "{}"
+      );
+
+      return {
+        theme: local.theme || "default",
+        frame: local.frame || "none",
+        effect: local.effect || "none"
+      };
+    } catch (_) {
+      return {
+        theme: "default",
+        frame: "none",
+        effect: "none"
+      };
+    }
+  }
+
+  async function savePreferences() {
+    const status = document.getElementById("premiumSaveStatus");
+
+    if (status) {
+      status.textContent = "Salvando...";
+    }
+
+    const tier = getTierFromKnownData();
+
+    const requested = {
       theme: document.getElementById("premiumTheme")?.value || "default",
       frame: document.getElementById("premiumFrame")?.value || "none",
       effect: document.getElementById("premiumEffect")?.value || "none"
     };
 
     /*
-     * Não escrevemos supporterTier aqui.
-     * Apenas preferências cosméticas.
+     * Defesa adicional no cliente.
      *
-     * A função existente do site será usada quando disponível.
+     * A Security Rule continua sendo a proteção real.
+     * Aqui apenas evitamos enviar uma escolha bloqueada.
      */
-    try{
-      if(typeof window.saveProfileData === "function"){
-        await window.saveProfileData(data);
-      }else if(typeof window.salvarPerfil === "function"){
-        await window.salvarPerfil(data);
-      }else{
-        /*
-         * Fallback local para a interface enquanto a rotina
-         * existente de perfil não estiver exposta globalmente.
-         */
-        localStorage.setItem("catalise_profile_preferences",JSON.stringify(data));
+    if (!isUnlocked("themes", requested.theme, tier)) {
+      requested.theme = "default";
+    }
+
+    if (!isUnlocked("frames", requested.frame, tier)) {
+      requested.frame = "none";
+    }
+
+    if (!isUnlocked("effects", requested.effect, tier)) {
+      requested.effect = "none";
+    }
+
+    const safe = sanitizePreferences(requested);
+    const user = await getCurrentUser();
+    const fb = await getFirebase();
+
+    try {
+      if (!user?.uid) {
+        throw new Error("Usuário não autenticado.");
       }
 
-      if(status) status.textContent = "✓ Personalização salva.";
-    }catch(error){
-      console.error("Catálise Premium:",error);
-      if(status) status.textContent = "Não foi possível salvar agora.";
+      /*
+       * Escrevemos SOMENTE preferências cosméticas.
+       *
+       * Nunca enviamos supporterTier/status/since/achievements.
+       */
+      if (fb.db) {
+        await fb.db.collection("usuarios").doc(user.uid).set({
+          profileTheme: safe.theme,
+          profileFrame: safe.frame,
+          profileEffect: safe.effect
+        }, {
+          merge: true
+        });
+
+        /*
+         * Também sincroniza o perfil público, se ele já existir.
+         * As Rules continuam protegendo os campos premium.
+         */
+        try {
+          await fb.db.collection("perfisPublicos").doc(user.uid).set({
+            profileTheme: safe.theme,
+            profileFrame: safe.frame,
+            profileEffect: safe.effect
+          }, {
+            merge: true
+          });
+        } catch (publicError) {
+          /*
+           * Se o perfil público ainda não existir ou a rotina atual
+           * estiver responsável por ele, não interrompemos o salvamento
+           * do perfil privado.
+           */
+          console.warn(
+            "Catálise Premium: sincronização pública ignorada.",
+            publicError
+          );
+        }
+      }
+
+      /*
+       * Fallback/compatibilidade.
+       */
+      localStorage.setItem(
+        "catalise_profile_preferences",
+        JSON.stringify(safe)
+      );
+
+      /*
+       * Atualiza referências globais, se o HTML atual utilizar alguma.
+       */
+      if (window.currentUserData) {
+        window.currentUserData.profileTheme = safe.theme;
+        window.currentUserData.profileFrame = safe.frame;
+        window.currentUserData.profileEffect = safe.effect;
+      }
+
+      if (window.userData) {
+        window.userData.profileTheme = safe.theme;
+        window.userData.profileFrame = safe.frame;
+        window.userData.profileEffect = safe.effect;
+      }
+
+      if (status) {
+        status.textContent = "✓ Personalização salva na sua conta.";
+      }
+
+      document.dispatchEvent(
+        new CustomEvent("catalise:profilePreferencesSaved", {
+          detail: safe
+        })
+      );
+
+    } catch (error) {
+      console.error("Catálise Premium — erro ao salvar:", error);
+
+      if (status) {
+        if (
+          error?.code === "permission-denied" ||
+          error?.message?.includes("permission")
+        ) {
+          status.textContent =
+            "O Firebase recusou a alteração. Verifique sua conta.";
+        } else {
+          status.textContent =
+            "Não foi possível salvar. Tente novamente.";
+        }
+      }
     }
   }
 
-  function mount(){
+  async function mount() {
+    if (document.getElementById("catalisePremiumPanel")) {
+      return;
+    }
+
+    /*
+     * Tenta somente páginas que realmente possuem uma área de perfil.
+     */
     const target =
       document.querySelector("#profileCustomization") ||
       document.querySelector(".profile-content") ||
       document.querySelector("#perfil") ||
       document.querySelector("#profile");
 
-    if(!target || document.getElementById("catalisePremiumPanel")) return;
+    if (!target) {
+      return;
+    }
 
-    const panel = document.createElement("div");
-    panel.innerHTML = panelHtml(currentTier());
-    target.appendChild(panel.firstElementChild);
+    const tier = getTierFromKnownData();
 
-    document.getElementById("premiumSaveBtn")
-      ?.addEventListener("click",savePreferences);
+    let uid = null;
 
-    try{
-      const saved = JSON.parse(
-        localStorage.getItem("catalise_profile_preferences") || "{}"
-      );
-      if(saved.theme) document.getElementById("premiumTheme").value=saved.theme;
-      if(saved.frame) document.getElementById("premiumFrame").value=saved.frame;
-      if(saved.effect) document.getElementById("premiumEffect").value=saved.effect;
-    }catch(_){}
+    try {
+      const user = await getCurrentUser();
+      uid = user?.uid || null;
+    } catch (_) {}
+
+    const prefs = await loadPreferences(uid);
+
+    const wrapper = document.createElement("div");
+    wrapper.innerHTML = panelHtml(tier, prefs);
+
+    const panel = wrapper.firstElementChild;
+
+    if (!panel) return;
+
+    target.appendChild(panel);
+
+    document
+      .getElementById("premiumSaveBtn")
+      ?.addEventListener("click", savePreferences);
+
+    /*
+     * Caso a conta seja none, somente o tema básico fica disponível.
+     */
+    document.dispatchEvent(
+      new CustomEvent("catalise:premiumMounted", {
+        detail: {
+          tier,
+          preferences: prefs
+        }
+      })
+    );
   }
 
   window.CatalisePremium = {
     tiers: TIERS,
-    options: PREMIUM_OPTIONS,
-    getTier: currentTier,
+    options: OPTIONS,
+    getTier: getTierFromKnownData,
+    loadPreferences,
+    savePreferences,
     mount
   };
 
-  if(document.readyState === "loading"){
-    document.addEventListener("DOMContentLoaded",mount);
-  }else{
+  /*
+   * Inicialização.
+   */
+  if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", mount);
+  } else {
     mount();
   }
 
   /*
-   * O site existente pode carregar o perfil depois do DOM.
-   * Fazemos algumas tentativas leves, sem loops infinitos.
+   * O site atual pode carregar o usuário/perfil de forma assíncrona.
+   * Tentamos novamente algumas vezes, sem loop infinito.
    */
-  let attempts=0;
-  const timer=setInterval(()=>{
+  let attempts = 0;
+
+  const timer = setInterval(async () => {
     attempts++;
-    mount();
-    if(document.getElementById("catalisePremiumPanel") || attempts>=12){
+
+    if (!document.getElementById("catalisePremiumPanel")) {
+      await mount();
+    }
+
+    if (
+      document.getElementById("catalisePremiumPanel") ||
+      attempts >= 15
+    ) {
       clearInterval(timer);
     }
-  },1000);
+  }, 1000);
 })();
 </script>
 
