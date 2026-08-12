@@ -616,6 +616,24 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
 .campanha-tab-btn.active{color:#eafff9;background:rgba(37,113,108,.25);border-color:rgba(67,182,163,.4)}
 .campanha-tab-panel{display:none}.campanha-tab-panel.active{display:block}
 
+
+/* === BARRAS DE ROLAGEM — ESTILO CATÁLISE === */
+html,body{overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(67,182,163,.48) rgba(3,12,14,.55)}
+*{scrollbar-width:thin;scrollbar-color:rgba(67,182,163,.48) rgba(3,12,14,.55)}
+*::-webkit-scrollbar{width:8px;height:8px}
+*::-webkit-scrollbar-track{background:rgba(2,9,11,.72);border-left:1px solid rgba(67,182,163,.06)}
+*::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(67,182,163,.52),rgba(34,103,100,.7));border:2px solid rgba(2,9,11,.72);border-radius:999px}
+*::-webkit-scrollbar-thumb:hover{background:linear-gradient(180deg,rgba(110,216,193,.78),rgba(49,137,132,.82))}
+*::-webkit-scrollbar-corner{background:#02090b}
+.modal{overflow-x:hidden}
+.modal-content,.modal-content-sm{overflow-x:hidden}
+.vt-layout{overflow:hidden;scrollbar-gutter:stable}
+.vt-sidebar{overflow-y:auto;overflow-x:hidden;scrollbar-width:thin;scrollbar-color:rgba(67,182,163,.42) transparent}
+.vt-sidebar::-webkit-scrollbar{width:6px}
+.vt-sidebar::-webkit-scrollbar-track{background:transparent;border:0}
+.vt-sidebar::-webkit-scrollbar-thumb{background:linear-gradient(180deg,rgba(67,182,163,.48),rgba(22,73,73,.72));border:1px solid rgba(2,9,11,.8);border-radius:999px}
+.vt-sidebar::-webkit-scrollbar-thumb:hover{background:rgba(110,216,193,.72)}
+.vt-token-list,.vt-permission-list{scrollbar-width:thin;scrollbar-color:rgba(67,182,163,.35) transparent}
 .vt-layout{
   display:grid;grid-template-columns:300px minmax(0,1fr);height:min(76vh,760px);min-height:520px;
   border:1px solid rgba(67,182,163,.2);background:#03090b;overflow:hidden;
@@ -646,6 +664,9 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
 .vt-color-wrap input{width:36px!important;height:30px!important;padding:2px!important;border:0!important;background:transparent!important;box-shadow:none!important;cursor:pointer}
 .vt-token-image-row{margin-top:7px}
 .vt-add-token{width:100%;margin-top:7px}
+
+.vt-enter-hint{display:block;margin-top:6px;color:#416b67;font:500 7px 'DM Mono';letter-spacing:.08em;text-align:right;text-transform:uppercase}
+input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-shadow:0 0 0 3px rgba(67,182,163,.09),0 0 18px rgba(67,182,163,.05)!important}
 .vt-token-list{display:flex;flex-direction:column;gap:7px;margin-top:10px}
 .vt-token-library-item{display:grid;grid-template-columns:34px minmax(0,1fr) auto;align-items:center;gap:8px;padding:7px;background:#061316;border:1px solid rgba(67,182,163,.12)}
 .vt-token-thumb{width:34px;height:34px;border-radius:8px;border:2px solid rgba(255,255,255,.16);display:grid;place-items:center;overflow:hidden;color:#fff;font:700 11px 'DM Mono';background:#164b4a;background-size:cover;background-position:center}
@@ -766,9 +787,9 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
 
           <div id="auth-login-form">
             <label for="login-email">E-MAIL</label>
-            <input type="email" id="login-email" placeholder="voce@email.com" autocomplete="email">
+            <input type="email" id="login-email" placeholder="voce@email.com" autocomplete="email" data-enter-ready>
             <label for="login-senha">SENHA</label>
-            <input type="password" id="login-senha" placeholder="Sua senha" autocomplete="current-password">
+            <input type="password" id="login-senha" placeholder="Sua senha" autocomplete="current-password" data-enter-ready>
             <button class="btn-main login-button" onclick="fazerLogin()">ENTRAR NO SISTEMA <span>→</span></button>
             <button type="button" class="auth-link-btn" onclick="abrirCadastro()">CRIAR UMA CONTA</button>
             <button type="button" class="auth-link-btn" onclick="recuperarSenha()">ESQUECI MINHA SENHA</button>
@@ -776,13 +797,13 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
 
           <div id="auth-register-form" style="display:none;">
             <label for="cadastro-nome">CODINOME DO INVESTIGADOR</label>
-            <input type="text" id="cadastro-nome" placeholder="Ex.: Agente_Silveira" autocomplete="nickname">
+            <input type="text" id="cadastro-nome" placeholder="Ex.: Agente_Silveira" autocomplete="nickname" data-enter-ready>
             <label for="cadastro-email">E-MAIL</label>
-            <input type="email" id="cadastro-email" placeholder="voce@email.com" autocomplete="email">
+            <input type="email" id="cadastro-email" placeholder="voce@email.com" autocomplete="email" data-enter-ready>
             <label for="cadastro-senha">SENHA</label>
-            <input type="password" id="cadastro-senha" placeholder="Mínimo de 6 caracteres" autocomplete="new-password">
+            <input type="password" id="cadastro-senha" placeholder="Mínimo de 6 caracteres" autocomplete="new-password" data-enter-ready>
             <label for="cadastro-senha2">CONFIRMAR SENHA</label>
-            <input type="password" id="cadastro-senha2" placeholder="Repita a senha" autocomplete="new-password">
+            <input type="password" id="cadastro-senha2" placeholder="Repita a senha" autocomplete="new-password" data-enter-ready>
             <button class="btn-main login-button" onclick="cadastrarConta()">CRIAR CONTA <span>✦</span></button>
             <button type="button" class="auth-link-btn" onclick="mostrarLogin()">VOLTAR AO LOGIN</button>
           </div>
@@ -857,7 +878,7 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
       <p style="font-size:0.85em; color:#8bb3a8; margin-bottom:15px;">Informe o codinome ou nome completo do seu personagem.</p>
       
       <label>Nome do Agente</label>
-      <input type="text" id="pop-input-agente-nome" placeholder="Ex: Agente Carlos" style="margin-bottom:20px;">
+      <input type="text" id="pop-input-agente-nome" placeholder="Ex: Agente Carlos" style="margin-bottom:20px;" data-enter-ready>
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
         <button class="btn-main" style="background:#22383d;" onclick="fecharPop('modal-novo-agente')">Cancelar</button>
@@ -872,7 +893,7 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
       <p style="font-size:0.85em; color:#8bb3a8; margin-bottom:15px;">Defina o título da nova mesa de investigação.</p>
 
       <label>Nome da Campanha</label>
-      <input type="text" id="pop-input-campanha-nome" placeholder="Ex: O Culto de Cinzas" style="margin-bottom:20px;">
+      <input type="text" id="pop-input-campanha-nome" placeholder="Ex: O Culto de Cinzas" style="margin-bottom:20px;" data-enter-ready>
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
         <button class="btn-main" style="background:#22383d;" onclick="fecharPop('modal-nova-campanha')">Cancelar</button>
@@ -886,7 +907,7 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
       <h3 style="margin-top:0;">Entrar em uma Campanha</h3>
       <p style="font-size:0.85em; color:#8bb3a8; margin-bottom:15px;">Digite o código fornecido pelo Mestre. Seu acesso fica vinculado à sua conta autenticada.</p>
       <label for="pop-input-entrar-campanha">CÓDIGO DA CAMPANHA</label>
-      <input type="text" id="pop-input-entrar-campanha" placeholder="Ex.: CAMP-482" style="margin-bottom:20px;text-transform:uppercase;">
+      <input type="text" id="pop-input-entrar-campanha" placeholder="Ex.: CAMP-482" style="margin-bottom:20px;text-transform:uppercase;" data-enter-ready>
       <div style="display:flex;justify-content:flex-end;gap:10px;">
         <button class="btn-main" style="background:#22383d;" onclick="fecharPop('modal-entrar-campanha')">Cancelar</button>
         <button class="btn-main" onclick="entrarEmCampanha()">ENTRAR NA MESA</button>
@@ -900,7 +921,7 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
       <p style="font-size:0.85em; color:#8bb3a8; margin-bottom:15px;">Altere o nome da sua campanha.</p>
 
       <label>Novo Nome</label>
-      <input type="text" id="pop-input-editar-campanha-nome" placeholder="Ex: A Segunda Liturgia" style="margin-bottom:20px;">
+      <input type="text" id="pop-input-editar-campanha-nome" placeholder="Ex: A Segunda Liturgia" style="margin-bottom:20px;" data-enter-ready>
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
         <button class="btn-main" style="background:#22383d;" onclick="fecharPop('modal-editar-campanha')">Cancelar</button>
@@ -1278,7 +1299,7 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
             <div class="vt-block">
               <div class="vt-block-title"><span>Novo token</span><span>✚</span></div>
               <div class="vt-form-grid">
-                <input id="vt-token-name" type="text" maxlength="32" placeholder="Nome do personagem/monstro">
+                <input id="vt-token-name" type="text" maxlength="32" placeholder="Nome do personagem/monstro" data-enter-ready>
                 <div class="vt-color-wrap"><input id="vt-token-color" type="color" value="#43b6a3" title="Cor do token"></div>
               </div>
               <div class="vt-token-image-row">
@@ -1293,7 +1314,7 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
               <div class="vt-block-title"><span>Token selecionado</span><span id="vt-selected-token-status">—</span></div>
               <div class="vt-selected-token-name" id="vt-selected-token-name">Nenhum token selecionado</div>
               <div class="vt-editor-grid">
-                <label>Nome<input id="vt-edit-name" type="text" maxlength="32"></label>
+                <label>Nome<input id="vt-edit-name" type="text" maxlength="32" data-enter-ready></label>
                 <label>Cor<input id="vt-edit-color" type="color" value="#43b6a3"></label>
                 <label>Tamanho <span id="vt-edit-size-label">64px</span><input id="vt-edit-size" type="range" min="28" max="180" value="64"></label>
                 <label>Rotação <span id="vt-edit-rotation-label">0°</span><input id="vt-edit-rotation" type="range" min="-180" max="180" value="0"></label>
@@ -2039,7 +2060,7 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
       const c = window.campanhas.find(item => item.id == campId);
       if (!c) return;
       window.campanhaAtualId = campId.toString();
-      window.eMestreDaMesaAtual = !!(eMestre && (c.mestreUid === window.usuarioId || c.mestreId === window.usuarioId));
+      window.eMestreDaMesaAtual = !!(eMestre && (String(c.mestreUid || '') === String(window.usuarioId || '') || String(c.mestreId || '') === String(window.usuarioId || '')));
 
       document.getElementById('mestre-campanha-titulo').innerText = `CAMPANHA — ${c.nome.toUpperCase()}`;
       document.getElementById('mestre-campanha-codigo').innerText = c.codigo;
@@ -3130,19 +3151,44 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
     };
 
     window.criarTokenTabletop=async function(){
-      if(!window.vtState||!window.eMestreDaMesaAtual)return alert('Somente o Mestre pode criar tokens neste momento.');
+      if(!window.vtState||!window.eMestreDaMesaAtual){alert('Somente o Mestre pode criar tokens neste momento.');return;}
       const addButton=document.querySelector('.vt-add-token');
       if(addButton?.dataset.uploading==='1')return;
+      const nameEl=document.getElementById('vt-token-name'),colorEl=document.getElementById('vt-token-color'),fileEl=document.getElementById('vt-token-upload');
+      const name=nameEl?.value.trim();
+      if(!name){alert('Digite o nome do token.');nameEl?.focus();return;}
+      if(!window.campanhaAtualId){alert('A campanha ainda não foi identificada. Feche e abra a campanha novamente.');return;}
       if(addButton)addButton.dataset.uploading='1';
-      const nameEl=document.getElementById('vt-token-name'),colorEl=document.getElementById('vt-token-color'),fileEl=document.getElementById('vt-token-upload');const name=nameEl?.value.trim();if(!name)return alert('Digite o nome do token.');
-      vtSetStatus('ENVIANDO TOKEN…');let image='',imagePath='';
-      try{const file=fileEl?.files?.[0];if(file){const r=await vtUploadImage(file,'tokens',500,500,.86);image=r.url;imagePath=r.path;}}
-      catch(e){console.error(e);alert(`Não foi possível enviar a imagem do token. ${e?.message||''}`);vtSetStatus('ERRO NO UPLOAD',true);if(addButton)addButton.dataset.uploading='0';return;}
-      const viewport=document.getElementById('vt-viewport');const centerX=((viewport?.clientWidth||800)/2-window.vtPanX)/window.vtZoom,centerY=((viewport?.clientHeight||600)/2-window.vtPanY)/window.vtZoom;
-      window.vtState.tokens.push({id:`tok_${Date.now()}_${Math.random().toString(36).slice(2,7)}`,name,color:colorEl?.value||'#43b6a3',image,imagePath,x:centerX,y:centerY,size:64,rotation:0,editableBy:[]});
-      if(nameEl)nameEl.value='';if(fileEl){fileEl.value='';const label=document.querySelector('label[for="vt-token-upload"]');if(label)label.textContent='▣ IMAGEM / AVATAR OPCIONAL';}
-      vtRenderTokens();await vtSaveState();
-      if(addButton)addButton.dataset.uploading='0';
+      let token=null;
+      try{
+        vtSetStatus('CRIANDO TOKEN…');
+        let image='',imagePath='';
+        const file=fileEl?.files?.[0];
+        if(file){
+          vtSetStatus('ENVIANDO IMAGEM DO TOKEN…');
+          const r=await vtUploadImage(file,'tokens',500,500,.86);
+          image=r.url;imagePath=r.path;
+        }
+        const viewport=document.getElementById('vt-viewport');
+        const centerX=((viewport?.clientWidth||800)/2-window.vtPanX)/Math.max(window.vtZoom,.001);
+        const centerY=((viewport?.clientHeight||600)/2-window.vtPanY)/Math.max(window.vtZoom,.001);
+        token={id:`tok_${Date.now()}_${Math.random().toString(36).slice(2,9)}`,name,color:colorEl?.value||'#43b6a3',image,imagePath,x:centerX,y:centerY,size:64,rotation:0,editableBy:[]};
+        // Salva o token diretamente. Assim a criação não depende de salvar
+        // novamente todos os tokens existentes da campanha.
+        await vtSaveTokenSecure(token);
+        window.vtState.tokens.push(token);
+        if(nameEl)nameEl.value='';
+        if(fileEl){fileEl.value='';const label=document.querySelector('label[for="vt-token-upload"]');if(label)label.textContent='▣ IMAGEM / AVATAR OPCIONAL';}
+        vtRenderTokens();
+        vtSetStatus('✓ TOKEN CRIADO · AO VIVO');
+      }catch(e){
+        console.error('Falha ao criar token:',e);
+        if(token?.imagePath){try{await vtDeleteStorageFile(token.imagePath);}catch(_){} }
+        vtSetStatus('ERRO AO CRIAR TOKEN',true);
+        alert(`Não foi possível criar o token.\n\n${e?.code||''} ${e?.message||'Verifique as permissões do Firestore e tente novamente.'}`);
+      }finally{
+        if(addButton)addButton.dataset.uploading='0';
+      }
     };
 
     window.duplicarTokenTabletop=async function(id){
@@ -3224,6 +3270,42 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
       window.addEventListener('pointerup', end);
       window.addEventListener('pointercancel', end);
     }
+
+
+    // =========================================================
+    // ENTER = CONFIRMAR / AVANÇAR
+    // Centraliza o comportamento para que campos importantes
+    // funcionem como formulários mesmo sem um <form> tradicional.
+    // =========================================================
+    const enterActions={
+      'login-email':()=>window.fazerLogin(),
+      'login-senha':()=>window.fazerLogin(),
+      'cadastro-nome':()=>window.cadastrarConta(),
+      'cadastro-email':()=>window.cadastrarConta(),
+      'cadastro-senha':()=>window.cadastrarConta(),
+      'cadastro-senha2':()=>window.cadastrarConta(),
+      'pop-input-agente-nome':()=>window.confirmarCriarAgente(),
+      'pop-input-campanha-nome':()=>window.confirmarCriarCampanha(),
+      'pop-input-entrar-campanha':()=>window.entrarEmCampanha(),
+      'pop-input-editar-campanha-nome':()=>window.confirmarEditarCampanha(),
+      'vt-token-name':()=>window.criarTokenTabletop(),
+      'vt-edit-name':()=>window.salvarTokenEditadoTabletop()
+    };
+
+    // Delegação no documento: funciona também em campos que aparecem depois,
+    // sem criar dezenas de listeners nem interferir com o Tabletop.
+    document.addEventListener('keydown',ev=>{
+      if(ev.key!=='Enter' || ev.isComposing)return;
+      const el=ev.target;
+      if(!el || !enterActions[el.id])return;
+      if(el.tagName==='TEXTAREA' || el.disabled || el.readOnly)return;
+      ev.preventDefault();
+      ev.stopPropagation();
+      try{
+        const result=enterActions[el.id]();
+        if(result && typeof result.catch==='function')result.catch(err=>console.error('Ação do Enter falhou:',err));
+      }catch(err){console.error('Ação do Enter falhou:',err);}
+    });
 
     function vtBindEvents(){
       const mapInput=document.getElementById('vt-map-upload'),tokenInput=document.getElementById('vt-token-upload'),viewport=document.getElementById('vt-viewport'),size=document.getElementById('vt-edit-size'),rotation=document.getElementById('vt-edit-rotation');
