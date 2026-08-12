@@ -1250,6 +1250,162 @@ input:focus,textarea:focus,select:focus{border-color:var(--cat-accent);box-shado
 </style>
 
 
+
+<style id="catalise-original-frame-art-v1">
+/* =========================================================
+   CATÁLISE — MOLDURAS 2D ORIGINAIS
+   Feitas em CSS puro para permanecerem leves, escaláveis e
+   independentes de imagens externas. Cada frame possui anéis,
+   ornamentos, brilho e partículas próprios.
+   ========================================================= */
+.profile-avatar-shell,.public-avatar-shell{
+  position:relative;display:grid;place-items:center;flex:none;
+  border-radius:50%;isolation:isolate;z-index:3;
+  margin-top:-58px;width:116px;height:116px;
+  --frame-main:var(--cat-accent);--frame-soft:var(--cat-accent2);--frame-deep:#071216;
+}
+.profile-avatar-shell::before,.profile-avatar-shell::after,
+.public-avatar-shell::before,.public-avatar-shell::after{
+  content:"";position:absolute;inset:0;pointer-events:none;border-radius:50%;
+}
+.profile-avatar-shell::before,.public-avatar-shell::before{z-index:0}
+.profile-avatar-shell::after,.public-avatar-shell::after{z-index:4}
+.profile-avatar-shell .profile-avatar,.public-avatar-shell .public-profile-avatar{
+  position:relative!important;z-index:2!important;margin-top:0!important;
+  outline:none!important;object-fit:cover;background:#071116;
+}
+/* Ring base: depth + a clean 2D outer plate. */
+.profile-avatar-shell,.public-avatar-shell{
+  background:
+    radial-gradient(circle at 50% 50%,transparent 61%,rgba(0,0,0,.68) 62% 64%,transparent 65%),
+    conic-gradient(from 0deg,var(--frame-main),var(--frame-soft),var(--frame-main),var(--frame-deep),var(--frame-main));
+  box-shadow:0 0 0 1px color-mix(in srgb,var(--frame-main) 70%,transparent),
+             0 0 22px color-mix(in srgb,var(--frame-main) 28%,transparent),
+             0 14px 34px rgba(0,0,0,.55);
+}
+.profile-avatar-shell .profile-avatar,.public-avatar-shell .public-profile-avatar{
+  border:3px solid var(--frame-deep)!important;
+  box-shadow:0 0 0 2px color-mix(in srgb,var(--frame-main) 78%,transparent),
+             inset 0 0 22px rgba(0,0,0,.35),
+             0 0 20px color-mix(in srgb,var(--frame-main) 22%,transparent)!important;
+}
+/* Tiny moving highlights around every frame. */
+.profile-avatar-shell::after,.public-avatar-shell::after{
+  inset:-18px;
+  background:
+    radial-gradient(circle at 10% 18%,var(--frame-soft) 0 2px,transparent 3px),
+    radial-gradient(circle at 90% 20%,var(--frame-soft) 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 82% 88%,var(--frame-main) 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 18% 82%,var(--frame-main) 0 1px,transparent 2px);
+  filter:drop-shadow(0 0 5px var(--frame-main));
+  animation:frameSparkFloat 4.5s ease-in-out infinite alternate;
+  opacity:.9;
+}
+@keyframes frameSparkFloat{from{transform:rotate(0deg) scale(.96);opacity:.55}to{transform:rotate(3deg) scale(1.04);opacity:1}}
+
+/* 01 SANCTUM — geometria sagrada / teal */
+.frame-sanctum .profile-avatar-shell,.frame-sanctum .public-avatar-shell{
+  --frame-main:#4dd7bf;--frame-soft:#b5fff0;--frame-deep:#062022;
+  border-radius:50%;
+}
+.frame-sanctum .profile-avatar-shell::before,.frame-sanctum .public-avatar-shell::before{
+  inset:-9px;border:2px solid rgba(77,215,191,.68);
+  border-radius:50%;box-shadow:0 0 0 5px rgba(77,215,191,.08),0 0 24px rgba(77,215,191,.24);
+  background:repeating-conic-gradient(from 0deg,transparent 0 11deg,rgba(181,255,240,.72) 11deg 13deg,transparent 13deg 22.5deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 73%,#000 74% 100%);mask:radial-gradient(circle,transparent 0 73%,#000 74% 100%);
+  animation:frameSpin 18s linear infinite;
+}
+.frame-sanctum .profile-avatar-shell::after,.frame-sanctum .public-avatar-shell::after{content:'';border:1px solid rgba(181,255,240,.28);-webkit-mask:radial-gradient(circle,transparent 0 78%,#000 79%);mask:radial-gradient(circle,transparent 0 78%,#000 79%);}
+
+/* 02 THORN — espinhos / carmim */
+.frame-thorn .profile-avatar-shell,.frame-thorn .public-avatar-shell{--frame-main:#df536a;--frame-soft:#ffb0bb;--frame-deep:#26070d}
+.frame-thorn .profile-avatar-shell::before,.frame-thorn .public-avatar-shell::before{
+  inset:-12px;border:3px solid transparent;
+  border-top-color:#df536a;border-bottom-color:#7f1830;
+  clip-path:polygon(50% 0,57% 11%,74% 3%,72% 20%,93% 16%,80% 33%,100% 50%,82% 58%,94% 78%,73% 74%,75% 96%,57% 86%,50% 100%,43% 87%,25% 97%,27% 77%,5% 82%,18% 60%,0 50%,18% 39%,7% 18%,28% 22%,26% 2%,43% 12%);
+  box-shadow:0 0 18px rgba(223,83,106,.28);animation:thornPulse 2.8s ease-in-out infinite alternate;
+}
+.frame-thorn .profile-avatar-shell::after,.frame-thorn .public-avatar-shell::after{content:'';background:radial-gradient(circle at 50% 0,#ffb0bb 0 2px,transparent 3px),radial-gradient(circle at 100% 50%,#df536a 0 2px,transparent 3px),radial-gradient(circle at 50% 100%,#ffb0bb 0 2px,transparent 3px),radial-gradient(circle at 0 50%,#df536a 0 2px,transparent 3px);}
+@keyframes thornPulse{from{transform:scale(.97) rotate(-1deg)}to{transform:scale(1.03) rotate(1deg)}}
+
+/* 03 RELIQUARY — capela rosa / relicário */
+.frame-reliquary .profile-avatar-shell,.frame-reliquary .public-avatar-shell{--frame-main:#f06eb6;--frame-soft:#ffd1e8;--frame-deep:#25091a}
+.frame-reliquary .profile-avatar-shell::before,.frame-reliquary .public-avatar-shell::before{
+  inset:-10px;border:2px solid #f06eb6;
+  box-shadow:0 0 0 4px rgba(240,110,182,.09),0 0 28px rgba(240,110,182,.3);
+  background:radial-gradient(circle at 50% 4%,#ffd1e8 0 3px,transparent 4px),radial-gradient(circle at 96% 50%,#f06eb6 0 3px,transparent 4px),radial-gradient(circle at 50% 96%,#ffd1e8 0 3px,transparent 4px),radial-gradient(circle at 4% 50%,#f06eb6 0 3px,transparent 4px);
+  -webkit-mask:radial-gradient(circle,transparent 0 72%,#000 73% 100%);mask:radial-gradient(circle,transparent 0 72%,#000 73% 100%);
+}
+.frame-reliquary .profile-avatar-shell::after,.frame-reliquary .public-avatar-shell::after{content:'';border:2px dotted rgba(255,209,232,.6);-webkit-mask:radial-gradient(circle,transparent 0 80%,#000 81%);mask:radial-gradient(circle,transparent 0 80%,#000 81%);animation:petalSway 5s ease-in-out infinite alternate}
+@keyframes petalSway{from{transform:rotate(-2deg) scale(.97)}to{transform:rotate(2deg) scale(1.04)}}
+
+/* 04 ROSARIUM — capela floral / rosa suave */
+.frame-rosarium .profile-avatar-shell,.frame-rosarium .public-avatar-shell{--frame-main:#ff8fc8;--frame-soft:#ffe3f1;--frame-deep:#2a0c1d}
+.frame-rosarium .profile-avatar-shell::before,.frame-rosarium .public-avatar-shell::before{
+  inset:-13px;border:8px dotted rgba(255,143,200,.8);
+  box-shadow:0 0 24px rgba(255,143,200,.28),inset 0 0 12px rgba(255,227,241,.12);
+  transform:rotate(7deg);animation:roseOrbit 10s linear infinite;
+}
+.frame-rosarium .profile-avatar-shell::after,.frame-rosarium .public-avatar-shell::after{content:'';border:1px dashed rgba(255,227,241,.7);box-shadow:0 0 14px rgba(255,143,200,.28);}
+@keyframes roseOrbit{to{transform:rotate(367deg)}}
+
+/* 05 OBSIDIANA — abismo roxo / aro quebrado */
+.frame-obsidian .profile-avatar-shell,.frame-obsidian .public-avatar-shell{--frame-main:#a86cff;--frame-soft:#ead7ff;--frame-deep:#10051f}
+.frame-obsidian .profile-avatar-shell::before,.frame-obsidian .public-avatar-shell::before{
+  inset:-11px;border:2px solid rgba(168,108,255,.8);
+  border-radius:46% 54% 51% 49%/54% 44% 56% 46%;
+  box-shadow:0 0 0 5px rgba(168,108,255,.08),0 0 32px rgba(168,108,255,.34);
+  background:conic-gradient(from 18deg,transparent 0 17deg,#ead7ff 17deg 20deg,transparent 20deg 58deg,#a86cff 58deg 61deg,transparent 61deg 128deg,#ead7ff 128deg 131deg,transparent 131deg 224deg,#a86cff 224deg 228deg,transparent 228deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 70%,#000 71% 100%);mask:radial-gradient(circle,transparent 0 70%,#000 71% 100%);
+  animation:voidRotate 13s linear infinite;
+}
+.frame-obsidian .profile-avatar-shell::after,.frame-obsidian .public-avatar-shell::after{content:'';border:1px solid rgba(234,215,255,.48);-webkit-mask:radial-gradient(circle,transparent 0 79%,#000 80%);mask:radial-gradient(circle,transparent 0 79%,#000 80%);animation:voidPulse 3.5s ease-in-out infinite alternate}
+@keyframes voidRotate{to{transform:rotate(-360deg)}}@keyframes voidPulse{from{opacity:.45;transform:scale(.94)}to{opacity:1;transform:scale(1.05)}}
+
+/* 06 ECLIPSE — abismo arcano / eclipse roxo profundo */
+.frame-eclipse .profile-avatar-shell,.frame-eclipse .public-avatar-shell{--frame-main:#7f4dff;--frame-soft:#c8b4ff;--frame-deep:#090317}
+.frame-eclipse .profile-avatar-shell::before,.frame-eclipse .public-avatar-shell::before{
+  inset:-12px;border:3px solid #7f4dff;border-left-color:transparent;border-right-color:#c8b4ff;
+  box-shadow:0 0 26px rgba(127,77,255,.36),0 0 0 7px rgba(127,77,255,.07);
+  animation:eclipseSpin 9s linear infinite;
+}
+.frame-eclipse .profile-avatar-shell::after,.frame-eclipse .public-avatar-shell::after{content:'';border:3px solid rgba(200,180,255,.55);border-top-color:transparent;border-bottom-color:rgba(127,77,255,.8);}
+@keyframes eclipseSpin{to{transform:rotate(360deg)}}
+
+/* 07 FRATURA — cinzas / cristal rachado */
+.frame-fracture .profile-avatar-shell,.frame-fracture .public-avatar-shell{--frame-main:#c4cfcd;--frame-soft:#f4f8f7;--frame-deep:#111718}
+.frame-fracture .profile-avatar-shell::before,.frame-fracture .public-avatar-shell::before{
+  inset:-10px;border:2px solid #c4cfcd;
+  clip-path:polygon(50% 0,58% 13%,72% 5%,70% 24%,92% 17%,82% 40%,100% 50%,81% 59%,93% 83%,70% 75%,74% 98%,56% 87%,50% 100%,43% 86%,24% 97%,28% 75%,6% 82%,18% 60%,0 50%,19% 40%,8% 18%,29% 23%,27% 4%,43% 13%);
+  box-shadow:0 0 22px rgba(196,207,205,.22);animation:fractureFloat 6s ease-in-out infinite alternate;
+}
+.frame-fracture .profile-avatar-shell::after,.frame-fracture .public-avatar-shell::after{content:'';border:1px solid rgba(244,248,247,.55);clip-path:polygon(50% 0,58% 13%,72% 5%,70% 24%,92% 17%,82% 40%,100% 50%,81% 59%,93% 83%,70% 75%,74% 98%,56% 87%,50% 100%,43% 86%,24% 97%,28% 75%,6% 82%,18% 60%,0 50%,19% 40%,8% 18%,29% 23%,27% 4%,43% 13%);}
+@keyframes fractureFloat{from{transform:translateY(0) rotate(-1deg)}to{transform:translateY(-3px) rotate(1deg)}}
+
+/* 08 SERAPHIM — ouro profano / halo */
+.frame-seraphim .profile-avatar-shell,.frame-seraphim .public-avatar-shell{--frame-main:#e3b85f;--frame-soft:#fff0b4;--frame-deep:#1c1205}
+.frame-seraphim .profile-avatar-shell::before,.frame-seraphim .public-avatar-shell::before{
+  inset:-11px;border:2px solid #e3b85f;
+  border-top-color:#fff0b4;border-bottom-color:#8d681e;
+  box-shadow:0 0 0 5px rgba(227,184,95,.08),0 0 34px rgba(227,184,95,.32);
+  background:repeating-conic-gradient(from 0deg,transparent 0 27deg,rgba(255,240,180,.75) 27deg 29deg,transparent 29deg 45deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 73%,#000 74% 100%);mask:radial-gradient(circle,transparent 0 73%,#000 74% 100%);
+  animation:haloSpin 22s linear infinite;
+}
+.frame-seraphim .profile-avatar-shell::after,.frame-seraphim .public-avatar-shell::after{content:'';border:2px solid rgba(255,240,180,.75);-webkit-mask:radial-gradient(circle,transparent 0 78%,#000 79%);mask:radial-gradient(circle,transparent 0 78%,#000 79%);}
+@keyframes haloSpin{to{transform:rotate(360deg)}}
+
+.profile-card[class*="frame-"] .profile-main:before,.public-profile-card[class*="frame-"] .public-profile-body:before{display:none!important}
+
+@media(max-width:650px){
+  .profile-avatar-shell{width:94px;height:94px;margin-top:-47px}
+  .profile-avatar-shell .profile-avatar{width:82px!important;height:82px!important}
+  .public-avatar-shell{width:112px;height:112px;margin-top:-56px}
+  .public-avatar-shell .public-profile-avatar{width:100px!important;height:100px!important;margin-top:0!important}
+}
+@media(prefers-reduced-motion:reduce){.profile-avatar-shell::before,.profile-avatar-shell::after,.public-avatar-shell::before,.public-avatar-shell::after{animation:none!important}}
+</style>
+
 <style id="catalise-final-tier-themes-v4">
 /* =========================================================
    CATÁLISE — TEMAS E MOLDURAS FINAIS
@@ -1387,58 +1543,471 @@ input:focus,select:focus,textarea:focus{border-color:var(--cat-accent)!important
   .profile-main:before,.public-profile-body:before{font-size:9px;letter-spacing:.12em;left:15px}
   .public-profile-body:before{left:20px}
 }
-
-/* =========================================================
-   TEMA GLOBAL FINAL — aplica a identidade ao site inteiro
-   ========================================================= */
-body,body.theme-sangue,body.theme-capela,body.theme-abismo,body.theme-cinzas,body.theme-ouro{
-  background:var(--cat-bg,#061215)!important;color:var(--cat-text,#d8ebe6)!important;
-}
-body.theme-capela{
-  --cat-bg:#120711;--cat-surface:#241020;--cat-surface2:#190b16;--cat-surface3:#3a1830;
-  --cat-accent:#ef6fb2;--cat-accent2:#ffc4df;--cat-cyan:#d9a0ed;--cat-line:#6a3157;
-  --cat-text:#ffe7f3;--cat-muted:#c99bb5;
-}
-body.theme-abismo{
-  --cat-bg:#080312;--cat-surface:#12091f;--cat-surface2:#0b0616;--cat-surface3:#21113a;
-  --cat-accent:#a96cff;--cat-accent2:#d3a8ff;--cat-cyan:#7d8cff;--cat-line:#53327d;
-  --cat-text:#eee5ff;--cat-muted:#b8a5d2;
-}
-body.theme-sangue{
-  --cat-bg:#130508;--cat-surface:#251015;--cat-surface2:#17090d;--cat-surface3:#37151c;
-  --cat-accent:#d45d69;--cat-accent2:#f29aa2;--cat-cyan:#d27a84;--cat-line:#63313a;
-  --cat-text:#f7e1e3;--cat-muted:#c79ca1;
-}
-header,.login-box,.card-ficha,.card-item,.card-ficha2,.modal-content,.modal-content-sm,.support-hero,.support-tier-card,.support-link-box,.profile-showcase-box,.public-profile-card,.public-profile-body,.admin-tier-panel{
-  background:var(--cat-surface,#0b1f24)!important;border-color:var(--cat-line,#174b53)!important;color:var(--cat-text,#d8ebe6)!important;
-}
-header{box-shadow:0 8px 28px rgba(0,0,0,.45)!important}
-.logo,.section-title,.support-kicker,.profile-section-kicker,.public-section-title{color:var(--cat-accent2,#78cdbd)!important}
-.nav-link{color:var(--cat-muted,#8bb3a8)!important}.nav-link:hover,.nav-link.active{background:var(--cat-surface3,#102a2f)!important;color:#fff!important}
-input,textarea,select{background:var(--cat-surface2,#07171b)!important;color:var(--cat-text,#d8ebe6)!important;border-color:var(--cat-line,#174b53)!important}
-input:focus,textarea:focus,select:focus{border-color:var(--cat-accent,#45b69c)!important;box-shadow:0 0 0 2px color-mix(in srgb,var(--cat-accent) 16%,transparent)!important}
-button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45b69c),color-mix(in srgb,var(--cat-accent) 48%,#071519))!important;color:#06100f!important;border-color:var(--cat-accent)!important}
-.vt-mini-btn,.btn-secondary{border-color:var(--cat-line)!important;color:var(--cat-accent2)!important;background:var(--cat-surface2)!important}
-.profile-card,.public-profile-card{background:linear-gradient(145deg,var(--cat-surface),var(--cat-surface2) 58%,#050709)!important}
-.profile-card .profile-main,.public-profile-body{position:relative}
-.theme-capela .profile-card,.theme-capela.public-profile-card{box-shadow:0 0 50px rgba(239,111,178,.10),0 25px 80px rgba(0,0,0,.55)!important}
-.theme-abismo .profile-card,.theme-abismo.public-profile-card{box-shadow:0 0 60px rgba(169,108,255,.13),0 25px 80px rgba(0,0,0,.62)!important}
-/* Quatro molduras oficiais: somente estas permanecem no produto final. */
-.frame-sanctum .profile-avatar,.frame-sanctum .public-profile-avatar{box-shadow:0 0 0 3px #0b2b2f,0 0 0 5px rgba(84,193,176,.7),0 0 0 9px rgba(84,193,176,.12),0 0 35px rgba(84,193,176,.25),0 12px 35px rgba(0,0,0,.6)!important}
-.frame-thorn .profile-avatar,.frame-thorn .public-profile-avatar{box-shadow:0 0 0 3px #20100f,0 0 0 5px rgba(206,70,83,.9),0 0 0 9px rgba(145,35,47,.18),0 0 40px rgba(206,70,83,.28),0 12px 35px rgba(0,0,0,.62)!important}
-.frame-reliquary .profile-avatar,.frame-reliquary .public-profile-avatar{box-shadow:0 0 0 3px #35152a,0 0 0 5px rgba(239,111,178,.88),0 0 0 9px rgba(255,180,215,.18),0 0 45px rgba(239,111,178,.30),0 12px 35px rgba(0,0,0,.62)!important}
-.frame-obsidian .profile-avatar,.frame-obsidian .public-profile-avatar{box-shadow:0 0 0 3px #160d27,0 0 0 5px rgba(169,108,255,.9),0 0 0 9px rgba(125,140,255,.18),0 0 50px rgba(169,108,255,.34),0 12px 35px rgba(0,0,0,.65)!important}
-/* Efeitos de moldura: partículas decorativas sutis, diferentes por tema. */
-.frame-sanctum .profile-main:after,.frame-sanctum .public-profile-body:after{content:'01 13 21 34 08';position:absolute;right:18px;top:-12px;color:#63d9c1;font:700 7px 'DM Mono';letter-spacing:.22em;opacity:.55;animation:catFloatNumbers 8s ease-in-out infinite}
-.frame-reliquary .profile-main:after,.frame-reliquary .public-profile-body:after{content:'✧ ｡ﾟ ✦ ﾟ｡ ✧';position:absolute;right:14px;top:-15px;color:#ff9fca;font:700 13px 'Cormorant Garamond';letter-spacing:.2em;animation:catFairyDrift 6s ease-in-out infinite}
-.frame-thorn .profile-main:after,.frame-thorn .public-profile-body:after{content:'·  ✦  ·  ✦  ·';position:absolute;right:14px;top:-12px;color:#ff6674;font:700 10px 'DM Mono';opacity:.7;animation:catEmberLift 4s ease-in-out infinite}
-.frame-obsidian .profile-main:after,.frame-obsidian .public-profile-body:after{content:'∞  ◇  07  ◇  ∞';position:absolute;right:12px;top:-12px;color:#bf93ff;font:700 8px 'DM Mono';opacity:.72;animation:catVoidDrift 7s ease-in-out infinite}
-@keyframes catFloatNumbers{0%,100%{transform:translateY(0);opacity:.42}50%{transform:translateY(-8px);opacity:.8}}
-@keyframes catFairyDrift{0%,100%{transform:translate(0,0) rotate(-2deg);opacity:.5}50%{transform:translate(-8px,-7px) rotate(3deg);opacity:1}}
-@keyframes catEmberLift{0%,100%{transform:translateY(2px);opacity:.35}50%{transform:translateY(-9px);opacity:.9}}
-@keyframes catVoidDrift{0%,100%{transform:translate(0);opacity:.4}50%{transform:translate(7px,-8px);opacity:.95}}
-@media (prefers-reduced-motion:reduce){.frame-sanctum .profile-main:after,.frame-reliquary .profile-main:after,.frame-thorn .profile-main:after,.frame-obsidian .profile-main:after,.frame-sanctum .public-profile-body:after,.frame-reliquary .public-profile-body:after,.frame-thorn .public-profile-body:after,.frame-obsidian .public-profile-body:after{animation:none!important}}
 </style>
+
+<style id="catalise-four-existing-frames-art-v2">
+/* =========================================================
+   CATÁLISE — AS 4 MOLDURAS ORIGINAIS, REFINADAS
+   IMPORTANTE: não cria novas molduras.
+   Mantém apenas: Sanctum, Espinhos, Relicário e Obsidiana.
+   Arte 2D feita em CSS, com camadas, ornamentos e efeitos leves.
+   ========================================================= */
+.profile-avatar-shell,.public-avatar-shell{
+  --art:var(--cat-accent);--art-hi:var(--cat-accent2);--art-deep:#071216;
+  overflow:visible!important;
+  filter:drop-shadow(0 12px 20px rgba(0,0,0,.34));
+}
+.profile-avatar-shell::before,.public-avatar-shell::before{
+  z-index:0!important;
+}
+.profile-avatar-shell::after,.public-avatar-shell::after{
+  z-index:4!important;
+}
+.profile-avatar-shell .profile-avatar,.public-avatar-shell .public-profile-avatar{
+  z-index:3!important;
+}
+
+/* -------- 01 SANCTUM — geometria sagrada / teal -------- */
+.frame-sanctum .profile-avatar-shell,.frame-sanctum .public-avatar-shell{
+  --art:#43d7bd;--art-hi:#c4fff4;--art-deep:#031a1b;
+  background:
+    radial-gradient(circle at 50% 50%,transparent 57%,rgba(3,26,27,.96) 58% 61%,transparent 62%),
+    conic-gradient(from 0deg,#082b2d 0deg,#43d7bd 8deg,#0b3537 18deg,#c4fff4 22deg,#0b3537 27deg,#43d7bd 35deg,#082b2d 45deg,#082b2d 90deg,#43d7bd 98deg,#c4fff4 103deg,#0b3537 110deg,#43d7bd 125deg,#082b2d 135deg,#082b2d 180deg,#43d7bd 188deg,#c4fff4 193deg,#0b3537 201deg,#43d7bd 215deg,#082b2d 225deg,#082b2d 270deg,#43d7bd 278deg,#c4fff4 283deg,#0b3537 291deg,#43d7bd 305deg,#082b2d 315deg,#082b2d 360deg);
+  box-shadow:0 0 0 1px rgba(67,215,189,.8),0 0 0 5px rgba(67,215,189,.12),0 0 32px rgba(67,215,189,.28),0 18px 35px rgba(0,0,0,.55);
+}
+.frame-sanctum .profile-avatar-shell::before,.frame-sanctum .public-avatar-shell::before{
+  inset:-15px!important;
+  border:2px solid rgba(67,215,189,.8);
+  background:
+    conic-gradient(from 0deg,transparent 0 7deg,rgba(196,255,244,.95) 7deg 9deg,transparent 9deg 18deg),
+    repeating-conic-gradient(from 0deg,transparent 0 17deg,rgba(67,215,189,.42) 17deg 18deg,transparent 18deg 36deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 74%,#000 75% 100%);mask:radial-gradient(circle,transparent 0 74%,#000 75% 100%);
+  animation:sanctumOrbit 16s linear infinite;
+}
+.frame-sanctum .profile-avatar-shell::after,.frame-sanctum .public-avatar-shell::after{
+  inset:-25px!important;
+  background:
+    linear-gradient(90deg,transparent 47%,rgba(196,255,244,.75) 49% 51%,transparent 53%),
+    linear-gradient(0deg,transparent 47%,rgba(67,215,189,.55) 49% 51%,transparent 53%),
+    radial-gradient(circle at 8% 28%,#c4fff4 0 2px,transparent 3px),
+    radial-gradient(circle at 92% 72%,#43d7bd 0 2px,transparent 3px),
+    radial-gradient(circle at 78% 10%,#c4fff4 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 20% 88%,#43d7bd 0 1.5px,transparent 2.5px);
+  -webkit-mask:radial-gradient(circle,transparent 0 80%,#000 81%);mask:radial-gradient(circle,transparent 0 80%,#000 81%);
+  animation:sanctumSpark 4.8s ease-in-out infinite alternate;
+}
+@keyframes sanctumOrbit{to{transform:rotate(360deg)}}
+@keyframes sanctumSpark{from{transform:scale(.96);opacity:.5}to{transform:scale(1.04);opacity:1}}
+
+/* -------- 02 ESPINHOS — espinhos / sangue -------- */
+.frame-thorn .profile-avatar-shell,.frame-thorn .public-avatar-shell{
+  --art:#e44f68;--art-hi:#ffb7c1;--art-deep:#21070d;
+  background:
+    radial-gradient(circle at 50% 50%,transparent 57%,rgba(33,7,13,.98) 58% 62%,transparent 63%),
+    conic-gradient(from 10deg,#3b0b16,#e44f68 10deg,#701426 18deg,#ffb7c1 22deg,#3b0b16 30deg,#e44f68 42deg,#3b0b16 52deg,#7b142a 66deg,#e44f68 80deg,#3b0b16 90deg,#3b0b16 140deg,#e44f68 152deg,#7b142a 166deg,#ffb7c1 171deg,#3b0b16 180deg,#e44f68 196deg,#3b0b16 210deg,#7b142a 228deg,#e44f68 245deg,#3b0b16 270deg,#e44f68 288deg,#7b142a 304deg,#ffb7c1 310deg,#3b0b16 320deg,#e44f68 340deg,#3b0b16 360deg);
+  box-shadow:0 0 0 1px rgba(228,79,104,.82),0 0 0 5px rgba(228,79,104,.12),0 0 34px rgba(228,79,104,.3),0 18px 36px rgba(0,0,0,.6);
+}
+.frame-thorn .profile-avatar-shell::before,.frame-thorn .public-avatar-shell::before{
+  inset:-16px!important;
+  border:3px solid #701426;
+  clip-path:polygon(50% 0,56% 12%,73% 2%,71% 18%,94% 13%,81% 32%,100% 50%,82% 58%,95% 81%,73% 75%,76% 100%,57% 87%,50% 100%,43% 87%,24% 100%,27% 76%,5% 82%,18% 60%,0 50%,18% 39%,6% 18%,28% 23%,26% 2%,43% 13%);
+  background:
+    radial-gradient(circle at 50% 0,#ffb7c1 0 3px,transparent 4px),
+    radial-gradient(circle at 100% 50%,#e44f68 0 3px,transparent 4px),
+    radial-gradient(circle at 50% 100%,#ffb7c1 0 3px,transparent 4px),
+    radial-gradient(circle at 0 50%,#e44f68 0 3px,transparent 4px);
+  box-shadow:0 0 25px rgba(228,79,104,.42);
+  animation:thornBreath 3.2s ease-in-out infinite alternate;
+}
+.frame-thorn .profile-avatar-shell::after,.frame-thorn .public-avatar-shell::after{
+  inset:-27px!important;
+  background:
+    radial-gradient(circle at 13% 26%,#ffb7c1 0 2px,transparent 3px),
+    radial-gradient(circle at 88% 24%,#e44f68 0 2px,transparent 3px),
+    radial-gradient(circle at 82% 86%,#ffb7c1 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 18% 82%,#e44f68 0 1.5px,transparent 2.5px),
+    linear-gradient(35deg,transparent 47%,rgba(228,79,104,.38) 49% 51%,transparent 53%);
+  -webkit-mask:radial-gradient(circle,transparent 0 79%,#000 80%);mask:radial-gradient(circle,transparent 0 79%,#000 80%);
+  animation:thornDrift 5s ease-in-out infinite alternate;
+}
+@keyframes thornBreath{from{transform:scale(.98)}to{transform:scale(1.035)}}
+@keyframes thornDrift{from{transform:rotate(-2deg) translateY(1px);opacity:.55}to{transform:rotate(2deg) translateY(-3px);opacity:1}}
+
+/* -------- 03 RELICÁRIO — Capela rosa / floral -------- */
+.frame-reliquary .profile-avatar-shell,.frame-reliquary .public-avatar-shell{
+  --art:#f27abb;--art-hi:#ffe5f1;--art-deep:#260b1b;
+  background:
+    radial-gradient(circle at 50% 50%,transparent 56%,rgba(38,11,27,.95) 57% 60%,transparent 61%),
+    conic-gradient(from 0deg,#5b1b46,#f27abb 7deg,#ffe5f1 11deg,#b83c7d 17deg,#5b1b46 25deg,#f27abb 35deg,#5b1b46 45deg,#f27abb 55deg,#ffe5f1 59deg,#5b1b46 65deg,#b83c7d 78deg,#f27abb 90deg,#5b1b46 100deg,#f27abb 125deg,#ffe5f1 130deg,#5b1b46 135deg,#f27abb 150deg,#5b1b46 180deg,#f27abb 205deg,#ffe5f1 210deg,#5b1b46 215deg,#b83c7d 228deg,#f27abb 245deg,#5b1b46 270deg,#f27abb 285deg,#ffe5f1 290deg,#5b1b46 300deg,#f27abb 315deg,#5b1b46 330deg,#f27abb 350deg,#5b1b46 360deg);
+  box-shadow:0 0 0 1px rgba(242,122,187,.86),0 0 0 5px rgba(242,122,187,.13),0 0 38px rgba(242,122,187,.34),0 18px 38px rgba(0,0,0,.58);
+}
+.frame-reliquary .profile-avatar-shell::before,.frame-reliquary .public-avatar-shell::before{
+  inset:-15px!important;
+  border:2px solid rgba(255,229,241,.86);
+  -webkit-mask:radial-gradient(circle,transparent 0 73%,#000 74% 100%);mask:radial-gradient(circle,transparent 0 73%,#000 74% 100%);
+  background:
+    radial-gradient(ellipse at 50% 0,#f27abb 0 6px,transparent 7px),
+    radial-gradient(ellipse at 100% 50%,#ffe5f1 0 6px,transparent 7px),
+    radial-gradient(ellipse at 50% 100%,#f27abb 0 6px,transparent 7px),
+    radial-gradient(ellipse at 0 50%,#ffe5f1 0 6px,transparent 7px),
+    repeating-conic-gradient(from 0deg,transparent 0 28deg,rgba(242,122,187,.62) 28deg 30deg,transparent 30deg 60deg);
+  box-shadow:0 0 25px rgba(242,122,187,.3);
+  animation:reliquaryHalo 9s ease-in-out infinite alternate;
+}
+.frame-reliquary .profile-avatar-shell::after,.frame-reliquary .public-avatar-shell::after{
+  inset:-29px!important;
+  background:
+    radial-gradient(ellipse at 14% 24%,#ffe5f1 0 4px,transparent 5px),
+    radial-gradient(ellipse at 87% 19%,#f27abb 0 3px,transparent 4px),
+    radial-gradient(ellipse at 88% 79%,#ffe5f1 0 4px,transparent 5px),
+    radial-gradient(ellipse at 16% 83%,#f27abb 0 3px,transparent 4px),
+    radial-gradient(circle at 50% 6%,#ffe5f1 0 2px,transparent 3px);
+  -webkit-mask:radial-gradient(circle,transparent 0 80%,#000 81%);mask:radial-gradient(circle,transparent 0 80%,#000 81%);
+  animation:petalFloat 5.5s ease-in-out infinite alternate;
+}
+@keyframes reliquaryHalo{from{transform:rotate(-2deg) scale(.985)}to{transform:rotate(2deg) scale(1.025)}}
+@keyframes petalFloat{from{transform:translateY(2px) rotate(-1deg);opacity:.52}to{transform:translateY(-5px) rotate(2deg);opacity:1}}
+
+/* -------- 04 OBSIDIANA — Abismo roxo / órbita quebrada -------- */
+.frame-obsidian .profile-avatar-shell,.frame-obsidian .public-avatar-shell{
+  --art:#a96cff;--art-hi:#ead8ff;--art-deep:#11051f;
+  background:
+    radial-gradient(circle at 50% 50%,transparent 55%,rgba(17,5,31,.98) 56% 60%,transparent 61%),
+    conic-gradient(from 20deg,#2a1250,#a96cff 8deg,#ead8ff 12deg,#4e258e 18deg,#2a1250 32deg,#a96cff 48deg,#2a1250 64deg,#7f4dff 80deg,#ead8ff 84deg,#2a1250 90deg,#a96cff 118deg,#2a1250 135deg,#a96cff 160deg,#ead8ff 165deg,#2a1250 180deg,#7f4dff 205deg,#2a1250 225deg,#a96cff 242deg,#ead8ff 247deg,#2a1250 255deg,#a96cff 278deg,#2a1250 300deg,#7f4dff 320deg,#ead8ff 325deg,#2a1250 335deg,#a96cff 350deg,#2a1250 360deg);
+  box-shadow:0 0 0 1px rgba(169,108,255,.9),0 0 0 5px rgba(169,108,255,.12),0 0 42px rgba(169,108,255,.4),0 18px 40px rgba(0,0,0,.64);
+}
+.frame-obsidian .profile-avatar-shell::before,.frame-obsidian .public-avatar-shell::before{
+  inset:-17px!important;
+  border:2px solid rgba(169,108,255,.9);
+  border-radius:48% 52% 44% 56%/54% 46% 55% 45%;
+  background:
+    conic-gradient(from 8deg,transparent 0 16deg,#ead8ff 16deg 19deg,transparent 19deg 54deg,#a96cff 54deg 59deg,transparent 59deg 126deg,#ead8ff 126deg 129deg,transparent 129deg 218deg,#a96cff 218deg 223deg,transparent 223deg 306deg,#ead8ff 306deg 309deg,transparent 309deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 70%,#000 71% 100%);mask:radial-gradient(circle,transparent 0 70%,#000 71% 100%);
+  box-shadow:0 0 30px rgba(169,108,255,.42);
+  animation:obsidianOrbit 14s linear infinite;
+}
+.frame-obsidian .profile-avatar-shell::after,.frame-obsidian .public-avatar-shell::after{
+  inset:-30px!important;
+  background:
+    radial-gradient(circle at 10% 22%,#ead8ff 0 2px,transparent 3px),
+    radial-gradient(circle at 89% 17%,#a96cff 0 2.5px,transparent 3.5px),
+    radial-gradient(circle at 88% 83%,#ead8ff 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 14% 86%,#a96cff 0 2px,transparent 3px),
+    radial-gradient(circle at 50% 0,#ead8ff 0 2px,transparent 3px),
+    radial-gradient(circle at 50% 100%,#a96cff 0 2px,transparent 3px);
+  -webkit-mask:radial-gradient(circle,transparent 0 79%,#000 80%);mask:radial-gradient(circle,transparent 0 79%,#000 80%);
+  animation:obsidianPulse 3.8s ease-in-out infinite alternate;
+}
+@keyframes obsidianOrbit{to{transform:rotate(-360deg)}}
+@keyframes obsidianPulse{from{opacity:.4;transform:scale(.95)}to{opacity:1;transform:scale(1.06)}}
+
+/* Pequeno halo contínuo no avatar, sem mudar a arte/identidade da moldura. */
+.frame-sanctum .profile-avatar,.frame-sanctum .public-profile-avatar{box-shadow:0 0 0 3px #031a1b,0 0 0 6px rgba(67,215,189,.86),0 0 22px rgba(67,215,189,.28)!important}
+.frame-thorn .profile-avatar,.frame-thorn .public-profile-avatar{box-shadow:0 0 0 3px #21070d,0 0 0 6px rgba(228,79,104,.86),0 0 24px rgba(228,79,104,.3)!important}
+.frame-reliquary .profile-avatar,.frame-reliquary .public-profile-avatar{box-shadow:0 0 0 3px #260b1b,0 0 0 6px rgba(242,122,187,.9),0 0 25px rgba(242,122,187,.34)!important}
+.frame-obsidian .profile-avatar,.frame-obsidian .public-profile-avatar{box-shadow:0 0 0 3px #11051f,0 0 0 6px rgba(169,108,255,.9),0 0 28px rgba(169,108,255,.38)!important}
+
+@media(prefers-reduced-motion:reduce){
+ .frame-sanctum .profile-avatar-shell::before,.frame-sanctum .profile-avatar-shell::after,
+ .frame-thorn .profile-avatar-shell::before,.frame-thorn .profile-avatar-shell::after,
+ .frame-reliquary .profile-avatar-shell::before,.frame-reliquary .profile-avatar-shell::after,
+ .frame-obsidian .profile-avatar-shell::before,.frame-obsidian .profile-avatar-shell::after,
+ .frame-sanctum .public-avatar-shell::before,.frame-sanctum .public-avatar-shell::after,
+ .frame-thorn .public-avatar-shell::before,.frame-thorn .public-avatar-shell::after,
+ .frame-reliquary .public-avatar-shell::before,.frame-reliquary .public-avatar-shell::after,
+ .frame-obsidian .public-avatar-shell::before,.frame-obsidian .public-avatar-shell::after{animation:none!important}
+}
+</style>
+
+
+<style id="catalise-sanctum-reliquary-refinement-v3">
+/* =========================================================
+   REFINAMENTO FINAL — SANCTUM + RELICÁRIO
+   Mantém as duas molduras originais; apenas aumenta a riqueza
+   da arte 2D e dos efeitos decorativos.
+   ========================================================= */
+
+/* SANCTUM — geometria sagrada mais rica, com placas, runas,
+   pontos cardeais e pequenos cristais de luz. */
+.frame-sanctum .profile-avatar-shell,
+.frame-sanctum .public-avatar-shell{
+  background:
+    /* cristais cardeais */
+    radial-gradient(ellipse at 50% 1%,#d8fff8 0 3px,transparent 4px),
+    radial-gradient(ellipse at 99% 50%,#7ff3dc 0 3px,transparent 4px),
+    radial-gradient(ellipse at 50% 99%,#d8fff8 0 3px,transparent 4px),
+    radial-gradient(ellipse at 1% 50%,#7ff3dc 0 3px,transparent 4px),
+    /* losangos diagonais */
+    radial-gradient(ellipse at 17% 17%,#bafff1 0 2px,transparent 3px),
+    radial-gradient(ellipse at 83% 17%,#bafff1 0 2px,transparent 3px),
+    radial-gradient(ellipse at 83% 83%,#75e9d3 0 2px,transparent 3px),
+    radial-gradient(ellipse at 17% 83%,#75e9d3 0 2px,transparent 3px),
+    /* aro interno */
+    radial-gradient(circle at 50% 50%,transparent 54%,rgba(2,24,25,.98) 55% 58%,transparent 59%),
+    /* placas geométricas */
+    repeating-conic-gradient(from 0deg,
+      transparent 0 7deg,
+      rgba(196,255,244,.95) 7deg 8deg,
+      rgba(67,215,189,.2) 8deg 15deg,
+      transparent 15deg 22.5deg),
+    /* metal/teal */
+    conic-gradient(from 22.5deg,
+      #061d20 0deg,#1c6967 7deg,#43d7bd 11deg,#092e30 17deg,
+      #bffef1 20deg,#0b393a 24deg,#1a7770 31deg,#062023 45deg,
+      #062023 90deg,#1a7770 101deg,#bffef1 110deg,#0b393a 116deg,
+      #43d7bd 124deg,#062023 135deg,#062023 180deg,#1a7770 191deg,
+      #bffef1 200deg,#0b393a 206deg,#43d7bd 214deg,#062023 225deg,
+      #062023 270deg,#1a7770 281deg,#bffef1 290deg,#0b393a 296deg,
+      #43d7bd 304deg,#062023 315deg,#062023 360deg);
+  box-shadow:
+    0 0 0 1px rgba(67,215,189,.95),
+    0 0 0 4px rgba(67,215,189,.13),
+    0 0 0 8px rgba(4,55,55,.72),
+    0 0 0 9px rgba(133,243,222,.2),
+    0 0 34px rgba(67,215,189,.32),
+    0 18px 38px rgba(0,0,0,.58);
+}
+.frame-sanctum .profile-avatar-shell::before,
+.frame-sanctum .public-avatar-shell::before{
+  inset:-17px!important;
+  border:2px solid rgba(185,255,243,.8);
+  background:
+    /* pequenos símbolos nas diagonais */
+    radial-gradient(ellipse at 10% 50%,#bffef1 0 2px,transparent 3px),
+    radial-gradient(ellipse at 90% 50%,#bffef1 0 2px,transparent 3px),
+    radial-gradient(ellipse at 50% 10%,#bffef1 0 2px,transparent 3px),
+    radial-gradient(ellipse at 50% 90%,#bffef1 0 2px,transparent 3px),
+    /* estrela de 8 pontas estilizada */
+    conic-gradient(from 22.5deg,transparent 0 11deg,rgba(196,255,244,.9) 11deg 13deg,transparent 13deg 45deg),
+    repeating-conic-gradient(from 0deg,transparent 0 14deg,rgba(67,215,189,.48) 14deg 16deg,transparent 16deg 30deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 72%,#000 73% 100%);mask:radial-gradient(circle,transparent 0 72%,#000 73% 100%);
+  box-shadow:
+    0 0 0 4px rgba(67,215,189,.08),
+    0 0 24px rgba(67,215,189,.34),
+    inset 0 0 18px rgba(196,255,244,.12);
+  animation:sanctumRelicSpin 22s linear infinite;
+}
+.frame-sanctum .profile-avatar-shell::after,
+.frame-sanctum .public-avatar-shell::after{
+  inset:-31px!important;
+  background:
+    /* estrelas e fragmentos flutuantes */
+    radial-gradient(ellipse at 6% 23%,#d8fff8 0 2px,transparent 3px),
+    radial-gradient(ellipse at 93% 23%,#79ead7 0 2px,transparent 3px),
+    radial-gradient(ellipse at 92% 77%,#d8fff8 0 2px,transparent 3px),
+    radial-gradient(ellipse at 8% 78%,#79ead7 0 2px,transparent 3px),
+    radial-gradient(ellipse at 50% 0%,#d8fff8 0 1.5px,transparent 2.5px),
+    radial-gradient(ellipse at 100% 50%,#79ead7 0 1.5px,transparent 2.5px),
+    radial-gradient(ellipse at 50% 100%,#d8fff8 0 1.5px,transparent 2.5px),
+    radial-gradient(ellipse at 0% 50%,#79ead7 0 1.5px,transparent 2.5px),
+    /* linhas de mira / runas */
+    linear-gradient(45deg,transparent 47%,rgba(196,255,244,.35) 49% 51%,transparent 53%),
+    linear-gradient(-45deg,transparent 47%,rgba(67,215,189,.28) 49% 51%,transparent 53%);
+  -webkit-mask:radial-gradient(circle,transparent 0 79%,#000 80%);mask:radial-gradient(circle,transparent 0 79%,#000 80%);
+  filter:drop-shadow(0 0 6px #43d7bd);
+  animation:sanctumParticles 5.2s ease-in-out infinite alternate;
+}
+@keyframes sanctumRelicSpin{to{transform:rotate(360deg)}}
+@keyframes sanctumParticles{from{transform:scale(.94) rotate(-1deg);opacity:.42}to{transform:scale(1.07) rotate(2deg);opacity:1}}
+
+/* RELICÁRIO — agora claramente floral/ornamental, mantendo o rosa.
+   A ideia é de medalhão de capela: pétalas, arabescos, halo e pequenas
+   joias luminosas ao redor do círculo. */
+.frame-reliquary .profile-avatar-shell,
+.frame-reliquary .public-avatar-shell{
+  background:
+    /* flores/medalhões cardeais */
+    radial-gradient(ellipse at 50% 0%,#fff0f8 0 4px,#f27abb 5px 7px,transparent 8px),
+    radial-gradient(ellipse at 100% 50%,#fff0f8 0 4px,#f27abb 5px 7px,transparent 8px),
+    radial-gradient(ellipse at 50% 100%,#fff0f8 0 4px,#f27abb 5px 7px,transparent 8px),
+    radial-gradient(ellipse at 0% 50%,#fff0f8 0 4px,#f27abb 5px 7px,transparent 8px),
+    /* flores diagonais menores */
+    radial-gradient(ellipse at 15% 15%,#ffd8eb 0 3px,#d95d9d 4px 5px,transparent 6px),
+    radial-gradient(ellipse at 85% 15%,#ffd8eb 0 3px,#d95d9d 4px 5px,transparent 6px),
+    radial-gradient(ellipse at 85% 85%,#ffd8eb 0 3px,#d95d9d 4px 5px,transparent 6px),
+    radial-gradient(ellipse at 15% 85%,#ffd8eb 0 3px,#d95d9d 4px 5px,transparent 6px),
+    /* halo interno */
+    radial-gradient(circle at 50% 50%,transparent 53%,rgba(38,11,27,.97) 54% 58%,transparent 59%),
+    /* pétalas repetidas */
+    repeating-conic-gradient(from 0deg,
+      transparent 0 9deg,
+      rgba(255,229,241,.86) 9deg 12deg,
+      rgba(242,122,187,.3) 12deg 18deg,
+      transparent 18deg 30deg),
+    /* metal rosa profundo */
+    conic-gradient(from 0deg,
+      #4d153b 0deg,#a52f70 6deg,#f27abb 11deg,#ffe5f1 15deg,#7d2255 20deg,
+      #4d153b 30deg,#d65b9d 38deg,#f27abb 44deg,#4d153b 50deg,
+      #4d153b 90deg,#d65b9d 98deg,#f27abb 104deg,#ffe5f1 109deg,#7d2255 115deg,
+      #4d153b 120deg,#d65b9d 130deg,#f27abb 136deg,#4d153b 145deg,
+      #4d153b 180deg,#a52f70 186deg,#f27abb 191deg,#ffe5f1 195deg,#7d2255 200deg,
+      #4d153b 210deg,#d65b9d 218deg,#f27abb 224deg,#4d153b 230deg,
+      #4d153b 270deg,#d65b9d 278deg,#f27abb 284deg,#ffe5f1 289deg,#7d2255 295deg,
+      #4d153b 300deg,#d65b9d 310deg,#f27abb 316deg,#4d153b 325deg,#4d153b 360deg);
+  box-shadow:
+    0 0 0 1px rgba(255,185,220,.95),
+    0 0 0 4px rgba(242,122,187,.14),
+    0 0 0 8px rgba(91,27,70,.78),
+    0 0 0 9px rgba(255,210,232,.18),
+    0 0 38px rgba(242,122,187,.36),
+    0 18px 40px rgba(0,0,0,.6);
+}
+.frame-reliquary .profile-avatar-shell::before,
+.frame-reliquary .public-avatar-shell::before{
+  inset:-18px!important;
+  border:2px solid rgba(255,229,241,.9);
+  background:
+    /* pequenos botões/joias */
+    radial-gradient(ellipse at 8% 50%,#fff0f8 0 3px,#f27abb 4px 5px,transparent 6px),
+    radial-gradient(ellipse at 92% 50%,#fff0f8 0 3px,#f27abb 4px 5px,transparent 6px),
+    radial-gradient(ellipse at 50% 8%,#fff0f8 0 3px,#f27abb 4px 5px,transparent 6px),
+    radial-gradient(ellipse at 50% 92%,#fff0f8 0 3px,#f27abb 4px 5px,transparent 6px),
+    /* arabescos */
+    repeating-conic-gradient(from 7deg,transparent 0 17deg,rgba(255,229,241,.72) 17deg 19deg,transparent 19deg 36deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 70%,#000 71% 100%);mask:radial-gradient(circle,transparent 0 70%,#000 71% 100%);
+  box-shadow:
+    0 0 0 4px rgba(242,122,187,.09),
+    0 0 28px rgba(242,122,187,.38),
+    inset 0 0 16px rgba(255,229,241,.16);
+  animation:reliquaryHaloRich 10s ease-in-out infinite alternate;
+}
+.frame-reliquary .profile-avatar-shell::after,
+.frame-reliquary .public-avatar-shell::after{
+  inset:-33px!important;
+  background:
+    /* pétalas que escapam da moldura */
+    radial-gradient(ellipse at 8% 28%,#ffd8eb 0 3px,transparent 4px),
+    radial-gradient(ellipse at 92% 26%,#f27abb 0 3px,transparent 4px),
+    radial-gradient(ellipse at 89% 80%,#ffd8eb 0 3px,transparent 4px),
+    radial-gradient(ellipse at 11% 82%,#f27abb 0 3px,transparent 4px),
+    radial-gradient(ellipse at 50% 3%,#fff0f8 0 2px,transparent 3px),
+    radial-gradient(ellipse at 97% 50%,#ffd8eb 0 2px,transparent 3px),
+    radial-gradient(ellipse at 50% 97%,#fff0f8 0 2px,transparent 3px),
+    radial-gradient(ellipse at 3% 50%,#ffd8eb 0 2px,transparent 3px),
+    /* fios ornamentais */
+    linear-gradient(35deg,transparent 47%,rgba(242,122,187,.3) 49% 51%,transparent 53%),
+    linear-gradient(-35deg,transparent 47%,rgba(255,229,241,.32) 49% 51%,transparent 53%);
+  -webkit-mask:radial-gradient(circle,transparent 0 78%,#000 79%);mask:radial-gradient(circle,transparent 0 78%,#000 79%);
+  filter:drop-shadow(0 0 6px #f27abb);
+  animation:reliquaryPetalsRich 6s ease-in-out infinite alternate;
+}
+@keyframes reliquaryHaloRich{from{transform:rotate(-3deg) scale(.98)}to{transform:rotate(3deg) scale(1.035)}}
+@keyframes reliquaryPetalsRich{from{transform:translateY(3px) rotate(-2deg);opacity:.4}to{transform:translateY(-6px) rotate(3deg);opacity:1}}
+
+@media(prefers-reduced-motion:reduce){
+  .frame-sanctum .profile-avatar-shell::before,.frame-sanctum .profile-avatar-shell::after,
+  .frame-sanctum .public-avatar-shell::before,.frame-sanctum .public-avatar-shell::after,
+  .frame-reliquary .profile-avatar-shell::before,.frame-reliquary .profile-avatar-shell::after,
+  .frame-reliquary .public-avatar-shell::before,.frame-reliquary .public-avatar-shell::after{animation:none!important}
+}
+</style>
+
+
+<style id="catalise-sanctum-fairy-refinement-v3">
+/* =========================================================
+   REFINAMENTO DAS 2 MOLDURAS EXISTENTES
+   Sanctum = geometria / números / HUD arcano
+   Relicário = fairycore rosa / pétalas / brilhos / pó mágico
+   ========================================================= */
+.frame-extra{position:absolute;inset:-42px;pointer-events:none;z-index:7;display:none;overflow:visible}
+.frame-sanctum .sanctum-extra{display:block}
+.frame-reliquary .fairy-extra{display:block}
+
+/* SANCTUM — mais geométrica, com quadrados, linhas técnicas e números flutuantes. */
+.frame-sanctum .profile-avatar-shell,.frame-sanctum .public-avatar-shell{
+  background:
+    linear-gradient(90deg,transparent 48.8%,rgba(170,255,244,.55) 49.5% 50.5%,transparent 51.2%),
+    linear-gradient(0deg,transparent 48.8%,rgba(170,255,244,.4) 49.5% 50.5%,transparent 51.2%),
+    repeating-conic-gradient(from 0deg,transparent 0 10deg,rgba(87,231,207,.72) 10deg 11.2deg,transparent 11.2deg 22.5deg),
+    radial-gradient(circle,transparent 0 54%,#061c20 55% 58%,transparent 59%),
+    conic-gradient(from 0deg,#062126,#2bbfa9 8deg,#b9fff3 11deg,#0a3435 16deg,#062126 24deg,#218f86 31deg,#062126 45deg,#062126 90deg,#218f86 121deg,#062126 135deg,#062126 180deg,#218f86 211deg,#062126 225deg,#062126 270deg,#218f86 301deg,#062126 315deg,#062126 360deg);
+}
+.frame-sanctum .profile-avatar-shell::before,.frame-sanctum .public-avatar-shell::before{
+  inset:-20px!important;border:1px solid rgba(179,255,246,.7);
+  background:
+    linear-gradient(45deg,transparent 47%,rgba(133,247,229,.45) 49% 51%,transparent 53%),
+    linear-gradient(-45deg,transparent 47%,rgba(133,247,229,.3) 49% 51%,transparent 53%),
+    repeating-conic-gradient(from 22.5deg,transparent 0 21deg,rgba(180,255,246,.8) 21deg 22deg,transparent 22deg 45deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 70%,#000 71% 100%);mask:radial-gradient(circle,transparent 0 70%,#000 71% 100%);
+  animation:sanctumGridSpin 26s linear infinite;
+}
+.frame-sanctum .profile-avatar-shell::after,.frame-sanctum .public-avatar-shell::after{
+  inset:-35px!important;background:
+    radial-gradient(circle at 7% 20%,#c9fff7 0 1.8px,transparent 2.8px),
+    radial-gradient(circle at 93% 18%,#65e8d2 0 1.6px,transparent 2.6px),
+    radial-gradient(circle at 91% 81%,#c9fff7 0 1.8px,transparent 2.8px),
+    radial-gradient(circle at 9% 83%,#65e8d2 0 1.6px,transparent 2.6px),
+    linear-gradient(90deg,transparent 49.7%,rgba(120,239,220,.28) 50%,transparent 50.3%),
+    linear-gradient(0deg,transparent 49.7%,rgba(120,239,220,.22) 50%,transparent 50.3%);
+  -webkit-mask:radial-gradient(circle,transparent 0 80%,#000 81%);mask:radial-gradient(circle,transparent 0 80%,#000 81%);
+  animation:sanctumSignal 4.8s ease-in-out infinite alternate;
+}
+.geo-square{position:absolute;display:grid;place-items:center;width:16px;height:16px;border:1px solid rgba(166,255,243,.72);background:rgba(4,36,38,.76);color:#b8fff4;font:700 6px 'DM Mono',monospace;letter-spacing:-.05em;box-shadow:0 0 9px rgba(75,220,198,.3),inset 0 0 7px rgba(95,239,216,.08);transform:rotate(45deg)}
+.geo-square::before{content:'';position:absolute;inset:3px;border:1px solid rgba(109,235,216,.3)}
+.geo-square.gs1{left:8%;top:16%;animation:geoFloat1 4s ease-in-out infinite}.geo-square.gs2{right:5%;top:29%;animation:geoFloat2 5s ease-in-out infinite}.geo-square.gs3{right:12%;bottom:10%;animation:geoFloat1 4.7s ease-in-out infinite reverse}.geo-square.gs4{left:7%;bottom:20%;animation:geoFloat2 5.4s ease-in-out infinite reverse}.geo-square.gs5{left:46%;top:-4%;animation:geoFloat1 3.8s ease-in-out infinite}.geo-square.gs6{right:39%;bottom:-5%;animation:geoFloat2 4.4s ease-in-out infinite}
+.geo-square{animation-delay:var(--d,0s)}
+.geo-cross{position:absolute;width:12px;height:12px;border:1px solid rgba(156,255,239,.5);transform:rotate(45deg);opacity:.7}.geo-cross::before,.geo-cross::after{content:'';position:absolute;background:#8cf3de}.geo-cross::before{left:50%;top:-3px;width:1px;height:18px}.geo-cross::after{top:50%;left:-3px;width:18px;height:1px}.gc1{left:-1%;top:49%;animation:geoBlink 2.7s infinite}.gc2{right:-1%;top:12%;animation:geoBlink 3.4s infinite .7s}.gc3{right:23%;bottom:-2%;animation:geoBlink 2.9s infinite 1.1s}
+@keyframes sanctumGridSpin{to{transform:rotate(360deg)}}
+@keyframes sanctumSignal{from{opacity:.35;transform:scale(.96)}to{opacity:1;transform:scale(1.035)}}
+@keyframes geoFloat1{0%,100%{translate:0 0;opacity:.55}50%{translate:3px -7px;opacity:1}}
+@keyframes geoFloat2{0%,100%{translate:0 0;opacity:.65}50%{translate:-4px 5px;opacity:1}}
+@keyframes geoBlink{0%,100%{opacity:.2}45%{opacity:1}60%{opacity:.35}}
+
+/* RELICÁRIO — fairycore rosa: pétalas, fadas, poeira mágica, orbes e estrelas. */
+.frame-reliquary .profile-avatar-shell,.frame-reliquary .public-avatar-shell{
+  background:
+    radial-gradient(circle at 50% 4%,#fff8fc 0 3px,#ffb7da 4px 7px,transparent 8px),
+    radial-gradient(circle at 96% 51%,#fff8fc 0 3px,#f47fbc 4px 7px,transparent 8px),
+    radial-gradient(circle at 50% 96%,#fff8fc 0 3px,#ffb7da 4px 7px,transparent 8px),
+    radial-gradient(circle at 4% 51%,#fff8fc 0 3px,#f47fbc 4px 7px,transparent 8px),
+    repeating-conic-gradient(from 0deg,transparent 0 12deg,rgba(255,221,239,.9) 12deg 15deg,rgba(247,126,190,.24) 15deg 20deg,transparent 20deg 30deg),
+    conic-gradient(from 15deg,#4b1437,#a92e73 7deg,#ff9fd0 12deg,#fff0f8 16deg,#742050 21deg,#4b1437 30deg,#e05c9f 38deg,#ffb9dc 45deg,#4b1437 55deg,#4b1437 90deg,#e05c9f 128deg,#ffb9dc 135deg,#4b1437 150deg,#4b1437 180deg,#a92e73 187deg,#ff9fd0 193deg,#fff0f8 197deg,#742050 203deg,#4b1437 215deg,#e05c9f 225deg,#ffb9dc 232deg,#4b1437 245deg,#4b1437 270deg,#e05c9f 308deg,#ffb9dc 315deg,#4b1437 330deg,#4b1437 360deg);
+  box-shadow:0 0 0 1px rgba(255,220,239,.95),0 0 0 5px rgba(255,128,191,.14),0 0 0 9px rgba(255,210,232,.13),0 0 42px rgba(247,115,184,.38),0 18px 40px rgba(0,0,0,.58);
+}
+.frame-reliquary .profile-avatar-shell::before,.frame-reliquary .public-avatar-shell::before{
+  inset:-21px!important;border:1px solid rgba(255,220,240,.85);
+  background:
+    radial-gradient(circle at 8% 20%,#ffe8f4 0 3px,transparent 4px),
+    radial-gradient(circle at 92% 18%,#ffb8da 0 3px,transparent 4px),
+    radial-gradient(circle at 90% 82%,#ffe8f4 0 3px,transparent 4px),
+    radial-gradient(circle at 10% 84%,#ffb8da 0 3px,transparent 4px),
+    repeating-conic-gradient(from 0deg,transparent 0 18deg,rgba(255,224,239,.72) 18deg 20deg,transparent 20deg 36deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 69%,#000 70% 100%);mask:radial-gradient(circle,transparent 0 69%,#000 70% 100%);
+  box-shadow:0 0 0 4px rgba(255,142,197,.08),0 0 32px rgba(255,132,195,.4);
+  animation:fairyHalo 8s ease-in-out infinite alternate;
+}
+.frame-reliquary .profile-avatar-shell::after,.frame-reliquary .public-avatar-shell::after{
+  inset:-38px!important;background:
+    radial-gradient(circle at 8% 25%,#fff7fc 0 2px,transparent 3px),
+    radial-gradient(circle at 92% 21%,#ffb7db 0 2px,transparent 3px),
+    radial-gradient(circle at 88% 80%,#fff7fc 0 2px,transparent 3px),
+    radial-gradient(circle at 12% 84%,#ffb7db 0 2px,transparent 3px),
+    radial-gradient(circle at 50% 0%,#fff7fc 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 100% 50%,#fff7fc 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 50% 100%,#fff7fc 0 1.5px,transparent 2.5px),
+    radial-gradient(circle at 0% 50%,#fff7fc 0 1.5px,transparent 2.5px);
+  -webkit-mask:radial-gradient(circle,transparent 0 79%,#000 80%);mask:radial-gradient(circle,transparent 0 79%,#000 80%);
+  filter:drop-shadow(0 0 7px #ff91c8);animation:fairyDust 5.6s ease-in-out infinite alternate;
+}
+.fairy-spark{position:absolute;color:#fff5fb;font-family:'Cormorant Garamond',serif;font-weight:700;text-shadow:0 0 7px #ff82c2,0 0 16px #f3a6d0;font-size:17px;line-height:1}.fs1{left:2%;top:11%;animation:fairySpark1 3.2s ease-in-out infinite}.fs2{right:4%;top:41%;font-size:13px;animation:fairySpark2 4.4s ease-in-out infinite}.fs3{right:18%;bottom:4%;font-size:20px;animation:fairySpark1 3.8s ease-in-out infinite reverse}
+.fairy-petal{position:absolute;width:8px;height:13px;border-radius:90% 10% 90% 10%;background:linear-gradient(135deg,#fff1f8,#ff91c7);box-shadow:0 0 8px rgba(255,121,190,.7);opacity:.85}.fp1{left:4%;top:55%;transform:rotate(-28deg);animation:fairyPetal1 5s ease-in-out infinite}.fp2{right:3%;top:67%;transform:rotate(35deg);animation:fairyPetal2 5.8s ease-in-out infinite}.fp3{left:27%;bottom:1%;transform:rotate(12deg);animation:fairyPetal1 6.2s ease-in-out infinite reverse}
+.fairy-orb{position:absolute;width:5px;height:5px;border-radius:50%;background:#fff;box-shadow:0 0 5px #fff,0 0 12px #ff80bf,0 0 18px rgba(255,173,218,.7)}.fo1{left:16%;top:4%;animation:fairyOrb 3.7s ease-in-out infinite}.fo2{right:14%;bottom:12%;animation:fairyOrb 4.6s ease-in-out infinite 1s}
+.fairy-butterfly{position:absolute;color:#ffb4d9;font-size:15px;text-shadow:0 0 7px #ff74ba;opacity:.8}.fb1{left:-1%;bottom:29%;animation:fairyButterfly 7s ease-in-out infinite}
+@keyframes fairyHalo{from{transform:rotate(-3deg) scale(.975);opacity:.68}to{transform:rotate(3deg) scale(1.035);opacity:1}}
+@keyframes fairyDust{from{transform:translateY(4px) rotate(-2deg);opacity:.45}to{transform:translateY(-8px) rotate(3deg);opacity:1}}
+@keyframes fairySpark1{0%,100%{transform:translate(0,0) rotate(0) scale(.85);opacity:.45}50%{transform:translate(4px,-8px) rotate(18deg) scale(1.15);opacity:1}}
+@keyframes fairySpark2{0%,100%{transform:translate(0,0) rotate(0);opacity:.4}50%{transform:translate(-5px,6px) rotate(-20deg);opacity:1}}
+@keyframes fairyPetal1{0%,100%{transform:translate(0,0) rotate(-28deg);opacity:.35}50%{transform:translate(8px,-12px) rotate(25deg);opacity:1}}
+@keyframes fairyPetal2{0%,100%{transform:translate(0,0) rotate(35deg);opacity:.4}50%{transform:translate(-7px,-10px) rotate(65deg);opacity:1}}
+@keyframes fairyOrb{0%,100%{transform:translateY(0) scale(.7);opacity:.35}50%{transform:translateY(-10px) scale(1.25);opacity:1}}
+@keyframes fairyButterfly{0%,100%{transform:translate(0,4px) rotate(-8deg)}50%{transform:translate(10px,-9px) rotate(10deg)}}
+
+@media(prefers-reduced-motion:reduce){
+  .frame-sanctum .sanctum-extra,.frame-reliquary .fairy-extra{animation:none!important}
+  .geo-square,.geo-cross,.fairy-spark,.fairy-petal,.fairy-orb,.fairy-butterfly,.frame-sanctum .profile-avatar-shell::before,.frame-sanctum .profile-avatar-shell::after,.frame-sanctum .public-avatar-shell::before,.frame-sanctum .public-avatar-shell::after,.frame-reliquary .profile-avatar-shell::before,.frame-reliquary .profile-avatar-shell::after,.frame-reliquary .public-avatar-shell::before,.frame-reliquary .public-avatar-shell::after{animation:none!important}
+}
+</style>
+
 </head>
 <body>
   <header class="site-header">
@@ -1595,7 +2164,7 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
           </div>
           <div class="profile-main">
             <div class="profile-identity">
-              <img id="profile-avatar-preview" class="profile-avatar" alt="Foto de perfil">
+              <div class="profile-avatar-shell frame-art-shell" aria-hidden="false"><img id="profile-avatar-preview" class="profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div>
               <div>
                 <h2 id="profile-name-preview" class="profile-name">INVESTIGADOR</h2>
                 <div id="profile-handle-preview" class="profile-handle">@investigador</div>
@@ -1651,11 +2220,11 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
               <label>Moldura do perfil
                 <select id="profile-frame">
                   <option value="none">Sem moldura</option>
-                  <option value="sanctum">Sanctum · Investigador</option>
-                  <option value="thorn" data-min-tier="devoto">Espinhos · Devoto</option>
-                  <option value="reliquary" data-min-tier="oficiante">Relicário · Oficiante</option>
-                  <option value="obsidian" data-min-tier="arquiteto">Obsidiana · Arquiteto</option>
-</select>
+                  <option value="sanctum" data-min-tier="devoto">Sanctum · Geometria Sagrada</option>
+                  <option value="thorn" data-min-tier="devoto">Espinhos · Sangue</option>
+                  <option value="reliquary" data-min-tier="oficiante">Relicário · Capela Rosa</option>
+                  <option value="obsidian" data-min-tier="arquiteto">Obsidiana · Abismo Roxo</option>
+                </select>
               </label>
               <label>Efeito do arquivo
                 <select id="profile-effect">
@@ -1704,7 +2273,7 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
       <section class="card-ficha support-hero">
         <div class="support-kicker">☩ SUSTENTE O ARQUIVO</div>
         <h2>TORNE-SE PARTE DO CATÁLISE</h2>
-        <p>O Catálise é um projeto independente. Seu apoio ajuda a manter o sistema, as campanhas, o Tabletop e o conteúdo em desenvolvimento. Cada nível desbloqueia uma identidade visual própria, benefícios digitais e acesso antecipado.</p>
+        <p>O Catálise é um projeto independente. Seu apoio ajuda a manter o sistema, as campanhas, o Tabletop e o conteúdo em desenvolvimento. Em troca, você desbloqueia principalmente benefícios digitais, cosméticos e acesso antecipado.</p>
         <button type="button" class="btn-main" onclick="abrirCatarse()">☩ APOIAR NO CATARSE</button>
         <div class="support-note">A cobrança acontece no Catarse. O site nunca pede sua senha do Catarse nem dados do cartão. Por enquanto, a confirmação dos apoios é feita manualmente pela administração do Catálise.</div>
       </section>
@@ -1842,7 +2411,7 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
       <button class="public-profile-close" type="button" onclick="fecharPerfilPublico()" aria-label="Fechar">×</button>
       <div id="public-profile-banner" class="public-profile-banner"></div>
       <div class="public-profile-body">
-        <img id="public-profile-avatar" class="public-profile-avatar" alt="Foto de perfil">
+        <div class="public-avatar-shell frame-art-shell"><img id="public-profile-avatar" class="public-profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div>
         <div class="public-profile-heading">
           <div>
             <h2 id="public-profile-name">INVESTIGADOR</h2>
@@ -2852,7 +3421,6 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
         await setDoc(doc(db,'perfisPublicos',window.usuarioId),publicData,{merge:true});
         window.usuarioAtual=nome;
         window.perfilAtual={...window.perfilAtual,...publicData};
-        await atualizarConquistasAutomaticas();
         renderizarPerfilUI();
         const dash=document.getElementById('dash-usuario');if(dash)dash.textContent=nome;
         renderizarHeaderUsuario();
@@ -2963,13 +3531,13 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
     }
 
     const SUPPORTER_RANK={none:0,devoto:1,oficiante:2,arquiteto:3,arauto:4};
-    const SUPPORTER_LABEL={none:'INVESTIGADOR',devoto:'☽ DEVOTO',oficiante:'☩ OFICIANTE',arquiteto:'◇ ARQUITETO',arauto:'👁 ARAUTO'};
+    const SUPPORTER_LABEL={none:'INVESTIGADOR',devoto:'☽ DEVOTO',oficiante:'☩ OFICIANTE',arquiteto:'🩸 ARQUITETO',arauto:'👁 ARAUTO'};
     const SUPPORTER_BENEFITS={
-      none:['Perfil público','Tema Catálise — Padrão','Moldura Sanctum','Efeitos básicos'],
-      devoto:['Tudo do Investigador','Tema Sangue','Moldura Espinhos','Efeito Brasas','Selo de apoiador'],
-      oficiante:['Tudo do Devoto','Tema Capela · Fairy','Moldura Relicário','Efeito Névoa','Poeira refinada','Recursos extras de mesa'],
-      arquiteto:['Tudo do Oficiante','Tema Abismo · Roxo','Moldura Obsidiana','Efeito Ruído Ritual','Recursos experimentais','Votações de desenvolvimento'],
-      arauto:['Todos os temas','Todas as quatro molduras','Todos os efeitos','Distintivo raro','Bastidores e testes fechados','Reconhecimento especial nos créditos']
+      none:['Perfil público','Tema Catálise — Padrão','Moldura Sanctum','Cosméticos básicos'],
+      devoto:['Tudo do Investigador','Tema Sangue','Moldura Espinhos','Brasas e Poeira','Selo de apoiador'],
+      oficiante:['Tudo do Devoto','Tema Capela · Fairy','Moldura Relicário','Névoa','Galeria e destaques avançados'],
+      arquiteto:['Tudo do Oficiante','Tema Abismo · Roxo','Moldura Obsidiana','Ruído Ritual','Recursos experimentais'],
+      arauto:['Todos os temas','Todas as 4 molduras','Todos os efeitos','Distintivo raro','Reconhecimento especial no Arquivo']
     };
 
 
@@ -3255,7 +3823,6 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
           window.perfilAtual={...window.perfilAtual,...payload};
           renderizarPerfilUI();
           atualizarAcessoAssinatura();
-          await atualizarConquistasAutomaticas();
         }
 
         await sitePopup(
@@ -3306,7 +3873,6 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
           window.perfilAtual={...window.perfilAtual,...payload};
           renderizarPerfilUI();
           atualizarAcessoAssinatura();
-          await atualizarConquistasAutomaticas();
         }
         await sitePopup('Os benefícios foram removidos e o nível voltou para INVESTIGADOR.',{title:'BENEFÍCIO REMOVIDO',okText:'CONTINUAR'});
       }catch(e){
@@ -3473,7 +4039,6 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
       document.getElementById('aba-login').classList.remove('active');
       await escutarAgentes();
       await escutarCampanhas();
-      await atualizarConquistasAutomaticas();
       window.mudarAba('inicio');
       authMessage('');
     }
@@ -3592,7 +4157,7 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
       const q = query(collection(db, "campanhas"), where("mestreUid", "==", window.usuarioId));
       if(window.campanhasUnsubscribe)window.campanhasUnsubscribe();
       window.campanhasUnsubscribe=onSnapshot(q,(snapshot)=>{
-        window.campanhas=[];snapshot.forEach(ds=>window.campanhas.push(ds.data()));window.renderizarCampanhas();atualizarConquistasAutomaticas();
+        window.campanhas=[];snapshot.forEach(ds=>window.campanhas.push(ds.data()));window.renderizarCampanhas();
       },err=>{console.error(err);window.campanhas=[];window.renderizarCampanhas();});
     }
 
@@ -5141,47 +5706,6 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
 
 
 
-
-    /* =========================================================
-       CONQUISTAS AUTOMÁTICAS — versão final
-       ========================================================= */
-    const ACHIEVEMENT_DEFS={
-      arquivo_aberto:'ARQUIVO ABERTO',
-      primeiro_agente:'PRIMEIRO AGENTE',
-      primeira_campanha:'PRIMEIRA CAMPANHA',
-      mestre_de_mesa:'MESTRE DE MESA',
-      apoiador:'APOIADOR DO SANCTUM',
-      arauto:'ARAUTO DO ARQUIVO'
-    };
-
-    async function atualizarConquistasAutomaticas(){
-      if(!window.usuarioId)return;
-      const current=Array.isArray(window.perfilAtual?.achievements)?window.perfilAtual.achievements:[];
-      const map=new Map();
-      current.forEach(a=>{
-        const id=typeof a==='string'?a:a?.id;
-        const nome=typeof a==='string'?a:a?.nome;
-        if(id||nome)map.set(String(id||nome),{id:String(id||nome),nome:String(nome||id)});
-      });
-      map.set('arquivo_aberto',{id:'arquivo_aberto',nome:ACHIEVEMENT_DEFS.arquivo_aberto});
-      if((window.agentes||[]).length>0)map.set('primeiro_agente',{id:'primeiro_agente',nome:ACHIEVEMENT_DEFS.primeiro_agente});
-      if((window.campanhas||[]).length>0)map.set('primeira_campanha',{id:'primeira_campanha',nome:ACHIEVEMENT_DEFS.primeira_campanha});
-      if((window.campanhas||[]).some(c=>String(c.mestreUid||c.mestreId||'')===String(window.usuarioId)))map.set('mestre_de_mesa',{id:'mestre_de_mesa',nome:ACHIEVEMENT_DEFS.mestre_de_mesa});
-      const tier=String(window.perfilAtual?.supporterTier||'none').toLowerCase();
-      if(tier!=='none')map.set('apoiador',{id:'apoiador',nome:ACHIEVEMENT_DEFS.apoiador});
-      if(tier==='arauto')map.set('arauto',{id:'arauto',nome:ACHIEVEMENT_DEFS.arauto});
-      const next=[...map.values()].slice(0,12);
-      const oldJson=JSON.stringify(current.map(a=>typeof a==='string'?a:{id:a?.id,nome:a?.nome}));
-      const newJson=JSON.stringify(next);
-      if(oldJson===newJson)return;
-      try{
-        await setDoc(doc(db,'usuarios',window.usuarioId),{achievements:next,atualizadoEm:new Date().toISOString()},{merge:true});
-        await setDoc(doc(db,'perfisPublicos',window.usuarioId),{achievements:next,atualizadoEm:new Date().toISOString()},{merge:true});
-        window.perfilAtual={...window.perfilAtual,achievements:next};
-        renderizarConquistasPerfil?.();
-      }catch(e){console.warn('Não foi possível atualizar conquistas:',e);}
-    }
-
     /* =========================================================
        PERSONALIZAÇÃO FINAL V2
        ========================================================= */
@@ -5344,5 +5868,40 @@ button.btn-main,.btn-main{background:linear-gradient(135deg,var(--cat-accent,#45
 
 
 <div id="catalise-build-mark" aria-hidden="true" style="position:fixed;left:-9999px;top:-9999px;">CATÁLISE FINAL — manual tiers + perfil + tabletop + efeitos visuais</div>
+
+<style id="catalise-final-release-guard">
+/* RELEASE FINAL — somente as 4 molduras oficiais. */
+.frame-extra{pointer-events:none}
+.frame-rosarium .profile-avatar-shell,.frame-eclipse .profile-avatar-shell,
+.frame-fracture .profile-avatar-shell,.frame-seraphim .profile-avatar-shell,
+.frame-rosarium .public-avatar-shell,.frame-eclipse .public-avatar-shell,
+.frame-fracture .public-avatar-shell,.frame-seraphim .public-avatar-shell{display:none!important}
+body.theme-capela{
+  --cat-bg:#160912;--cat-surface:#29101f;--cat-surface2:#190a14;--cat-surface3:#3b172c;
+  --cat-accent:#ef6fb2;--cat-accent2:#ffb4d7;--cat-cyan:#c989d8;--cat-line:#743452;
+  --cat-text:#f8e3ee;--cat-muted:#c69bad;
+}
+body.theme-abismo{
+  --cat-bg:#0b0617;--cat-surface:#170d2b;--cat-surface2:#0d071c;--cat-surface3:#251343;
+  --cat-accent:#a96cff;--cat-accent2:#d7b4ff;--cat-cyan:#8b7cff;--cat-line:#4e347b;
+  --cat-text:#eee6ff;--cat-muted:#aa9ac8;
+}
+</style>
+<script>
+/* Release guard: never expose accidental extra frame values from older saved profiles. */
+(function(){
+  const allowed=new Set(['none','sanctum','thorn','reliquary','obsidian']);
+  const cleanFrame=(v)=>allowed.has(String(v||''))?String(v):'none';
+  const oldOpen=window.aplicarCosmeticosPerfilPublico;
+  if(typeof oldOpen==='function'){
+    window.aplicarCosmeticosPerfilPublico=function(card,p){
+      if(p) p={...p,frame:cleanFrame(p.frame)};
+      return oldOpen(card,p||{});
+    };
+  }
+  window.__catAllowedFrames=allowed;
+})();
+</script>
+
 </body>
 </html>
