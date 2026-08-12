@@ -2008,6 +2008,76 @@ input:focus,select:focus,textarea:focus{border-color:var(--cat-accent)!important
 }
 </style>
 
+
+<style id="catalise-production-arauto-polish">
+/* =========================================================
+   ARAUTO — MOLDURA EXCLUSIVA / OURO PROFANO
+   Uma quinta moldura deliberadamente exclusiva do tier Arauto.
+   ========================================================= */
+.frame-arauto .profile-avatar-shell,
+.frame-arauto .public-avatar-shell{
+  background:
+    radial-gradient(circle at 50% 50%,transparent 0 55%,rgba(255,214,104,.12) 56% 58%,transparent 59%),
+    conic-gradient(from 0deg,#241707 0deg,#8f6a1f 18deg,#f5d77b 32deg,#5a3a0d 47deg,#d7ad4b 63deg,#2b1b06 82deg,#f8df8b 104deg,#6e4a10 127deg,#d3a63e 151deg,#241707 180deg,#f2d26d 214deg,#6d4710 239deg,#e8c45b 270deg,#3a2508 302deg,#f7df91 329deg,#241707 360deg);
+  border-radius:50%;
+  box-shadow:0 0 0 3px #211405,0 0 0 5px rgba(232,194,91,.9),0 0 24px rgba(238,195,72,.24),0 0 58px rgba(183,128,24,.12);
+}
+.frame-arauto .profile-avatar-shell::before,
+.frame-arauto .public-avatar-shell::before{
+  inset:-18px!important;
+  border:1px solid rgba(255,226,139,.7);
+  border-radius:50%;
+  background:
+    repeating-conic-gradient(from 0deg,transparent 0 14deg,rgba(255,218,112,.75) 14deg 15deg,transparent 15deg 28deg),
+    linear-gradient(45deg,transparent 47%,rgba(255,229,151,.28) 49% 51%,transparent 53%),
+    linear-gradient(-45deg,transparent 47%,rgba(255,229,151,.22) 49% 51%,transparent 53%);
+  -webkit-mask:radial-gradient(circle,transparent 0 69%,#000 70% 100%);
+  mask:radial-gradient(circle,transparent 0 69%,#000 70% 100%);
+  animation:arautoHalo 22s linear infinite;
+}
+.frame-arauto .profile-avatar-shell::after,
+.frame-arauto .public-avatar-shell::after{
+  inset:-34px!important;
+  border-radius:50%;
+  background:
+    radial-gradient(circle at 10% 24%,#fff0b0 0 1.8px,transparent 3px),
+    radial-gradient(circle at 90% 20%,#f8d66c 0 1.6px,transparent 2.8px),
+    radial-gradient(circle at 14% 78%,#d9a83b 0 1.3px,transparent 2.5px),
+    radial-gradient(circle at 86% 76%,#ffe9a0 0 1.8px,transparent 3px),
+    conic-gradient(from 35deg,transparent 0 42deg,rgba(244,207,99,.34) 43deg 44deg,transparent 45deg 88deg,rgba(244,207,99,.24) 89deg 90deg,transparent 91deg 360deg);
+  -webkit-mask:radial-gradient(circle,transparent 0 67%,#000 68% 100%);
+  mask:radial-gradient(circle,transparent 0 67%,#000 68% 100%);
+  animation:arautoOrbit 12s linear infinite;
+}
+.frame-arauto .arauto-extra{display:block}
+.arauto-extra{position:absolute;inset:-48px;pointer-events:none;z-index:8;display:none;overflow:visible}
+.profane-glyph,.profane-orb,.profane-shard,.profane-halo{position:absolute;display:block}
+.profane-glyph{font:700 17px/1 Georgia,serif;color:#ffe9a0;text-shadow:0 0 9px rgba(240,193,67,.9),0 0 20px rgba(240,193,67,.4);animation:arautoGlyph 5s ease-in-out infinite}
+.ag1{left:7%;top:18%}.ag2{right:7%;bottom:18%;animation-delay:-2.4s}
+.profane-orb{width:7px;height:7px;border-radius:50%;background:#f6d66f;box-shadow:0 0 6px #f6d66f,0 0 18px rgba(246,214,111,.65);animation:arautoOrb 4.6s ease-in-out infinite}
+.ao1{left:2%;top:51%}.ao2{right:2%;top:37%;animation-delay:-2.2s}
+.profane-shard{width:5px;height:15px;background:linear-gradient(#fff0ad,#b77b17);clip-path:polygon(50% 0,100% 50%,50% 100%,0 50%);filter:drop-shadow(0 0 5px rgba(241,196,73,.75));animation:arautoShard 6s ease-in-out infinite}
+.as1{left:18%;top:4%;transform:rotate(24deg)}.as2{right:18%;top:6%;transform:rotate(-28deg);animation-delay:-1.7s}.as3{right:11%;bottom:7%;transform:rotate(41deg);animation-delay:-3.3s}
+.profane-halo{inset:9px;border:1px solid rgba(246,215,119,.18);border-radius:50%;transform:rotate(18deg);animation:arautoHalo 18s linear infinite}
+.ph2{inset:25px;border-style:dashed;opacity:.45;animation-direction:reverse;animation-duration:27s}
+@keyframes arautoHalo{to{transform:rotate(360deg)}}
+@keyframes arautoOrbit{to{transform:rotate(-360deg)}}
+@keyframes arautoGlyph{0%,100%{transform:translateY(0) rotate(0deg);opacity:.7}50%{transform:translateY(-6px) rotate(8deg);opacity:1}}
+@keyframes arautoOrb{0%,100%{transform:translate(0,0);opacity:.45}50%{transform:translate(4px,-7px);opacity:1}}
+@keyframes arautoShard{0%,100%{transform:translateY(0) rotate(24deg);opacity:.55}50%{transform:translateY(-8px) rotate(52deg);opacity:1}}
+
+/* Polimento de produção: foco, imagens e movimento respeitoso. */
+button,a,select,input,textarea{outline-offset:3px}
+button:focus-visible,a:focus-visible,select:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid color-mix(in srgb,var(--cat-accent,#55b8a5) 78%,white);box-shadow:0 0 0 4px rgba(85,184,165,.12)}
+img{content-visibility:auto}
+.profile-avatar,.public-profile-avatar{image-rendering:auto}
+@media(prefers-reduced-motion:reduce){
+ .frame-arauto .profile-avatar-shell::before,.frame-arauto .profile-avatar-shell::after,
+ .frame-arauto .public-avatar-shell::before,.frame-arauto .public-avatar-shell::after,
+ .frame-arauto .arauto-extra *{animation:none!important}
+}
+@media(max-width:700px){.profile-cosmetic-status{grid-template-columns:1fr}.frame-extra{inset:-32px}.arauto-extra{inset:-38px}}
+</style>
 </head>
 <body>
   <header class="site-header">
@@ -2164,7 +2234,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cat-accent)!important
           </div>
           <div class="profile-main">
             <div class="profile-identity">
-              <div class="profile-avatar-shell frame-art-shell" aria-hidden="false"><img id="profile-avatar-preview" class="profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div>
+              <div class="profile-avatar-shell frame-art-shell" aria-hidden="false"><img id="profile-avatar-preview" class="profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i><span class="frame-extra arauto-extra" aria-hidden="true"><i class="profane-glyph ag1">✦</i><i class="profane-glyph ag2">✧</i><i class="profane-orb ao1"></i><i class="profane-orb ao2"></i><i class="profane-shard as1"></i><i class="profane-shard as2"></i><i class="profane-shard as3"></i><b class="profane-halo ph1"></b><b class="profane-halo ph2"></b></span></div>
               <div>
                 <h2 id="profile-name-preview" class="profile-name">INVESTIGADOR</h2>
                 <div id="profile-handle-preview" class="profile-handle">@investigador</div>
@@ -2224,6 +2294,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cat-accent)!important
                   <option value="thorn" data-min-tier="devoto">Espinhos · Sangue</option>
                   <option value="reliquary" data-min-tier="oficiante">Relicário · Capela Rosa</option>
                   <option value="obsidian" data-min-tier="arquiteto">Obsidiana · Abismo Roxo</option>
+                  <option value="arauto" data-min-tier="arauto">Arauto · Ouro Profano</option>
                 </select>
               </label>
               <label>Efeito do arquivo
@@ -2411,7 +2482,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cat-accent)!important
       <button class="public-profile-close" type="button" onclick="fecharPerfilPublico()" aria-label="Fechar">×</button>
       <div id="public-profile-banner" class="public-profile-banner"></div>
       <div class="public-profile-body">
-        <div class="public-avatar-shell frame-art-shell"><img id="public-profile-avatar" class="public-profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i></span></div>
+        <div class="public-avatar-shell frame-art-shell"><img id="public-profile-avatar" class="public-profile-avatar" alt="Foto de perfil"><span class="frame-extra sanctum-extra" aria-hidden="true"><i class="geo-square gs1">01</i><i class="geo-square gs2">13</i><i class="geo-square gs3">21</i><i class="geo-square gs4">34</i><i class="geo-square gs5">08</i><i class="geo-square gs6">55</i><b class="geo-cross gc1"></b><b class="geo-cross gc2"></b><b class="geo-cross gc3"></b></span><span class="frame-extra fairy-extra" aria-hidden="true"><i class="fairy-spark fs1">✦</i><i class="fairy-spark fs2">✧</i><i class="fairy-spark fs3">✦</i><i class="fairy-petal fp1"></i><i class="fairy-petal fp2"></i><i class="fairy-petal fp3"></i><i class="fairy-orb fo1"></i><i class="fairy-orb fo2"></i><i class="fairy-butterfly fb1">ꕤ</i><span class="frame-extra arauto-extra" aria-hidden="true"><i class="profane-glyph ag1">✦</i><i class="profane-glyph ag2">✧</i><i class="profane-orb ao1"></i><i class="profane-orb ao2"></i><i class="profane-shard as1"></i><i class="profane-shard as2"></i><i class="profane-shard as3"></i><b class="profane-halo ph1"></b><b class="profane-halo ph2"></b></span></div>
         <div class="public-profile-heading">
           <div>
             <h2 id="public-profile-name">INVESTIGADOR</h2>
@@ -3323,7 +3394,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cat-accent)!important
       const profileCard=document.querySelector('.profile-card');
       const bannerPreview=document.getElementById('profile-banner-preview');
       if(profileCard){
-        profileCard.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','effect-none','effect-embers','effect-dust','effect-fog','effect-static');
+        profileCard.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','frame-arauto','effect-none','effect-embers','effect-dust','effect-fog','effect-static');
         profileCard.classList.add('frame-'+String(frame),'effect-'+String(effect));
       }
       if(bannerPreview){
@@ -3488,7 +3559,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cat-accent)!important
 
     function aplicarCosmeticosPerfilPublico(card,p){
       if(!card)return;
-      card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','effect-none','effect-embers','effect-dust','effect-fog','effect-static','tier-none','tier-devoto','tier-oficiante','tier-arquiteto','tier-arauto');
+      card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','frame-arauto','effect-none','effect-embers','effect-dust','effect-fog','effect-static','tier-none','tier-devoto','tier-oficiante','tier-arquiteto','tier-arauto');
       const tier=String(p.supporterTier||'none').toLowerCase();
       card.classList.add('frame-'+String(p.frame||'none'),'effect-'+String(p.effect||'none'),'tier-'+tier);
     }
@@ -5763,7 +5834,7 @@ input:focus,select:focus,textarea:focus{border-color:var(--cat-accent)!important
         const nextEffect=effect?.value||p.effect||'none';
         const card=document.querySelector('.profile-card');
         if(card){
-          card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','effect-none','effect-embers','effect-dust','effect-fog','effect-static');
+          card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','frame-arauto','effect-none','effect-embers','effect-dust','effect-fog','effect-static');
           card.classList.add('frame-'+nextFrame,'effect-'+nextEffect);
         }
         const banner=document.getElementById('profile-banner-preview');
