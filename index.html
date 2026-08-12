@@ -1695,7 +1695,7 @@ h1,h2,h3,.login-lore h1,.lore-grid article b{font-family:'Oswald',sans-serif!imp
         try{await updateProfile(user,{displayName:nomeFinal});}catch(e){console.warn('Não foi possível atualizar displayName',e);}
       }
       await setDoc(doc(db,'usuarios',user.uid),{
-        uid:user.uid,email:user.email||'',nome:nomeFinal,\
+        uid:user.uid,email:user.email||'',nome:nomeFinal,
         emailVerificado:!!user.emailVerified,atualizadoEm:new Date().toISOString()
       },{merge:true});
       window.usuarioAtual=nomeFinal;
