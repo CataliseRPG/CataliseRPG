@@ -820,6 +820,25 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 @media(max-width:1000px){.tier-grid{grid-template-columns:repeat(2,1fr)}.profile-shell{grid-template-columns:1fr}}
 @media(max-width:650px){
   .header-inner{flex-wrap:wrap;padding-bottom:8px}.main-nav{display:flex!important;order:3;width:100%;overflow-x:auto;flex:none;padding-bottom:2px}.main-nav .nav-link{white-space:nowrap;padding:8px 10px!important;font-size:9px!important}.header-status{margin-left:auto}.profile-banner{height:170px}.profile-main{padding:0 15px 20px}.profile-avatar{width:82px;height:82px;margin-top:-41px}.profile-name{font-size:24px}.profile-upload-row{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr}.support-hero{padding:22px}.support-hero h2{font-size:32px!important}}
+
+/* ===== ASSINATURA / BENEFÍCIOS v13 ===== */
+.support-status{display:grid;grid-template-columns:1.15fr 2fr;gap:14px;margin-top:16px}
+.support-status-card{padding:18px;border:1px solid rgba(67,182,163,.2);background:linear-gradient(145deg,rgba(8,27,31,.96),rgba(3,12,14,.98));position:relative;overflow:hidden}
+.support-status-card.current{border-color:rgba(83,199,183,.42);box-shadow:0 0 28px rgba(67,182,163,.06)}
+.support-status-kicker{font:700 9px 'DM Mono';letter-spacing:.16em;color:#6bc9b7;text-transform:uppercase}
+.support-status-tier{font:700 28px 'DM Mono';color:#e6f8f4;margin:8px 0 4px}
+.support-status-copy{color:#789994;font:500 10px/1.6 'DM Mono';margin:0}
+.support-benefit-list{display:grid;grid-template-columns:repeat(2,1fr);gap:8px;margin-top:12px}
+.support-benefit{padding:9px 10px;border:1px solid rgba(67,182,163,.13);background:rgba(20,68,67,.08);font:600 9px/1.4 'DM Mono';color:#a3c2bd}
+.tier-card{transition:transform .18s ease,border-color .18s ease,box-shadow .18s ease}
+.tier-card:hover{transform:translateY(-2px);border-color:rgba(83,199,183,.35)}
+.tier-card.current-tier{border-color:rgba(111,216,193,.7);box-shadow:0 0 0 1px rgba(111,216,193,.12),0 16px 34px rgba(0,0,0,.24)}
+.tier-current-badge{position:absolute;right:12px;top:12px;padding:4px 7px;border:1px solid rgba(111,216,193,.45);color:#83dfcc;background:rgba(67,182,163,.08);font:700 8px 'DM Mono';letter-spacing:.08em}
+.tier-locked-note{margin-top:auto;padding-top:10px;color:#617c78;font:500 8px/1.5 'DM Mono'}
+.cosmetic-locked{opacity:.55}
+.cosmetic-lock-note{display:block;margin-top:5px;color:#708b86;font:500 8px 'DM Mono';line-height:1.45}
+@media(max-width:900px){.support-status{grid-template-columns:1fr}.support-benefit-list{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr 1fr}}
+@media(max-width:620px){.tier-grid{grid-template-columns:1fr}}
 </style>
 
 </head>
@@ -1022,30 +1041,30 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
             <label>Tema do Sanctum
               <select id="profile-theme">
                 <option value="padrao">Catálise — Padrão</option>
-                <option value="sangue">Sangue</option>
-                <option value="capela">Capela</option>
-                <option value="abismo">Abismo</option>
-                <option value="cinzas">Cinzas</option>
-                <option value="ouro">Ouro Profano</option>
+                <option value="sangue" data-min-tier="oficiante">Sangue · Oficiante</option>
+                <option value="capela" data-min-tier="devoto">Capela · Devoto</option>
+                <option value="abismo" data-min-tier="arquiteto">Abismo · Arquiteto</option>
+                <option value="cinzas" data-min-tier="devoto">Cinzas · Devoto</option>
+                <option value="ouro" data-min-tier="arauto">Ouro Profano · Arauto</option>
               </select>
             </label>
             <div class="profile-cosmetics-grid">
               <label>Moldura do perfil
                 <select id="profile-frame">
                   <option value="none">Sem moldura</option>
-                  <option value="sanctum">Sanctum</option>
-                  <option value="thorn">Espinhos</option>
-                  <option value="reliquary">Relicário</option>
-                  <option value="obsidian">Obsidiana</option>
+                  <option value="sanctum" data-min-tier="devoto">Sanctum · Devoto</option>
+                  <option value="thorn" data-min-tier="oficiante">Espinhos · Oficiante</option>
+                  <option value="reliquary" data-min-tier="arquiteto">Relicário · Arquiteto</option>
+                  <option value="obsidian" data-min-tier="arauto">Obsidiana · Arauto</option>
                 </select>
               </label>
               <label>Efeito do arquivo
                 <select id="profile-effect">
                   <option value="none">Nenhum</option>
-                  <option value="embers">Brasas</option>
-                  <option value="dust">Poeira</option>
-                  <option value="fog">Névoa</option>
-                  <option value="static">Ruído ritual</option>
+                  <option value="embers" data-min-tier="devoto">Brasas · Devoto</option>
+                  <option value="dust" data-min-tier="devoto">Poeira · Devoto</option>
+                  <option value="fog" data-min-tier="oficiante">Névoa · Oficiante</option>
+                  <option value="static" data-min-tier="arquiteto">Ruído ritual · Arquiteto</option>
                 </select>
               </label>
             </div>
@@ -1078,34 +1097,47 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       <section class="card-ficha support-hero">
         <div class="support-kicker">☩ SUSTENTE O ARQUIVO</div>
         <h2>TORNE-SE PARTE DO CATÁLISE</h2>
-        <p>O projeto é independente. Os apoiadores ajudam a manter o sistema, as campanhas, o Tabletop e o conteúdo vivo — e recebem benefícios digitais que não exigem que uma equipe inteira exista por trás do projeto.</p>
+        <p>O Catálise é um projeto independente. Seu apoio ajuda a manter o sistema, as campanhas, o Tabletop e o conteúdo em desenvolvimento. Em troca, você desbloqueia principalmente benefícios digitais, cosméticos e acesso antecipado.</p>
         <button type="button" class="btn-main" onclick="abrirCatarse()">☩ APOIAR NO CATARSE</button>
-        <div class="support-note">A cobrança acontece no Catarse. O Catálise não guarda cartão, Pix, boleto ou senha. A automação de reconhecimento da assinatura será ligada ao backend depois que o link da sua página e o mecanismo oficial de integração estiverem definidos.</div>
+        <div class="support-note">A cobrança acontece no Catarse. O site nunca pede sua senha do Catarse nem dados do cartão. A confirmação automática da assinatura será feita pelo backend quando a integração oficial estiver conectada.</div>
       </section>
 
+      <div class="support-status">
+        <div class="support-status-card current">
+          <div class="support-status-kicker">✦ SEU ARQUIVO</div>
+          <div id="support-current-tier" class="support-status-tier">INVESTIGADOR</div>
+          <p id="support-current-copy" class="support-status-copy">Você ainda não possui um nível de apoio ativo. Seus cosméticos básicos continuam disponíveis.</p>
+        </div>
+        <div class="support-status-card">
+          <div class="support-status-kicker">✦ BENEFÍCIOS DESBLOQUEADOS</div>
+          <div id="support-current-benefits" class="support-benefit-list"></div>
+        </div>
+      </div>
+
       <div class="tier-grid">
-        <article class="tier-card">
+        <article class="tier-card" data-tier-card="devoto">
           <div class="tier-symbol">☽</div><h3>DEVOTO</h3><div class="tier-price">R$ 5 <small>/ mês</small></div>
           <ul><li>Selo de apoiador</li><li>Nome no arquivo de apoiadores</li><li>Conteúdos e novidades antecipados</li><li>Wallpapers e pequenos extras</li></ul>
           <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR</button>
         </article>
-        <article class="tier-card featured">
+        <article class="tier-card featured" data-tier-card="oficiante">
           <div class="tier-symbol">☩</div><h3>OFICIANTE</h3><div class="tier-price">R$ 15 <small>/ mês</small></div>
           <ul><li>Tudo do Devoto</li><li>Temas exclusivos do site</li><li>Molduras e personalizações de perfil</li><li>Mapas e tokens extras</li></ul>
           <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR</button>
         </article>
-        <article class="tier-card">
+        <article class="tier-card" data-tier-card="arquiteto">
           <div class="tier-symbol">🩸</div><h3>ARQUITETO</h3><div class="tier-price">R$ 30 <small>/ mês</small></div>
           <ul><li>Tudo do Oficiante</li><li>Recursos experimentais</li><li>Votações de desenvolvimento</li><li>Pacotes especiais para Mestres</li></ul>
           <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR</button>
         </article>
-        <article class="tier-card">
+        <article class="tier-card" data-tier-card="arauto">
           <div class="tier-symbol">👁</div><h3>ARAUTO</h3><div class="tier-price">R$ 50+ <small>/ mês</small></div>
           <ul><li>Tudo dos níveis anteriores</li><li>Distintivo raro</li><li>Bastidores e testes fechados</li><li>Reconhecimento especial nos créditos</li></ul>
           <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR</button>
         </article>
       </div>
     </div>
+</div>
   </main>
 
   <div id="modal-perfil-publico" class="modal modal-dialog public-profile-modal" aria-hidden="true">
@@ -2042,6 +2074,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       renderizarSeletorAgentesPerfil();
       renderizarConquistasPerfil();
       aplicarTemaCatálise(p.theme||'padrao');
+      atualizarAcessoAssinatura();
     }
 
     async function carregarPerfilUsuario(user){
@@ -2212,6 +2245,43 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
     async function verificarPerfilPublicoSolicitado(){
       try{const uid=new URLSearchParams(location.search).get('perfil');if(uid)await window.abrirPerfilPublico(uid);}catch(e){console.warn(e);}
+    }
+
+    const SUPPORTER_RANK={none:0,devoto:1,oficiante:2,arquiteto:3,arauto:4};
+    const SUPPORTER_LABEL={none:'INVESTIGADOR',devoto:'☽ DEVOTO',oficiante:'☩ OFICIANTE',arquiteto:'🩸 ARQUITETO',arauto:'👁 ARAUTO'};
+    const SUPPORTER_BENEFITS={
+      none:['Perfil público','Tema Catálise — Padrão','Cosméticos básicos'],
+      devoto:['Selo de apoiador','Temas selecionados','Molduras de perfil','Efeitos leves'],
+      oficiante:['Tudo do Devoto','Temas exclusivos','Molduras especiais','Efeitos avançados','Mapas e tokens extras'],
+      arquiteto:['Tudo do Oficiante','Recursos experimentais','Votações de desenvolvimento','Pacotes especiais para Mestres'],
+      arauto:['Tudo dos níveis anteriores','Distintivo raro','Bastidores e testes fechados','Reconhecimento especial nos créditos']
+    };
+
+    function atualizarAcessoAssinatura(){
+      const tier=String(window.perfilAtual?.supporterTier||'none').toLowerCase();
+      const rank=SUPPORTER_RANK[tier]??0;
+      const tierEl=document.getElementById('support-current-tier');
+      const copyEl=document.getElementById('support-current-copy');
+      const benefitsEl=document.getElementById('support-current-benefits');
+      if(tierEl)tierEl.textContent=SUPPORTER_LABEL[tier]||'INVESTIGADOR';
+      if(copyEl)copyEl.textContent=tier==='none'?'Você ainda não possui um nível de apoio ativo. Seus cosméticos básicos continuam disponíveis.':'Seu nível atual libera benefícios digitais e cosméticos conforme a hierarquia do Catálise.';
+      if(benefitsEl)benefitsEl.innerHTML=(SUPPORTER_BENEFITS[tier]||SUPPORTER_BENEFITS.none).map(x=>`<div class="support-benefit">✦ ${escaparHtml(x)}</div>`).join('');
+      document.querySelectorAll('[data-tier-card]').forEach(card=>{
+        const cardTier=card.getAttribute('data-tier-card');
+        const old=card.querySelector('.tier-current-badge'); if(old)old.remove();
+        card.classList.toggle('current-tier',cardTier===tier);
+        if(cardTier===tier){const badge=document.createElement('div');badge.className='tier-current-badge';badge.textContent='NÍVEL ATUAL';card.appendChild(badge);}
+      });
+      document.querySelectorAll('#profile-theme option[data-min-tier],#profile-frame option[data-min-tier],#profile-effect option[data-min-tier]').forEach(opt=>{
+        const needed=SUPPORTER_RANK[opt.dataset.minTier]??99;
+        opt.disabled=rank<needed;
+      });
+      ['profile-theme','profile-frame','profile-effect'].forEach(id=>{
+        const el=document.getElementById(id);
+        if(!el)return;
+        const selected=el.options[el.selectedIndex];
+        if(selected?.disabled)el.value=(id==='profile-theme'?'padrao':'none');
+      });
     }
 
     window.abrirCatarse=function(){
