@@ -724,6 +724,34 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 .vt-token-permission-dot{position:absolute;right:5px;top:2px;width:9px;height:9px;border-radius:50%;background:#8d5bff;border:1px solid #fff;box-shadow:0 0 8px rgba(141,91,255,.7)}
 .vt-cloud-badge{color:#6ed8c1;font:600 8px 'DM Mono';letter-spacing:.06em}
 
+
+/* =========================================================
+   PERFIL PÚBLICO — identidade do investigador
+   ========================================================= */
+.profile-public-title{color:#86bdb0;font-size:.78rem;letter-spacing:.16em;text-transform:uppercase;margin-top:5px;min-height:1em}
+.public-profile-modal{align-items:center;justify-content:center;padding:20px;background:rgba(2,9,11,.82);backdrop-filter:blur(12px);z-index:99999}
+.public-profile-card{position:relative;width:min(760px,94vw);max-height:90vh;overflow:auto;background:linear-gradient(145deg,#081719,#0b2226 55%,#071113);border:1px solid rgba(74,176,157,.45);box-shadow:0 30px 100px rgba(0,0,0,.7),0 0 60px rgba(35,133,119,.1);border-radius:18px;overflow:hidden}
+.public-profile-close{position:absolute;right:15px;top:13px;width:38px;height:38px;border:1px solid rgba(180,225,215,.25);border-radius:50%;background:rgba(4,12,14,.78);color:#d9efea;font-size:25px;line-height:1;cursor:pointer;z-index:4}
+.public-profile-close:hover{border-color:#55b8a5;color:#fff;transform:rotate(8deg)}
+.public-profile-banner{height:250px;background:#071316 center/cover no-repeat;position:relative}
+.public-profile-banner:after{content:'';position:absolute;inset:0;background:linear-gradient(to bottom,rgba(0,0,0,.05),rgba(4,12,14,.9))}
+.public-profile-body{padding:0 34px 34px;position:relative}
+.public-profile-avatar{width:132px;height:132px;object-fit:cover;border-radius:50%;border:4px solid #0a1b1e;box-shadow:0 0 0 1px rgba(83,190,171,.65),0 12px 35px rgba(0,0,0,.55);margin-top:-66px;position:relative;z-index:2;background:#071519}
+.public-profile-heading{display:flex;justify-content:space-between;align-items:flex-start;gap:20px;margin-top:15px}
+.public-profile-heading h2{font-size:30px;margin:0;color:#dcece8;letter-spacing:.06em}
+.public-profile-bio{color:#a5c0ba;line-height:1.7;margin:15px 0 20px;white-space:pre-wrap}
+.public-profile-seal{font-size:10px;letter-spacing:.18em;color:#4d9f91;border-top:1px solid rgba(74,176,157,.2);padding-top:15px}
+.supporter-public-badge{border-color:rgba(190,155,70,.55)!important;color:#e3c67b!important}
+.theme-sangue.public-profile-card{border-color:rgba(164,55,67,.6);background:linear-gradient(145deg,#190b0e,#2a1115 55%,#100709)}
+.theme-capela.public-profile-card{background:linear-gradient(145deg,#14201d,#20362f 55%,#0c1512)}
+.theme-abismo.public-profile-card{border-color:rgba(67,180,205,.5);background:linear-gradient(145deg,#061218,#071e28 55%,#030b10)}
+.theme-cinzas.public-profile-card{border-color:rgba(160,170,168,.35);background:linear-gradient(145deg,#111718,#202627 55%,#0b0d0e)}
+.theme-ouro.public-profile-card{border-color:rgba(185,148,67,.5);background:linear-gradient(145deg,#17130a,#292113 55%,#0d0b07)}
+@media(max-width:650px){.public-profile-modal{padding:8px}.public-profile-card{width:100%;max-height:94vh;border-radius:14px}.public-profile-banner{height:180px}.public-profile-body{padding:0 20px 25px}.public-profile-avatar{width:100px;height:100px;margin-top:-50px}.public-profile-heading{display:block}.public-profile-heading h2{font-size:24px}.public-profile-badges{margin-top:12px}}
+
+
+.profile-cosmetics-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.profile-showcase-box{padding:14px;border:1px solid rgba(67,182,163,.18);background:rgba(2,11,13,.34);border-radius:8px}.profile-section-kicker,.public-section-title{color:#6bc9b7;font:700 9px 'DM Mono';letter-spacing:.16em;text-transform:uppercase;margin-bottom:8px}.profile-agent-selector{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;margin-top:10px}.profile-agent-option{display:flex!important;grid-template-columns:none!important;align-items:center;gap:9px;padding:8px;border:1px solid rgba(67,182,163,.16);background:rgba(7,23,26,.7);cursor:pointer;text-transform:none!important;letter-spacing:0!important}.profile-agent-option input{width:auto}.profile-agent-option-visual{width:38px;height:38px;border-radius:7px;overflow:hidden;display:grid;place-items:center;background:#071519;border:1px solid rgba(67,182,163,.25);flex:none}.profile-agent-option-visual img{width:100%;height:100%;object-fit:cover}.profile-agent-option small{display:block;color:#6e908b;font:500 8px 'DM Mono';margin-top:2px}.profile-agent-fallback,.public-agent-fallback{color:#58b7a6}.profile-empty{color:#64847f;font:500 9px 'DM Mono';padding:8px}.profile-achievement-preview,.public-achievement-grid{display:flex;flex-wrap:wrap;gap:7px;margin-top:10px}.achievement-chip,.public-achievement-chip{padding:7px 9px;border:1px solid rgba(191,158,76,.32);background:rgba(130,101,38,.08);color:#d6ba6f;font:700 8px 'DM Mono';letter-spacing:.06em;text-transform:uppercase}.public-profile-showcase{margin-top:22px;padding-top:18px;border-top:1px solid rgba(74,176,157,.16)}.public-agent-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:10px;margin-top:10px}.public-agent-card{display:flex;align-items:center;gap:10px;padding:10px;border:1px solid rgba(67,182,163,.18);background:rgba(2,11,13,.38);min-width:0}.public-agent-card>img,.public-agent-fallback{width:48px;height:48px;border-radius:8px;object-fit:cover;display:grid;place-items:center;background:#071519;border:1px solid rgba(67,182,163,.25);flex:none}.public-agent-card b{display:block;color:#dcece8;font-size:12px}.public-agent-card small{display:block;color:#6f918c;font:500 8px 'DM Mono';margin-top:3px}.frame-sanctum .public-profile-avatar{box-shadow:0 0 0 3px #0b2b2f,0 0 0 5px rgba(84,193,176,.55),0 12px 35px rgba(0,0,0,.55)}.frame-thorn .public-profile-avatar{box-shadow:0 0 0 3px #20100f,0 0 0 5px rgba(154,59,69,.7),0 12px 35px rgba(0,0,0,.55)}.frame-reliquary .public-profile-avatar{box-shadow:0 0 0 3px #241b0c,0 0 0 5px rgba(197,163,76,.72),0 12px 35px rgba(0,0,0,.55)}.frame-obsidian .public-profile-avatar{box-shadow:0 0 0 3px #111719,0 0 0 5px rgba(139,164,166,.55),0 12px 35px rgba(0,0,0,.55)}.effect-embers:before,.effect-dust:before,.effect-fog:before,.effect-static:before{content:'';position:absolute;inset:0;pointer-events:none;z-index:1;opacity:.3}.effect-embers:before{background:radial-gradient(circle at 20% 80%,rgba(214,81,57,.22),transparent 18%),radial-gradient(circle at 70% 40%,rgba(214,81,57,.16),transparent 14%);animation:profileDrift 7s ease-in-out infinite alternate}.effect-dust:before{background-image:radial-gradient(circle,rgba(210,224,215,.22) 0 1px,transparent 1.5px);background-size:24px 24px;animation:profileDust 12s linear infinite}.effect-fog:before{background:linear-gradient(110deg,transparent,rgba(157,208,199,.1),transparent);filter:blur(10px);animation:profileFog 6s ease-in-out infinite}.effect-static:before{background-image:repeating-linear-gradient(0deg,rgba(255,255,255,.04) 0 1px,transparent 1px 4px);mix-blend-mode:screen}@keyframes profileDrift{from{transform:translateY(0)}to{transform:translateY(-10px) scale(1.03)}}@keyframes profileDust{from{background-position:0 0}to{background-position:48px -48px}}@keyframes profileFog{from{transform:translateX(-12%)}to{transform:translateX(12%)}}
+@media(max-width:700px){.profile-cosmetics-grid,.profile-agent-selector,.public-agent-grid{grid-template-columns:1fr}.profile-upload-row{grid-template-columns:1fr}.profile-identity{align-items:flex-start;flex-direction:column;gap:8px}.profile-avatar{margin-top:-48px}}
 </style>
 
 <style id="vt-popup-theme">
@@ -745,6 +773,53 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
   .vt-popup-overlay .vt-popup-btn:focus-visible{outline:2px solid #8ce5d7;outline-offset:2px}
   .vt-popup-card{max-height:min(82vh,560px)}
   .vt-popup-body{overflow:auto;overscroll-behavior:contain}
+
+/* =========================================================
+   PERFIL DO INVESTIGADOR + APOIO AO CATÁLISE
+   ========================================================= */
+.profile-shell{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(300px,.75fr);gap:18px;align-items:start}
+.profile-card{position:relative;overflow:hidden;border:1px solid rgba(67,182,163,.22);background:linear-gradient(145deg,rgba(10,29,33,.96),rgba(4,15,18,.98));box-shadow:var(--shadow)}
+.profile-banner{height:230px;position:relative;background:radial-gradient(circle at 20% 20%,rgba(67,182,163,.22),transparent 35%),linear-gradient(135deg,#0b2a2f,#071317 72%);background-size:cover;background-position:center;overflow:hidden}
+.profile-banner:after{content:"";position:absolute;inset:0;background:linear-gradient(to top,rgba(3,10,12,.96),transparent 65%);pointer-events:none}
+.profile-banner-mark{position:absolute;top:16px;right:16px;z-index:2;font:700 9px 'DM Mono';letter-spacing:.16em;color:#78cdbd;background:rgba(2,11,13,.65);border:1px solid rgba(67,182,163,.25);padding:7px 9px}
+.profile-main{padding:0 22px 24px;position:relative}
+.profile-avatar{width:104px;height:104px;border-radius:50%;object-fit:cover;border:3px solid #0b2428;outline:1px solid rgba(83,199,183,.5);background:#071519;position:relative;margin-top:-52px;z-index:3;box-shadow:0 12px 30px rgba(0,0,0,.5)}
+.profile-identity{display:flex;align-items:flex-end;gap:16px;margin-bottom:16px}
+.profile-name{margin:0;color:#e8f8f4;font:700 28px 'Bebas Neue','Barlow Condensed',sans-serif;letter-spacing:.08em}
+.profile-handle{color:#709791;font:500 9px 'DM Mono';letter-spacing:.12em;text-transform:uppercase;margin-top:4px}
+.profile-bio{color:#9bb8b3;line-height:1.7;font-size:13px;max-width:780px;margin:12px 0 0}
+.profile-badges{display:flex;flex-wrap:wrap;gap:7px;margin-top:16px}
+.profile-badge{padding:7px 9px;border:1px solid rgba(67,182,163,.22);background:rgba(33,104,99,.12);color:#83cdbf;font:700 8px 'DM Mono';letter-spacing:.08em;text-transform:uppercase}
+.profile-form{display:grid;gap:12px}
+.profile-form label{display:grid;gap:6px;color:#72948f;font:700 9px 'DM Mono';letter-spacing:.12em;text-transform:uppercase}
+.profile-form input,.profile-form textarea,.profile-form select{width:100%;box-sizing:border-box}
+.profile-form textarea{min-height:110px;resize:vertical}
+.profile-actions{display:flex;gap:8px;flex-wrap:wrap;margin-top:5px}
+.profile-upload-row{display:grid;grid-template-columns:1fr auto;gap:8px;align-items:end}
+.profile-preview{display:flex;align-items:center;gap:10px;padding:10px;border:1px dashed rgba(67,182,163,.22);background:rgba(2,11,13,.38)}
+.profile-preview img{width:42px;height:42px;border-radius:50%;object-fit:cover;border:1px solid rgba(67,182,163,.4)}
+.profile-help{color:#678b86;font:500 9px/1.55 'DM Mono';letter-spacing:.03em}
+.support-hero{padding:30px;position:relative;overflow:hidden;background:radial-gradient(circle at 80% 0%,rgba(67,182,163,.16),transparent 30%),linear-gradient(135deg,#081c20,#040d0f)}
+.support-hero:before{content:"✦";position:absolute;right:30px;top:12px;color:rgba(111,216,193,.13);font-size:110px;line-height:1}
+.support-kicker{color:#6bc9b7;font:700 9px 'DM Mono';letter-spacing:.18em;text-transform:uppercase}
+.support-hero h2{font-size:40px!important;margin:8px 0!important}
+.support-hero p{max-width:760px;color:#9db8b4;line-height:1.75}
+.tier-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:16px}
+.tier-card{padding:20px;border:1px solid rgba(67,182,163,.18);background:linear-gradient(145deg,rgba(10,30,34,.94),rgba(4,14,17,.96));min-height:260px;position:relative;display:flex;flex-direction:column}
+.tier-card.featured{border-color:rgba(83,199,183,.5);box-shadow:0 0 0 1px rgba(83,199,183,.08),0 18px 40px rgba(0,0,0,.25)}
+.tier-symbol{font-size:20px;color:#6bd0bd}.tier-card h3{margin:10px 0 4px!important}.tier-price{font:700 22px 'DM Mono';color:#e6f8f4}.tier-price small{font-size:9px;color:#72948f}.tier-card ul{padding-left:16px;margin:14px 0;color:#8eaca8;font-size:11px;line-height:1.8}.tier-card .btn-main{margin-top:auto}
+.support-note{margin-top:16px;padding:12px 14px;border-left:2px solid rgba(67,182,163,.55);background:rgba(20,68,67,.12);color:#789994;font:500 9px/1.6 'DM Mono'}
+.theme-sangue{--teal:#b65c62;--teal-bright:#d98488;--cyan:#9b6c73;--line:#56383d;--line-soft:rgba(182,92,98,.2);--surface:#1d0d10;--surface-2:#281216;--surface-3:#35171c}
+.theme-capela{--teal:#9abf9a;--teal-bright:#c3d9bb;--cyan:#8da8a0;--line:#3f5147;--line-soft:rgba(154,191,154,.2);--surface:#121a16;--surface-2:#1a241e;--surface-3:#243027}
+.theme-abismo{--teal:#4eb7c9;--teal-bright:#7ad6e5;--cyan:#5d9fd2;--line:#204e5e;--line-soft:rgba(78,183,201,.2);--surface:#07131a;--surface-2:#0a202a;--surface-3:#0d2d38}
+.theme-cinzas{--teal:#9aa8a5;--teal-bright:#d0d8d5;--cyan:#8b9b99;--line:#394342;--line-soft:rgba(180,194,190,.16);--surface:#111515;--surface-2:#1a1e1e;--surface-3:#242929}
+.theme-ouro{--teal:#b99b56;--teal-bright:#e0c57d;--cyan:#b6a36b;--line:#594b2c;--line-soft:rgba(185,155,86,.2);--surface:#18140b;--surface-2:#211b0d;--surface-3:#2c2411}
+.profile-avatar-header{width:28px;height:28px;border-radius:50%;object-fit:cover;border:1px solid rgba(83,199,183,.45);vertical-align:middle;margin-right:6px}
+.header-user-button{display:inline-flex;align-items:center;gap:4px;background:none;border:0;color:inherit;cursor:pointer;font:inherit;padding:2px 4px}
+.header-user-button:hover{color:#d9efea}
+@media(max-width:1000px){.tier-grid{grid-template-columns:repeat(2,1fr)}.profile-shell{grid-template-columns:1fr}}
+@media(max-width:650px){
+  .header-inner{flex-wrap:wrap;padding-bottom:8px}.main-nav{display:flex!important;order:3;width:100%;overflow-x:auto;flex:none;padding-bottom:2px}.main-nav .nav-link{white-space:nowrap;padding:8px 10px!important;font-size:9px!important}.header-status{margin-left:auto}.profile-banner{height:170px}.profile-main{padding:0 15px 20px}.profile-avatar{width:82px;height:82px;margin-top:-41px}.profile-name{font-size:24px}.profile-upload-row{grid-template-columns:1fr}.tier-grid{grid-template-columns:1fr}.support-hero{padding:22px}.support-hero h2{font-size:32px!important}}
 </style>
 
 </head>
@@ -765,6 +840,8 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         <span class="nav-link active" id="link-inicio" onclick="mudarAba('inicio')"><i>01</i> Início</span>
         <span class="nav-link" id="link-agentes" onclick="mudarAba('agentes')"><i>02</i> Meus Agentes</span>
         <span class="nav-link" id="link-campanhas" onclick="mudarAba('campanhas')"><i>03</i> Campanhas</span>
+        <span class="nav-link" id="link-perfil" onclick="mudarAba('perfil')"><i>04</i> Perfil</span>
+        <span class="nav-link" id="link-apoio" onclick="mudarAba('apoio')"><i>05</i> Apoie o Projeto</span>
       </nav>
 
       <div class="header-status" id="user-info">
@@ -892,7 +969,172 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       <h2 style="color: #45b69c; border: none; margin-top: 40px;">CAMPANHAS QUE VOCÊ PARTICIPA</h2>
       <div class="grid-cards" id="container-campanhas-participando"></div>
     </div>
+
+    <div id="aba-perfil" class="tab-content">
+      <div class="profile-shell">
+        <section class="profile-card">
+          <div id="profile-banner-preview" class="profile-banner">
+            <span class="profile-banner-mark">ARQUIVO PESSOAL</span>
+          </div>
+          <div class="profile-main">
+            <div class="profile-identity">
+              <img id="profile-avatar-preview" class="profile-avatar" alt="Foto de perfil">
+              <div>
+                <h2 id="profile-name-preview" class="profile-name">INVESTIGADOR</h2>
+                <div id="profile-handle-preview" class="profile-handle">@investigador</div>
+                <div id="profile-title-preview" class="profile-public-title"></div>
+              </div>
+            </div>
+            <p id="profile-bio-preview" class="profile-bio">Seu arquivo pessoal ainda não possui uma descrição.</p>
+            <div class="profile-badges">
+              <span class="profile-badge">IDENTIDADE VERIFICADA</span>
+              <span id="profile-supporter-badge" class="profile-badge">APOIADOR: EM BREVE</span>
+            </div>
+          </div>
+        </section>
+
+        <section class="card-ficha">
+          <h3 style="margin-top:0;">PERSONALIZAR ARQUIVO</h3>
+          <div class="profile-form">
+            <label>Codinome / nome público
+              <input id="profile-name-input" type="text" maxlength="32" placeholder="Como você quer aparecer no Catálise?" data-enter-ready>
+            </label>
+            <label>Título / função pública
+              <input id="profile-title-input" type="text" maxlength="42" placeholder="Ex: Investigador do Véu" data-enter-ready>
+            </label>
+            <label>Descrição
+              <textarea id="profile-bio-input" maxlength="240" placeholder="Uma frase, uma investigação, uma pequena ameaça..." ></textarea>
+            </label>
+            <div class="profile-upload-row">
+              <label>Foto de perfil
+                <input id="profile-avatar-url" type="url" placeholder="https://..." data-enter-ready>
+              </label>
+              <button type="button" class="vt-mini-btn" onclick="document.getElementById('profile-avatar-upload').click()">ENVIAR IMAGEM</button>
+            </div>
+            <input id="profile-avatar-upload" type="file" accept="image/png,image/jpeg,image/webp" hidden>
+            <div class="profile-upload-row">
+              <label>Banner / imagem animada
+                <input id="profile-banner-url" type="url" placeholder="URL de JPG, PNG, GIF ou WebP" data-enter-ready>
+              </label>
+              <button type="button" class="vt-mini-btn" onclick="document.getElementById('profile-banner-upload').click()">ENVIAR BANNER</button>
+            </div>
+            <input id="profile-banner-upload" type="file" accept="image/png,image/jpeg,image/webp,image/gif" hidden>
+            <label>Tema do Sanctum
+              <select id="profile-theme">
+                <option value="padrao">Catálise — Padrão</option>
+                <option value="sangue">Sangue</option>
+                <option value="capela">Capela</option>
+                <option value="abismo">Abismo</option>
+                <option value="cinzas">Cinzas</option>
+                <option value="ouro">Ouro Profano</option>
+              </select>
+            </label>
+            <div class="profile-cosmetics-grid">
+              <label>Moldura do perfil
+                <select id="profile-frame">
+                  <option value="none">Sem moldura</option>
+                  <option value="sanctum">Sanctum</option>
+                  <option value="thorn">Espinhos</option>
+                  <option value="reliquary">Relicário</option>
+                  <option value="obsidian">Obsidiana</option>
+                </select>
+              </label>
+              <label>Efeito do arquivo
+                <select id="profile-effect">
+                  <option value="none">Nenhum</option>
+                  <option value="embers">Brasas</option>
+                  <option value="dust">Poeira</option>
+                  <option value="fog">Névoa</option>
+                  <option value="static">Ruído ritual</option>
+                </select>
+              </label>
+            </div>
+            <label>Título exibido no perfil
+              <input id="profile-display-title" type="text" maxlength="48" placeholder="Ex.: Arauto do Abismo" data-enter-ready>
+            </label>
+            <div class="profile-showcase-box">
+              <div class="profile-section-kicker">✦ GALERIA DO INVESTIGADOR</div>
+              <div class="profile-help">Escolha até 3 agentes para aparecerem no seu perfil público. Apenas nome, classe e imagem serão exibidos.</div>
+              <div id="profile-agent-selector" class="profile-agent-selector"><span class="profile-empty">Carregando seus agentes...</span></div>
+            </div>
+            <div class="profile-showcase-box">
+              <div class="profile-section-kicker">✦ CONQUISTAS</div>
+              <div class="profile-help">Conquistas e distintivos especiais serão desbloqueados pelo sistema conforme você participar do Catálise.</div>
+              <div id="profile-achievement-preview" class="profile-achievement-preview"></div>
+            </div>
+            <div class="profile-help">Seu tema, cosméticos e agentes exibidos são salvos na nuvem. Benefícios exclusivos serão liberados automaticamente quando o sistema de assinatura estiver conectado.</div>
+            <div class="profile-actions">
+              <button type="button" class="btn-main" onclick="salvarPerfilPublico()">✦ SALVAR PERFIL</button>
+              <button type="button" class="vt-mini-btn" onclick="abrirMeuPerfilPublico()">◉ VER PERFIL PÚBLICO</button>
+              <button type="button" class="vt-mini-btn" onclick="copiarLinkPerfil()">⛓ COPIAR LINK</button>
+              <button type="button" class="vt-mini-btn" onclick="mudarAba('apoio')">VER BENEFÍCIOS</button>
+            </div>
+          </div>
+        </section>
+      </div>
+    </div>
+
+    <div id="aba-apoio" class="tab-content">
+      <section class="card-ficha support-hero">
+        <div class="support-kicker">☩ SUSTENTE O ARQUIVO</div>
+        <h2>TORNE-SE PARTE DO CATÁLISE</h2>
+        <p>O projeto é independente. Os apoiadores ajudam a manter o sistema, as campanhas, o Tabletop e o conteúdo vivo — e recebem benefícios digitais que não exigem que uma equipe inteira exista por trás do projeto.</p>
+        <button type="button" class="btn-main" onclick="abrirCatarse()">☩ APOIAR NO CATARSE</button>
+        <div class="support-note">A cobrança acontece no Catarse. O Catálise não guarda cartão, Pix, boleto ou senha. A automação de reconhecimento da assinatura será ligada ao backend depois que o link da sua página e o mecanismo oficial de integração estiverem definidos.</div>
+      </section>
+
+      <div class="tier-grid">
+        <article class="tier-card">
+          <div class="tier-symbol">☽</div><h3>DEVOTO</h3><div class="tier-price">R$ 5 <small>/ mês</small></div>
+          <ul><li>Selo de apoiador</li><li>Nome no arquivo de apoiadores</li><li>Conteúdos e novidades antecipados</li><li>Wallpapers e pequenos extras</li></ul>
+          <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR</button>
+        </article>
+        <article class="tier-card featured">
+          <div class="tier-symbol">☩</div><h3>OFICIANTE</h3><div class="tier-price">R$ 15 <small>/ mês</small></div>
+          <ul><li>Tudo do Devoto</li><li>Temas exclusivos do site</li><li>Molduras e personalizações de perfil</li><li>Mapas e tokens extras</li></ul>
+          <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR</button>
+        </article>
+        <article class="tier-card">
+          <div class="tier-symbol">🩸</div><h3>ARQUITETO</h3><div class="tier-price">R$ 30 <small>/ mês</small></div>
+          <ul><li>Tudo do Oficiante</li><li>Recursos experimentais</li><li>Votações de desenvolvimento</li><li>Pacotes especiais para Mestres</li></ul>
+          <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR</button>
+        </article>
+        <article class="tier-card">
+          <div class="tier-symbol">👁</div><h3>ARAUTO</h3><div class="tier-price">R$ 50+ <small>/ mês</small></div>
+          <ul><li>Tudo dos níveis anteriores</li><li>Distintivo raro</li><li>Bastidores e testes fechados</li><li>Reconhecimento especial nos créditos</li></ul>
+          <button class="vt-mini-btn" type="button" onclick="abrirCatarse()">APOIAR</button>
+        </article>
+      </div>
+    </div>
   </main>
+
+  <div id="modal-perfil-publico" class="modal modal-dialog public-profile-modal" aria-hidden="true">
+    <div class="public-profile-card">
+      <button class="public-profile-close" type="button" onclick="fecharPerfilPublico()" aria-label="Fechar">×</button>
+      <div id="public-profile-banner" class="public-profile-banner"></div>
+      <div class="public-profile-body">
+        <img id="public-profile-avatar" class="public-profile-avatar" alt="Foto de perfil">
+        <div class="public-profile-heading">
+          <div>
+            <h2 id="public-profile-name">INVESTIGADOR</h2>
+            <div id="public-profile-handle" class="profile-handle">@investigador</div>
+          </div>
+          <div id="public-profile-badges" class="profile-badges"></div>
+        </div>
+        <div id="public-profile-title" class="public-profile-title"></div>
+        <p id="public-profile-bio" class="public-profile-bio"></p>
+        <div id="public-profile-showcase" class="public-profile-showcase" style="display:none;">
+          <div class="public-section-title">✦ AGENTES EM EXIBIÇÃO</div>
+          <div id="public-profile-agents" class="public-agent-grid"></div>
+        </div>
+        <div id="public-profile-achievements" class="public-profile-showcase" style="display:none;">
+          <div class="public-section-title">✦ MARCAS DO ARQUIVO</div>
+          <div id="public-profile-achievement-list" class="public-achievement-grid"></div>
+        </div>
+        <div class="public-profile-seal">✦ ARQUIVO PÚBLICO · CATÁLISE</div>
+      </div>
+    </div>
+  </div>
 
   <div id="modal-novo-agente" class="modal modal-dialog">
     <div class="modal-content-sm">
@@ -1747,10 +1989,248 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         uid:user.uid,email:user.email||'',nome:nomeFinal,
         emailVerificado:!!user.emailVerified,atualizadoEm:new Date().toISOString()
       },{merge:true});
+      const publicRef=doc(db,'perfisPublicos',user.uid);
+      const publicSnap=await getDoc(publicRef);
+      if(publicSnap.exists()){
+        await setDoc(publicRef,{uid:user.uid,nome:nomeFinal,publicado:true,atualizadoEm:new Date().toISOString()},{merge:true});
+      }else{
+        await setDoc(publicRef,{uid:user.uid,nome:nomeFinal,publicado:true,supporterTier:'none',atualizadoEm:new Date().toISOString()});
+      }
       window.usuarioAtual=nomeFinal;
       window.usuarioId=user.uid;
       window.usuarioEmail=user.email||'';
       window.usuarioAuth=user;
+    }
+
+
+    const CATARSE_URL = ''; // Cole aqui o link do seu Perfil/Plano de Assinatura no Catarse quando estiver pronto.
+
+    window.perfilAtual = {nome:'',titulo:'',bio:'',avatarUrl:'',bannerUrl:'',theme:'padrao',supporterTier:'none',frame:'none',effect:'none',displayTitle:'',featuredAgents:[],achievements:[]};
+
+    function aplicarTemaCatálise(theme='padrao'){
+      document.body.classList.remove('theme-sangue','theme-capela','theme-abismo','theme-cinzas','theme-ouro');
+      if(theme && theme!=='padrao') document.body.classList.add('theme-'+theme);
+    }
+
+    function renderizarPerfilUI(){
+      const p=window.perfilAtual||{};
+      const nome=p.nome||window.usuarioAtual||'Investigador';
+      const bio=p.bio||'Seu arquivo pessoal ainda não possui uma descrição.';
+      const titulo=p.titulo||'';
+      const avatar=p.avatarUrl||'';
+      const banner=p.bannerUrl||'';
+      const frame=p.frame||'none';
+      const effect=p.effect||'none';
+      const displayTitle=p.displayTitle||p.titulo||'';
+      const avatarEl=document.getElementById('profile-avatar-preview');
+      if(avatarEl){avatarEl.src=avatar||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent(`<svg xmlns="http://www.w3.org/2000/svg" width="120" height="120"><rect width="120" height="120" fill="#071519"/><text x="60" y="67" text-anchor="middle" fill="#56b8a8" font-size="42">✦</text></svg>`);}
+      const bannerEl=document.getElementById('profile-banner-preview');
+      if(bannerEl) bannerEl.style.backgroundImage=banner?`url("${String(banner).replace(/"/g,'\\"')}")`:'';
+      const n=document.getElementById('profile-name-preview');if(n)n.textContent=nome.toUpperCase();
+      const h=document.getElementById('profile-handle-preview');if(h)h.textContent='@'+String(nome).toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,24);
+      const tp=document.getElementById('profile-title-preview');if(tp)tp.textContent=displayTitle;
+      const t=document.getElementById('profile-title-input');if(t)t.value=titulo;
+      const b=document.getElementById('profile-bio-preview');if(b)b.textContent=bio;
+      const ni=document.getElementById('profile-name-input');if(ni)ni.value=nome;
+      const bi=document.getElementById('profile-bio-input');if(bi)bi.value=p.bio||'';
+      const au=document.getElementById('profile-avatar-url');if(au)au.value=avatar;
+      const bu=document.getElementById('profile-banner-url');if(bu)bu.value=banner;
+      const th=document.getElementById('profile-theme');if(th)th.value=p.theme||'padrao';
+      const fr=document.getElementById('profile-frame');if(fr)fr.value=frame;
+      const ef=document.getElementById('profile-effect');if(ef)ef.value=effect;
+      const dt=document.getElementById('profile-display-title');if(dt)dt.value=displayTitle;
+      renderizarSeletorAgentesPerfil();
+      renderizarConquistasPerfil();
+      aplicarTemaCatálise(p.theme||'padrao');
+    }
+
+    async function carregarPerfilUsuario(user){
+      if(!user)return;
+      try{
+        const snap=await getDoc(doc(db,'usuarios',user.uid));
+        const d=snap.exists()?snap.data():{};
+        window.perfilAtual={
+          nome:String(d.nome||user.displayName||user.email?.split('@')[0]||'Investigador'),
+          titulo:String(d.titulo||''), bio:String(d.bio||''), avatarUrl:String(d.avatarUrl||''), bannerUrl:String(d.bannerUrl||''), theme:String(d.theme||'padrao'), supporterTier:String(d.supporterTier||'none'), frame:String(d.frame||'none'), effect:String(d.effect||'none'), displayTitle:String(d.displayTitle||d.titulo||''), featuredAgents:Array.isArray(d.featuredAgents)?d.featuredAgents:[], achievements:Array.isArray(d.achievements)?d.achievements:[]
+        };
+      }catch(e){
+        console.warn('Não foi possível carregar o perfil:',e);
+        window.perfilAtual={nome:user.displayName||'Investigador',titulo:'',bio:'',avatarUrl:'',bannerUrl:'',theme:'padrao',supporterTier:'none',frame:'none',effect:'none',displayTitle:'',featuredAgents:[],achievements:[]};
+      }
+      renderizarPerfilUI();
+    }
+
+    async function uploadPerfilCloudinary(file,folder){
+      if(!file)throw new Error('Nenhum arquivo selecionado.');
+      const allowed=['image/png','image/jpeg','image/webp','image/gif'];
+      if(!allowed.includes(file.type))throw new Error('Use PNG, JPG, WebP ou GIF.');
+      if(file.size>8*1024*1024)throw new Error('A imagem precisa ter no máximo 8 MB.');
+      const body=new FormData();
+      body.append('file',file);
+      body.append('upload_preset',CLOUDINARY_UPLOAD_PRESET);
+      body.append('folder',`catalise/perfis/${folder}`);
+      const response=await fetch(CLOUDINARY_UPLOAD_URL,{method:'POST',body});
+      const result=await response.json().catch(()=>null);
+      if(!response.ok||!result?.secure_url)throw new Error(result?.error?.message||'O Cloudinary recusou o upload.');
+      return result.secure_url;
+    }
+
+    window.salvarPerfilPublico=async function(){
+      if(!window.usuarioId)return;
+      const nome=document.getElementById('profile-name-input')?.value.trim()||'Investigador';
+      const titulo=document.getElementById('profile-title-input')?.value.trim()||'';
+      const displayTitle=document.getElementById('profile-display-title')?.value.trim()||titulo;
+      const bio=document.getElementById('profile-bio-input')?.value.trim()||'';
+      const avatarUrl=document.getElementById('profile-avatar-url')?.value.trim()||'';
+      const bannerUrl=document.getElementById('profile-banner-url')?.value.trim()||'';
+      const theme=document.getElementById('profile-theme')?.value||'padrao';
+      const frame=document.getElementById('profile-frame')?.value||'none';
+      const effect=document.getElementById('profile-effect')?.value||'none';
+      if(avatarUrl&&!/^https?:\/\//i.test(avatarUrl))return sitePopup('A foto de perfil precisa ser uma URL http(s) válida.',{title:'PERFIL'});
+      if(bannerUrl&&!/^https?:\/\//i.test(bannerUrl))return sitePopup('O banner precisa ser uma URL http(s) válida.',{title:'PERFIL'});
+      const featuredIds=[...document.querySelectorAll('#profile-agent-selector input[type="checkbox"]:checked')].map(x=>x.value).slice(0,3);
+      let featuredAgents=[];
+      try{
+        const agentsSnap=await getDocs(query(collection(db,'agentes'),where('donoId','==',window.usuarioId)));
+        const byId=new Map(agentsSnap.docs.map(d=>[String(d.id),{id:String(d.id),...d.data()}]));
+        featuredAgents=featuredIds.map(id=>byId.get(String(id))).filter(Boolean).map(a=>({id:a.id,nome:String(a.nome||'Agente'),classe:String(a.classe||'Investigador'),fotoUrl:String(a.fotoUrl||'')}));
+      }catch(e){console.warn('Não foi possível carregar agentes públicos:',e);}
+      try{
+        const user=auth.currentUser;
+        if(user&&user.displayName!==nome)await updateProfile(user,{displayName:nome});
+        const currentTier=window.perfilAtual?.supporterTier||'none';
+        const currentAchievements=Array.isArray(window.perfilAtual?.achievements)?window.perfilAtual.achievements:[];
+        const privateData={uid:window.usuarioId,email:window.usuarioEmail||'',nome,titulo,bio,avatarUrl,bannerUrl,theme,frame,effect,displayTitle,featuredAgents:featuredAgents.map(a=>a.id),emailVerificado:!!user?.emailVerified,atualizadoEm:new Date().toISOString()};
+        await setDoc(doc(db,'usuarios',window.usuarioId),privateData,{merge:true});
+        const publicData={uid:window.usuarioId,nome,titulo,bio,avatarUrl,bannerUrl,theme,frame,effect,displayTitle,featuredAgents,achievements:currentAchievements,supporterTier:currentTier,publicado:true,atualizadoEm:new Date().toISOString()};
+        await setDoc(doc(db,'perfisPublicos',window.usuarioId),publicData,{merge:true});
+        window.usuarioAtual=nome;
+        window.perfilAtual={...window.perfilAtual,...publicData};
+        renderizarPerfilUI();
+        const dash=document.getElementById('dash-usuario');if(dash)dash.textContent=nome;
+        renderizarHeaderUsuario();
+        await sitePopup('Seu arquivo pessoal foi atualizado e salvo na nuvem.',{title:'PERFIL SALVO',okText:'CONTINUAR'});
+      }catch(e){console.error(e);sitePopup(e?.message||'Não foi possível salvar seu perfil.',{title:'ERRO AO SALVAR PERFIL'});}
+    };
+
+    function renderizarSeletorAgentesPerfil(){
+      const box=document.getElementById('profile-agent-selector');
+      if(!box||!window.usuarioId)return;
+      const selected=new Set((window.perfilAtual?.featuredAgents||[]).map(String));
+      getDocs(query(collection(db,'agentes'),where('donoId','==',window.usuarioId))).then(snap=>{
+        if(!snap.size){box.innerHTML='<span class="profile-empty">Você ainda não possui agentes para exibir.</span>';return;}
+        box.innerHTML=snap.docs.map(d=>{const a=d.data();const id=String(d.id);const checked=selected.has(id)?' checked':'';const img=a.fotoUrl?`<img src="${String(a.fotoUrl).replace(/"/g,'&quot;')}" alt="">`:'<span class="profile-agent-fallback">✦</span>';return `<label class="profile-agent-option"><input type="checkbox" value="${id}"${checked}><span class="profile-agent-option-visual">${img}</span><span><b>${escaparHtml(String(a.nome||'Agente'))}</b><small>${escaparHtml(String(a.classe||'Investigador'))}</small></span></label>`;}).join('');
+        box.querySelectorAll('input').forEach(cb=>cb.addEventListener('change',()=>{const checked=[...box.querySelectorAll('input:checked')];if(checked.length>3){cb.checked=false;sitePopup('Você pode exibir no máximo 3 agentes.',{title:'GALERIA'});}}));
+      }).catch(()=>{box.innerHTML='<span class="profile-empty">Não foi possível carregar seus agentes.</span>';});
+    }
+
+    function renderizarConquistasPerfil(){
+      const box=document.getElementById('profile-achievement-preview');if(!box)return;
+      const list=Array.isArray(window.perfilAtual?.achievements)?window.perfilAtual.achievements:[];
+      box.innerHTML=list.length?list.map(a=>`<span class="achievement-chip">${escaparHtml(String(a.nome||a))}</span>`).join(''):'<span class="profile-empty">Nenhuma marca desbloqueada ainda. Os primeiros distintivos entrarão aqui.</span>';
+    }
+
+    function nomeDoTierPublico(tier){
+      const map={devoto:'☽ DEVOTO',oficiante:'☩ OFICIANTE',arquiteto:'🩸 ARQUITETO',arauto:'👁 ARAUTO'};
+      return map[String(tier||'').toLowerCase()]||'';
+    }
+
+    function aplicarTemaNoPerfilPublico(card,theme){
+      if(!card)return;
+      card.classList.remove('theme-sangue','theme-capela','theme-abismo','theme-cinzas','theme-ouro');
+      if(theme&&theme!=='padrao')card.classList.add('theme-'+theme);
+    }
+
+    window.abrirPerfilPublico=async function(uid){
+      if(!uid)return;
+      const modal=document.getElementById('modal-perfil-publico');
+      if(!modal)return;
+      try{
+        const snap=await getDoc(doc(db,'perfisPublicos',String(uid)));
+        if(!snap.exists()||snap.data().publicado===false){
+          return sitePopup('Este arquivo público ainda não foi publicado.',{title:'ARQUIVO RESTRITO'});
+        }
+        const p=snap.data();
+        const card=modal.querySelector('.public-profile-card');
+        aplicarTemaNoPerfilPublico(card,p.theme||'padrao');
+        const banner=document.getElementById('public-profile-banner');
+        banner.style.backgroundImage=p.bannerUrl?`url("${String(p.bannerUrl).replace(/"/g,'\\"')}")`:'';
+        const avatar=document.getElementById('public-profile-avatar');
+        avatar.src=p.avatarUrl||'data:image/svg+xml;charset=UTF-8,'+encodeURIComponent('<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160"><rect width="160" height="160" fill="#071519"/><text x="80" y="94" text-anchor="middle" fill="#56b8a8" font-size="56">✦</text></svg>');
+        document.getElementById('public-profile-name').textContent=String(p.nome||'Investigador').toUpperCase();
+        document.getElementById('public-profile-handle').textContent='@'+String(p.nome||'investigador').toLowerCase().replace(/[^a-z0-9]+/g,'_').replace(/^_+|_+$/g,'').slice(0,24);
+        document.getElementById('public-profile-title').textContent=p.displayTitle||p.titulo||'Investigador do Catálise';
+        document.getElementById('public-profile-bio').textContent=p.bio||'Este arquivo não possui uma declaração registrada.';
+        const badges=document.getElementById('public-profile-badges');
+        const tier=nomeDoTierPublico(p.supporterTier);
+        badges.innerHTML='<span class="profile-badge">IDENTIDADE VERIFICADA</span>'+(tier?`<span class="profile-badge supporter-public-badge">${escaparHtml(tier)}</span>`:'');
+        aplicarCosmeticosPerfilPublico(card,p);
+        renderizarAgentesPublicos(p.featuredAgents||[]);
+        renderizarConquistasPublicas(p.achievements||[]);
+        modal.style.display='flex';modal.setAttribute('aria-hidden','false');
+      }catch(e){console.error(e);sitePopup('Não foi possível abrir este perfil público.',{title:'ARQUIVO INACESSÍVEL'});}
+    };
+
+    function aplicarCosmeticosPerfilPublico(card,p){
+      if(!card)return;
+      card.classList.remove('frame-none','frame-sanctum','frame-thorn','frame-reliquary','frame-obsidian','effect-none','effect-embers','effect-dust','effect-fog','effect-static');
+      card.classList.add('frame-'+String(p.frame||'none'),'effect-'+String(p.effect||'none'));
+    }
+
+    function renderizarAgentesPublicos(agents){
+      const wrap=document.getElementById('public-profile-showcase'),grid=document.getElementById('public-profile-agents');
+      if(!wrap||!grid)return;
+      const list=Array.isArray(agents)?agents.slice(0,3):[];
+      if(!list.length){wrap.style.display='none';grid.innerHTML='';return;}
+      wrap.style.display='block';
+      grid.innerHTML=list.map(a=>{const img=a.fotoUrl?`<img src="${String(a.fotoUrl).replace(/"/g,'&quot;')}" alt="">`:'<span class="public-agent-fallback">✦</span>';return `<article class="public-agent-card">${img}<div><b>${escaparHtml(String(a.nome||'Agente'))}</b><small>${escaparHtml(String(a.classe||'Investigador'))}</small></div></article>`;}).join('');
+    }
+
+    function renderizarConquistasPublicas(achievements){
+      const wrap=document.getElementById('public-profile-achievements'),grid=document.getElementById('public-profile-achievement-list');
+      if(!wrap||!grid)return;
+      const list=Array.isArray(achievements)?achievements.slice(0,12):[];
+      if(!list.length){wrap.style.display='none';grid.innerHTML='';return;}
+      wrap.style.display='block';
+      grid.innerHTML=list.map(a=>`<span class="public-achievement-chip">${escaparHtml(String(a.nome||a))}</span>`).join('');
+    }
+
+    window.fecharPerfilPublico=function(){
+      const modal=document.getElementById('modal-perfil-publico');
+      if(modal){modal.style.display='none';modal.setAttribute('aria-hidden','true');}
+    };
+
+    window.abrirMeuPerfilPublico=function(){
+      if(window.usuarioId) window.abrirPerfilPublico(window.usuarioId);
+    };
+
+    window.copiarLinkPerfil=async function(){
+      if(!window.usuarioId)return;
+      const url=new URL(window.location.href);url.searchParams.set('perfil',window.usuarioId);url.hash='';
+      try{await navigator.clipboard.writeText(url.toString());await sitePopup('Link do seu arquivo público copiado para a área de transferência.',{title:'LINK COPIADO',okText:'CONTINUAR'});}catch(e){sitePopup(url.toString(),{title:'LINK DO PERFIL',okText:'FECHAR'});}
+    };
+
+    async function verificarPerfilPublicoSolicitado(){
+      try{const uid=new URLSearchParams(location.search).get('perfil');if(uid)await window.abrirPerfilPublico(uid);}catch(e){console.warn(e);}
+    }
+
+    window.abrirCatarse=function(){
+      if(!CATARSE_URL)return sitePopup('O perfil/Plano de Assinatura do Catarse ainda não foi conectado. Assim que você me passar o link, eu coloco aqui e os botões passam a abrir diretamente a página de apoio.',{title:'CATARSE'});
+      window.open(CATARSE_URL,'_blank','noopener,noreferrer');
+    };
+
+    function renderizarHeaderUsuario(){
+      const el=document.getElementById('user-info');if(!el)return;
+      const avatar=window.perfilAtual?.avatarUrl;
+      const img=avatar?`<img class="profile-avatar-header" src="${String(avatar).replace(/"/g,'&quot;')}" alt="">`:'';
+      el.innerHTML=`<button class="header-user-button" type="button" onclick="mudarAba('perfil')">${img}<span class="status-dot"></span><span>${String(window.usuarioAtual||'Investigador').replace(/</g,'&lt;')}</span></button><button onclick="fazerLogout()" style="background:none;border:none;color:#ff8d95;cursor:pointer;font-size:0.8em;margin-left:5px;">[Sair]</button>`;
+    }
+
+    function bindProfileUploads(){
+      const av=document.getElementById('profile-avatar-upload');
+      const ba=document.getElementById('profile-banner-upload');
+      if(av&&!av.dataset.bound){av.dataset.bound='1';av.addEventListener('change',async()=>{const f=av.files?.[0];if(!f)return;try{av.disabled=true;const url=await uploadPerfilCloudinary(f,'avatares');document.getElementById('profile-avatar-url').value=url;renderizarPerfilUI();}catch(e){sitePopup(e.message,{title:'FOTO DE PERFIL'});}finally{av.disabled=false;av.value='';}});}
+      if(ba&&!ba.dataset.bound){ba.dataset.bound='1';ba.addEventListener('change',async()=>{const f=ba.files?.[0];if(!f)return;try{ba.disabled=true;const url=await uploadPerfilCloudinary(f,'banners');document.getElementById('profile-banner-url').value=url;renderizarPerfilUI();}catch(e){sitePopup(e.message,{title:'BANNER'});}finally{ba.disabled=false;ba.value='';}});}
     }
 
     async function migrarDadosLegados(user,nome){
@@ -1834,11 +2314,14 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       if(!user||!user.emailVerified)return;
       const nome=user.displayName||user.email?.split('@')[0]||'Investigador';
       await criarPerfilUsuario(user,nome);
+      await carregarPerfilUsuario(user);
+      bindProfileUploads();
+      await verificarPerfilPublicoSolicitado();
       await migrarDadosLegados(user,nome);
       localStorage.setItem('cat_usuario_email',user.email||'');
-      document.getElementById('user-info').innerHTML=`<span class="status-dot"></span><span>${nome}</span><button onclick="fazerLogout()" style="background:none;border:none;color:#ff6b6b;cursor:pointer;font-size:0.8em;margin-left:8px;">[Sair]</button>`;
+      renderizarHeaderUsuario();
       document.getElementById('menu-nav').style.display='flex';
-      document.getElementById('dash-usuario').innerText=nome;
+      document.getElementById('dash-usuario').innerText=window.usuarioAtual||nome;
       document.getElementById('aba-login').classList.remove('active');
       await escutarAgentes();
       await escutarCampanhas();
@@ -1870,6 +2353,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       if (link) link.classList.add('active');
 
       if (nomeAba === 'campanhas') window.renderizarCampanhas();
+      if (nomeAba === 'perfil') { bindProfileUploads(); renderizarPerfilUI(); }
     };
 
     window.irParaInicio = function() {
