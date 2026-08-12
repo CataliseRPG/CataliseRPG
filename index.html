@@ -936,6 +936,26 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 .profile-upload-status.is-error{color:#ff8d95;border-color:rgba(255,141,149,.28)}
 #profile-banner-preview.has-banner{background-size:cover;background-position:center;background-repeat:no-repeat}
 </style>
+<style id="catalise-v7-admin-tier-css">
+.admin-tier-panel{border-color:rgba(83,199,183,.28);background:linear-gradient(145deg,rgba(8,27,31,.96),rgba(3,13,16,.98));}
+.admin-tier-grid{align-items:end}
+.admin-tier-search-btn{min-height:42px}
+.admin-tier-target-card{margin-top:14px;padding:16px;border:1px solid rgba(83,199,183,.22);background:rgba(0,0,0,.16)}
+.admin-tier-target-card>div:first-child{display:grid;gap:4px;margin-bottom:14px}
+.admin-tier-target-card strong{font-size:1rem;color:#e5f5f1}
+.admin-tier-target-card small{font:500 9px/1.5 'DM Mono';color:#78948f;word-break:break-all}
+.admin-tier-controls{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.admin-tier-controls label{display:grid;gap:7px}
+.admin-tier-controls select,.admin-tier-controls input{width:100%}
+.admin-tier-actions{display:flex;gap:10px;align-items:center;flex-wrap:wrap;margin-top:14px}
+.admin-tier-status{min-height:18px;margin-top:10px}
+.admin-tier-status.is-success{color:#70d4bc}
+.admin-tier-meta{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:12px}
+.admin-tier-meta .meta-box{padding:10px;border:1px solid rgba(67,182,163,.12);background:rgba(67,182,163,.035)}
+.admin-tier-meta b{display:block;margin-bottom:4px;color:#6fb2a7;font:700 8px 'DM Mono';letter-spacing:.08em}
+.admin-tier-meta span{color:#c7d8d4;font:500 10px/1.45 'DM Mono';word-break:break-word}
+@media(max-width:700px){.admin-tier-controls,.admin-tier-meta{grid-template-columns:1fr}}
+</style>
 <style id="catalise-v5-admin-tier-css">
 .admin-tier-panel{
   border-color:rgba(212,181,96,.28);
@@ -1301,13 +1321,13 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       <section id="admin-tier-panel" class="card-ficha admin-tier-panel" style="display:none;">
           <div class="admin-tier-kicker">☩ ÁREA DE ADMINISTRAÇÃO</div>
           <h3 style="margin-top:4px;">GERENCIAR APOIADORES</h3>
-          <p class="profile-help">Use esta área para testes e concessões manuais. Somente contas marcadas como administradoras no Firestore conseguem alterar tiers.</p>
+          <p class="profile-help">Localize uma conta por UID ou e-mail e conceda um nível manualmente. Esta área é exclusiva para administradores cadastrados no Firestore.</p>
 
           <div class="admin-tier-grid">
             <label>UID ou e-mail da conta
-              <input id="admin-tier-target" type="text" placeholder="UID ou e-mail do usuário" data-enter-ready>
+              <input id="admin-tier-target" type="text" placeholder="UID ou e-mail do usuário" autocomplete="off" data-enter-ready>
             </label>
-            <button type="button" class="vt-mini-btn admin-tier-search-btn" onclick="buscarUsuarioParaTier()">LOCALIZAR CONTA</button>
+            <button type="button" class="vt-mini-btn admin-tier-search-btn" id="admin-tier-search-btn" onclick="buscarUsuarioParaTier()">LOCALIZAR CONTA</button>
           </div>
 
           <div id="admin-tier-target-card" class="admin-tier-target-card" style="display:none;">
@@ -1316,7 +1336,13 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
               <small id="admin-tier-target-email">—</small>
               <small id="admin-tier-target-uid">—</small>
             </div>
-            <div class="admin-tier-controls">
+
+            <div class="admin-tier-meta">
+              <div class="meta-box"><b>TIER ATUAL</b><span id="admin-tier-current-label">INVESTIGADOR</span></div>
+              <div class="meta-box"><b>ORIGEM</b><span id="admin-tier-source-label">—</span></div>
+            </div>
+
+            <div class="admin-tier-controls" style="margin-top:12px;">
               <label>Nível
                 <select id="admin-tier-select">
                   <option value="none">Nenhum / gratuito</option>
@@ -1336,11 +1362,16 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
                 </select>
               </label>
             </div>
+
+            <label style="display:grid;gap:7px;margin-top:12px;">Motivo / observação (opcional)
+              <input id="admin-tier-reason" type="text" maxlength="180" placeholder="Ex.: conta de teste, amigo da equipe, benefício manual" data-enter-ready>
+            </label>
+
             <div class="admin-tier-actions">
-              <button type="button" class="btn-main" onclick="salvarTierAdministrativo()">✦ APLICAR NÍVEL</button>
+              <button type="button" class="btn-main" id="admin-tier-save-btn" onclick="salvarTierAdministrativo()">✦ APLICAR NÍVEL</button>
               <button type="button" class="vt-mini-btn" onclick="limparAlvoTier()">LIMPAR</button>
             </div>
-            <div id="admin-tier-status" class="admin-tier-status"></div>
+            <div id="admin-tier-status" class="admin-tier-status" aria-live="polite"></div>
           </div>
       </section>
 
@@ -2541,9 +2572,11 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       const card=document.getElementById('admin-tier-target-card');
       if(card)card.style.display='none';
       const input=document.getElementById('admin-tier-target');
-      if(input)input.value='';
+      if(input){input.value='';input.focus();}
+      const reason=document.getElementById('admin-tier-reason');
+      if(reason)reason.value='';
       const status=document.getElementById('admin-tier-status');
-      if(status)status.textContent='';
+      if(status){status.textContent='';status.classList.remove('is-success');}
     }
 
     function mostrarAlvoTier(data){
@@ -2556,25 +2589,46 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       if(name)name.textContent=String(data.nome||'Investigador');
       if(email)email.textContent=String(data.email||'Sem e-mail registrado');
       if(uid)uid.textContent='UID: '+String(data.uid||'');
+
+      const tierValue=ADMIN_TIER_VALUES.has(String(data.supporterTier||'none'))?String(data.supporterTier):'none';
       const tier=document.getElementById('admin-tier-select');
-      if(tier)tier.value=ADMIN_TIER_VALUES.has(String(data.supporterTier||'none'))?String(data.supporterTier):'none';
+      if(tier)tier.value=tierValue;
+      const statusValue=ADMIN_STATUS_VALUES.has(String(data.subscriptionStatus||'manual'))?String(data.subscriptionStatus):'manual';
       const status=document.getElementById('admin-subscription-status');
-      if(status)status.value=ADMIN_STATUS_VALUES.has(String(data.subscriptionStatus||'manual'))?String(data.subscriptionStatus):'manual';
+      if(status)status.value=statusValue;
+      const reason=document.getElementById('admin-tier-reason');
+      if(reason)reason.value=String(data.tierReason||'');
+
+      const currentLabel=document.getElementById('admin-tier-current-label');
+      if(currentLabel)currentLabel.textContent=SUPPORTER_LABEL[tierValue]||'INVESTIGADOR';
+      const sourceLabel=document.getElementById('admin-tier-source-label');
+      if(sourceLabel)sourceLabel.textContent=String(data.tierSource||'não definido');
+
       const msg=document.getElementById('admin-tier-status');
-      if(msg)msg.textContent='Conta localizada. Escolha o nível e aplique a alteração.';
+      if(msg){msg.textContent='Conta localizada. Escolha o nível e aplique a alteração.';msg.classList.remove('is-success');}
+    }
+
+    async function setAdminBusy(busy, label){
+      const search=document.getElementById('admin-tier-search-btn');
+      const save=document.getElementById('admin-tier-save-btn');
+      if(search){search.disabled=busy;search.dataset.originalLabel=search.dataset.originalLabel||search.textContent;search.textContent=busy?(label||'PROCESSANDO…'):'LOCALIZAR CONTA';}
+      if(save){save.disabled=busy;save.dataset.originalLabel=save.dataset.originalLabel||save.textContent;if(!busy)save.textContent='✦ APLICAR NÍVEL';}
     }
 
     window.buscarUsuarioParaTier=async function(){
       if(!(await usuarioEhAdministrador())){
         return sitePopup('Sua conta não possui permissão administrativa.',{title:'ACESSO RESTRITO'});
       }
-      const raw=document.getElementById('admin-tier-target')?.value.trim();
+      const input=document.getElementById('admin-tier-target');
+      const raw=input?.value.trim();
       if(!raw)return sitePopup('Digite o UID ou o e-mail da conta.',{title:'GERENCIAR TIERS'});
 
+      await setAdminBusy(true,'LOCALIZANDO…');
       try{
         let snap=null;
         if(raw.includes('@')){
-          const q=query(collection(db,'usuarios'),where('email','==',raw.toLowerCase()));
+          const email=raw.toLowerCase();
+          const q=query(collection(db,'usuarios'),where('email','==',email));
           const result=await getDocs(q);
           if(!result.empty)snap=result.docs[0];
         }else{
@@ -2583,13 +2637,16 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         }
 
         if(!snap){
+          limparAlvoTier();
           return sitePopup('Nenhuma conta foi encontrada com esse UID/e-mail.',{title:'CONTA NÃO ENCONTRADA'});
         }
 
         mostrarAlvoTier({uid:snap.id,...snap.data()});
       }catch(e){
-        console.error(e);
+        console.error('Erro ao localizar conta:',e);
         sitePopup(e?.message||'Não foi possível localizar a conta.',{title:'ERRO AO LOCALIZAR'});
+      }finally{
+        await setAdminBusy(false);
       }
     };
 
@@ -2602,6 +2659,7 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 
       const tier=document.getElementById('admin-tier-select')?.value||'none';
       const subscriptionStatus=document.getElementById('admin-subscription-status')?.value||'manual';
+      const tierReason=(document.getElementById('admin-tier-reason')?.value||'').trim();
       if(!ADMIN_TIER_VALUES.has(tier)||!ADMIN_STATUS_VALUES.has(subscriptionStatus)){
         return sitePopup('Nível ou status inválido.',{title:'DADOS INVÁLIDOS'});
       }
@@ -2613,22 +2671,25 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         subscriptionPlan:tier,
         tierSource:'manual_admin',
         tierUpdatedAt:now,
-        tierUpdatedBy:window.usuarioId
+        tierUpdatedBy:window.usuarioId,
+        tierReason:tierReason||'Concessão manual pelo administrador'
       };
+
+      const msg=document.getElementById('admin-tier-status');
+      if(msg){msg.textContent='Aplicando alteração…';msg.classList.remove('is-success');}
+      const save=document.getElementById('admin-tier-save-btn');
+      if(save){save.disabled=true;save.textContent='APLICANDO…';}
 
       try{
         await setDoc(doc(db,'usuarios',target.uid),payload,{merge:true});
         await setDoc(doc(db,'perfisPublicos',target.uid),payload,{merge:true});
         window.adminTierTarget={...target,...payload};
 
-        const msg=document.getElementById('admin-tier-status');
         if(msg){
-          msg.textContent=`✓ ${SUPPORTER_LABEL[tier]||'INVESTIGADOR'} aplicado.`;
+          msg.textContent=`✓ ${SUPPORTER_LABEL[tier]||'INVESTIGADOR'} aplicado com sucesso.`;
           msg.classList.add('is-success');
         }
 
-        // Se o administrador estiver alterando o próprio usuário,
-        // atualiza a interface imediatamente.
         if(target.uid===window.usuarioId){
           window.perfilAtual={...window.perfilAtual,...payload};
           renderizarPerfilUI();
@@ -2640,8 +2701,11 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
           {title:'TIER ATUALIZADO',okText:'CONTINUAR'}
         );
       }catch(e){
-        console.error(e);
+        console.error('Erro ao atualizar tier:',e);
+        if(msg)msg.textContent='Não foi possível aplicar a alteração.';
         sitePopup(e?.message||'Não foi possível atualizar o tier.',{title:'ERRO AO ATUALIZAR'});
+      }finally{
+        if(save){save.disabled=false;save.textContent='✦ APLICAR NÍVEL';}
       }
     };
 
@@ -4397,7 +4461,9 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
       'pop-input-entrar-campanha':()=>window.entrarEmCampanha(),
       'pop-input-editar-campanha-nome':()=>window.confirmarEditarCampanha(),
       'vt-token-name':()=>window.criarTokenTabletop(),
-      'vt-edit-name':()=>window.salvarTokenEditadoTabletop()
+      'vt-edit-name':()=>window.salvarTokenEditadoTabletop(),
+      'admin-tier-target':()=>window.buscarUsuarioParaTier(),
+      'admin-tier-reason':()=>window.salvarTierAdministrativo()
     };
 
     // Delegação no documento: funciona também em campos que aparecem depois,
