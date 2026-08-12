@@ -841,6 +841,87 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
 @media(max-width:620px){.tier-grid{grid-template-columns:1fr}}
 </style>
 
+
+<style id="catalise-premium-v2">
+/* ===== CATÁLISE PREMIUM V2 ===== */
+.premium-profile-panel{
+  margin-top:22px;
+  padding:22px;
+  border:1px solid rgba(64,180,174,.22);
+  border-radius:18px;
+  background:
+    radial-gradient(circle at 15% 0%, rgba(49,128,126,.12), transparent 36%),
+    linear-gradient(145deg,rgba(7,17,24,.94),rgba(9,24,30,.88));
+  box-shadow:0 18px 55px rgba(0,0,0,.28), inset 0 1px 0 rgba(255,255,255,.025);
+}
+.premium-profile-panel h3{
+  margin:0 0 6px;
+  letter-spacing:.08em;
+}
+.premium-subtitle{
+  margin:0 0 18px;
+  color:var(--muted,#8fa4a5);
+  font-size:.9rem;
+}
+.premium-tier-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  padding:7px 11px;
+  border-radius:999px;
+  background:rgba(50,150,145,.1);
+  border:1px solid rgba(80,190,180,.25);
+  color:#b8e6df;
+  font-size:.78rem;
+  letter-spacing:.06em;
+  text-transform:uppercase;
+}
+.premium-grid{
+  display:grid;
+  grid-template-columns:repeat(2,minmax(0,1fr));
+  gap:12px;
+}
+.premium-control{
+  display:flex;
+  flex-direction:column;
+  gap:7px;
+}
+.premium-control label{
+  font-size:.78rem;
+  color:#9bb0b1;
+  letter-spacing:.05em;
+  text-transform:uppercase;
+}
+.premium-control select,
+.premium-control input{
+  width:100%;
+  box-sizing:border-box;
+}
+.premium-locked{
+  opacity:.58;
+}
+.premium-lock-note{
+  font-size:.72rem;
+  color:#9aa9aa;
+}
+.premium-save-row{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-top:17px;
+}
+.premium-save-status{
+  color:#8fc9c1;
+  font-size:.8rem;
+  min-height:18px;
+}
+@media(max-width:700px){
+  .premium-grid{grid-template-columns:1fr}
+  .premium-save-row{align-items:flex-start;flex-direction:column}
+}
+</style>
+
 </head>
 <body>
   <header class="site-header">
@@ -1098,8 +1179,8 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
         <div class="support-kicker">☩ SUSTENTE O ARQUIVO</div>
         <h2>TORNE-SE PARTE DO CATÁLISE</h2>
         <p>O Catálise é um projeto independente. Seu apoio ajuda a manter o sistema, as campanhas, o Tabletop e o conteúdo em desenvolvimento. Em troca, você desbloqueia principalmente benefícios digitais, cosméticos e acesso antecipado.</p>
-        <button type="button" class="btn-main" onclick="abrirCatarse()">☩ ESCOLHER MEU NÍVEL</button>
-        <div class="support-note">A assinatura e o pagamento acontecem no Catarse. O Catálise nunca pede sua senha do Catarse nem dados do cartão. Os benefícios da assinatura são controlados separadamente no sistema e a sincronização automática será conectada na próxima camada.</div>
+        <button type="button" class="btn-main" onclick="abrirCatarse()">☩ APOIAR NO CATARSE</button>
+        <div class="support-note">A cobrança acontece no Catarse. O site nunca pede sua senha do Catarse nem dados do cartão. A confirmação automática da assinatura será feita pelo backend quando a integração oficial estiver conectada.</div>
       </section>
 
       <div class="support-status">
@@ -4133,6 +4214,202 @@ input[data-enter-ready]:focus{border-color:rgba(110,216,193,.72)!important;box-s
   window.sitePopup=function(message,opts={}){
     return window.vtPopup(String(message??''),{title:opts.title||'CATÁLISE',okText:opts.okText||'OK'});
   };
+})();
+</script>
+
+
+<script id="catalise-premium-v2-js">
+/* ===== CATÁLISE PREMIUM V2 =====
+   This layer only handles UI/preferences.
+   Subscription authority remains in Firestore/backend.
+*/
+(function(){
+  const TIERS = {
+    none:      {level:0, name:"Sem assinatura", icon:""},
+    devoto:    {level:1, name:"Devoto", icon:"☽"},
+    oficiante: {level:2, name:"Oficiante", icon:"☩"},
+    arquiteto: {level:3, name:"Arquiteto", icon:"⚒"},
+    arauto:    {level:4, name:"Arauto", icon:"👁"}
+  };
+
+  const PREMIUM_OPTIONS = {
+    themes: [
+      {id:"default", label:"Catálise — Verde Profundo", min:0},
+      {id:"devoto", label:"Ritual do Devoto", min:1},
+      {id:"oficiante", label:"Câmara do Oficiante", min:2},
+      {id:"arquiteto", label:"Oficina do Arquiteto", min:3},
+      {id:"arauto", label:"Olho do Arauto", min:4}
+    ],
+    frames: [
+      {id:"none", label:"Sem moldura", min:0},
+      {id:"relicario", label:"Relicário", min:2},
+      {id:"espinhos", label:"Espinhos", min:3},
+      {id:"olho", label:"Olho Ritual", min:4}
+    ],
+    effects: [
+      {id:"none", label:"Nenhum", min:0},
+      {id:"mist", label:"Névoa", min:2},
+      {id:"embers", label:"Cinzas", min:3},
+      {id:"void", label:"Vazio", min:4}
+    ]
+  };
+
+  function tierLevel(tier){
+    return TIERS[tier]?.level ?? 0;
+  }
+
+  function currentTier(){
+    /* O HTML existente pode expor currentUserData/userData.
+       Se não existir, usamos none. Nunca concedemos tier pelo cliente. */
+    const candidate =
+      window.currentUserData?.supporterTier ??
+      window.userData?.supporterTier ??
+      document.body.dataset.supporterTier ??
+      "none";
+
+    return TIERS[candidate] ? candidate : "none";
+  }
+
+  function optionMarkup(options, tier){
+    const level = tierLevel(tier);
+    return options.map(o => {
+      const unlocked = level >= o.min;
+      const selected = unlocked ? "" : " disabled";
+      const lock = unlocked ? "" : " 🔒";
+      return `<option value="${o.id}"${selected}>${o.label}${lock}</option>`;
+    }).join("");
+  }
+
+  function panelHtml(tier){
+    const t = TIERS[tier];
+    return `
+      <section class="premium-profile-panel" id="catalisePremiumPanel">
+        <div class="premium-tier-badge">${t.icon ? t.icon+" " : ""}${t.name}</div>
+        <h3 style="margin-top:12px">PERSONALIZAÇÃO DO ARQUIVO</h3>
+        <p class="premium-subtitle">
+          Personalize a aparência do seu perfil com os benefícios desbloqueados.
+        </p>
+
+        <div class="premium-grid">
+          <div class="premium-control">
+            <label for="premiumTheme">Tema</label>
+            <select id="premiumTheme">${optionMarkup(PREMIUM_OPTIONS.themes,tier)}</select>
+          </div>
+
+          <div class="premium-control">
+            <label for="premiumFrame">Moldura</label>
+            <select id="premiumFrame">${optionMarkup(PREMIUM_OPTIONS.frames,tier)}</select>
+          </div>
+
+          <div class="premium-control">
+            <label for="premiumEffect">Efeito</label>
+            <select id="premiumEffect">${optionMarkup(PREMIUM_OPTIONS.effects,tier)}</select>
+          </div>
+
+          <div class="premium-control premium-locked">
+            <label>Banner animado</label>
+            <input type="text" value="Disponível a partir do Arquiteto" disabled>
+            <span class="premium-lock-note">🔒 Arquiteto</span>
+          </div>
+        </div>
+
+        <div class="premium-save-row">
+          <span class="premium-save-status" id="premiumSaveStatus"></span>
+          <button type="button" class="btn-primary" id="premiumSaveBtn">
+            SALVAR PERSONALIZAÇÃO
+          </button>
+        </div>
+      </section>
+    `;
+  }
+
+  async function savePreferences(){
+    const status = document.getElementById("premiumSaveStatus");
+    if(status) status.textContent = "Salvando...";
+
+    const data = {
+      theme: document.getElementById("premiumTheme")?.value || "default",
+      frame: document.getElementById("premiumFrame")?.value || "none",
+      effect: document.getElementById("premiumEffect")?.value || "none"
+    };
+
+    /*
+     * Não escrevemos supporterTier aqui.
+     * Apenas preferências cosméticas.
+     *
+     * A função existente do site será usada quando disponível.
+     */
+    try{
+      if(typeof window.saveProfileData === "function"){
+        await window.saveProfileData(data);
+      }else if(typeof window.salvarPerfil === "function"){
+        await window.salvarPerfil(data);
+      }else{
+        /*
+         * Fallback local para a interface enquanto a rotina
+         * existente de perfil não estiver exposta globalmente.
+         */
+        localStorage.setItem("catalise_profile_preferences",JSON.stringify(data));
+      }
+
+      if(status) status.textContent = "✓ Personalização salva.";
+    }catch(error){
+      console.error("Catálise Premium:",error);
+      if(status) status.textContent = "Não foi possível salvar agora.";
+    }
+  }
+
+  function mount(){
+    const target =
+      document.querySelector("#profileCustomization") ||
+      document.querySelector(".profile-content") ||
+      document.querySelector("#perfil") ||
+      document.querySelector("#profile");
+
+    if(!target || document.getElementById("catalisePremiumPanel")) return;
+
+    const panel = document.createElement("div");
+    panel.innerHTML = panelHtml(currentTier());
+    target.appendChild(panel.firstElementChild);
+
+    document.getElementById("premiumSaveBtn")
+      ?.addEventListener("click",savePreferences);
+
+    try{
+      const saved = JSON.parse(
+        localStorage.getItem("catalise_profile_preferences") || "{}"
+      );
+      if(saved.theme) document.getElementById("premiumTheme").value=saved.theme;
+      if(saved.frame) document.getElementById("premiumFrame").value=saved.frame;
+      if(saved.effect) document.getElementById("premiumEffect").value=saved.effect;
+    }catch(_){}
+  }
+
+  window.CatalisePremium = {
+    tiers: TIERS,
+    options: PREMIUM_OPTIONS,
+    getTier: currentTier,
+    mount
+  };
+
+  if(document.readyState === "loading"){
+    document.addEventListener("DOMContentLoaded",mount);
+  }else{
+    mount();
+  }
+
+  /*
+   * O site existente pode carregar o perfil depois do DOM.
+   * Fazemos algumas tentativas leves, sem loops infinitos.
+   */
+  let attempts=0;
+  const timer=setInterval(()=>{
+    attempts++;
+    mount();
+    if(document.getElementById("catalisePremiumPanel") || attempts>=12){
+      clearInterval(timer);
+    }
+  },1000);
 })();
 </script>
 
