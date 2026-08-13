@@ -2347,6 +2347,21 @@ body.page-effect-static .catalise-page-effects::after{
   inset: 0 !important;
   z-index: 2147483647 !important;
 }
+/* Qualquer popup de diálogo aberto recebe sempre a camada máxima. */
+body > .modal.modal-dialog.is-global-popup,
+body > .modal.modal-dialog[style*='z-index'] {
+  position: fixed !important;
+  inset: 0 !important;
+  width: 100vw !important;
+  height: 100vh !important;
+  z-index: 2147483647 !important;
+  pointer-events: auto !important;
+}
+body > .modal.modal-dialog.is-global-popup .modal-content,
+body > .modal.modal-dialog.is-global-popup .modal-content-sm {
+  position: relative !important;
+  z-index: 2147483647 !important;
+}
 </style>
 
 <style id="catalise-dedicated-screens-final">
@@ -4183,8 +4198,36 @@ body > #historico-rolagens.dice-history{
       }
     };
 
-    window.abrirPop = function(idModal) { document.getElementById(idModal).style.display = 'block'; };
-    window.fecharPop = function(idModal) { document.getElementById(idModal).style.display = 'none'; };
+    /* =========================================================
+       POPUPS — CAMADA GLOBAL DE SEGURANÇA
+       Todo popup de diálogo é movido para o BODY ao abrir.
+       Isso evita qualquer stacking-context criado pela tela da campanha,
+       ficha, cards, transformações, filtros ou outros elementos.
+       ========================================================= */
+    window.abrirPop = function(idModal) {
+      const modal = document.getElementById(idModal);
+      if(!modal) return;
+
+      // Popups de diálogo sempre ficam como filhos diretos do BODY.
+      // Assim eles não podem ficar presos atrás de uma tela/modal pai.
+      if(modal.parentElement !== document.body){
+        document.body.appendChild(modal);
+      }
+
+      modal.classList.add('is-global-popup');
+      modal.style.setProperty('position','fixed','important');
+      modal.style.setProperty('inset','0','important');
+      modal.style.setProperty('width','100vw','important');
+      modal.style.setProperty('height','100vh','important');
+      modal.style.setProperty('z-index','2147483647','important');
+      modal.style.setProperty('pointer-events','auto','important');
+      modal.style.display = 'block';
+    };
+    window.fecharPop = function(idModal) {
+      const modal = document.getElementById(idModal);
+      if(!modal) return;
+      modal.style.display = 'none';
+    };
 
     function authMessage(text, type='') {
       const el=document.getElementById('auth-message');
