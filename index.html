@@ -2318,6 +2318,70 @@ body.page-effect-static .catalise-page-effects::after{
 .profile-banner{border-bottom:0!important}
 .profile-featured-media{padding:18px;position:relative;overflow:hidden}.profile-featured-media::before{content:"✦ ARQUIVO VISUAL";position:absolute;right:18px;top:16px;color:color-mix(in srgb,var(--cat-accent) 45%,transparent);font:700 8px 'DM Mono';letter-spacing:.16em}.profile-featured-stage{margin-top:12px;min-height:250px;border:1px dashed color-mix(in srgb,var(--cat-accent) 28%,transparent);background:radial-gradient(circle at 50% 0%,color-mix(in srgb,var(--cat-accent) 10%,transparent),transparent 55%),rgba(2,9,12,.55);display:grid;place-items:center;overflow:hidden;position:relative}.profile-featured-stage img{display:block;width:100%;height:100%;min-height:250px;max-height:430px;object-fit:cover}.profile-featured-empty{padding:48px 24px;text-align:center;color:var(--cat-muted);font:500 10px/1.7 'DM Mono';letter-spacing:.04em}.profile-featured-empty b{display:block;color:var(--cat-accent2);font-size:12px;letter-spacing:.14em;margin-bottom:7px}.profile-featured-upload-row{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:8px;align-items:end;margin-top:12px}.public-profile-page{display:none;min-height:100vh;padding:34px 18px 70px}body.public-route .site-header,body.public-route>main{display:none!important}body.public-route .public-profile-page{display:block}body.public-route{min-height:100vh;background:var(--cat-bg,#02090b);overflow-x:hidden}.public-profile-page-inner{width:min(1080px,100%);margin:0 auto}.public-profile-page-top{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:16px}.public-profile-page-brand{color:var(--cat-accent2);font:700 10px 'DM Mono';letter-spacing:.16em;text-transform:uppercase}.public-profile-back{appearance:none;border:1px solid color-mix(in srgb,var(--cat-accent) 34%,transparent);background:color-mix(in srgb,var(--cat-surface) 78%,transparent);color:var(--cat-text);padding:9px 12px;cursor:pointer;font:700 9px 'DM Mono';letter-spacing:.1em;text-transform:uppercase}.public-profile-back:hover{border-color:var(--cat-accent);color:var(--cat-accent2)}.public-profile-page-card{width:100%;max-height:none;border-radius:18px}.public-profile-page-card .public-profile-banner{height:330px}.public-profile-page-card .public-profile-body{padding:0 42px 42px}.public-profile-page-card .public-profile-avatar{width:156px;height:156px;margin-top:-78px}.public-profile-page-card .public-profile-heading h2{font-size:42px}.public-profile-featured{margin-top:26px;padding-top:20px;border-top:1px solid color-mix(in srgb,var(--cat-accent) 18%,transparent)}.public-profile-featured img{display:block;width:100%;max-height:520px;object-fit:cover;border:1px solid color-mix(in srgb,var(--cat-accent) 24%,transparent);background:var(--cat-surface2);box-shadow:0 18px 50px rgba(0,0,0,.28)}@media(max-width:700px){.profile-featured-upload-row{grid-template-columns:1fr}.profile-featured-stage,.profile-featured-stage img{min-height:190px}.public-profile-page{padding:16px 10px 42px}.public-profile-page-card .public-profile-banner{height:220px}.public-profile-page-card .public-profile-body{padding:0 20px 28px}.public-profile-page-card .public-profile-avatar{width:112px;height:112px;margin-top:-56px}.public-profile-page-card .public-profile-heading h2{font-size:29px}.public-profile-page-top{align-items:flex-start;flex-direction:column}}
 </style>
+
+<style id="catalise-dedicated-screens-final">
+/* =========================================================
+   CATÁLISE // TELAS DEDICADAS
+   Ficha e Campanha deixam de parecer popups e passam a ocupar
+   a viewport inteira. O histórico continua exclusivo da ficha.
+   ========================================================= */
+body.cat-dedicated-open{overflow:hidden!important}
+#modal-ficha.cat-dedicated-screen,
+#modal-mestre.cat-dedicated-screen{
+  display:block!important;position:fixed!important;inset:0!important;
+  width:100vw!important;height:100vh!important;max-width:none!important;
+  margin:0!important;padding:0!important;z-index:9000!important;
+  overflow-y:auto!important;overflow-x:hidden!important;
+  background:
+    radial-gradient(circle at 15% 10%,rgba(67,182,163,.08),transparent 28%),
+    radial-gradient(circle at 85% 90%,rgba(35,101,96,.10),transparent 32%),
+    linear-gradient(145deg,#03090b 0%,#061316 48%,#020709 100%)!important;
+}
+#modal-ficha.cat-dedicated-screen .modal-content,
+#modal-mestre.cat-dedicated-screen .modal-content{
+  width:100%!important;max-width:none!important;min-height:100vh!important;
+  margin:0!important;padding:24px clamp(18px,4vw,54px) 54px!important;
+  border:0!important;border-radius:0!important;background:transparent!important;
+  box-shadow:none!important;overflow:visible!important;
+}
+#modal-ficha.cat-dedicated-screen .modal-content > div:first-child,
+#modal-mestre.cat-dedicated-screen .modal-content > div:first-child{
+  position:sticky;top:0;z-index:40;padding:10px 0 14px!important;
+  margin-bottom:16px!important;background:linear-gradient(180deg,rgba(3,9,11,.98),rgba(3,9,11,.90),transparent);
+  backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);
+}
+#modal-ficha.cat-dedicated-screen .modal-content > h2,
+#modal-ficha.cat-dedicated-screen .modal-content > .aviso-permissao,
+#modal-ficha.cat-dedicated-screen .modal-content > .card-ficha,
+#modal-ficha.cat-dedicated-screen .modal-content > table,
+#modal-ficha.cat-dedicated-screen .modal-content > #log-rolagem{
+  max-width:1500px;margin-left:auto;margin-right:auto;
+}
+#modal-mestre.cat-dedicated-screen .campanha-tabs{position:sticky;top:65px;z-index:35;background:rgba(3,9,11,.92);backdrop-filter:blur(10px);padding-top:8px}
+#modal-mestre.cat-dedicated-screen .vt-layout{height:calc(100vh - 150px)!important;min-height:620px!important}
+#modal-mestre.cat-dedicated-screen .campanha-tab-panel{min-height:calc(100vh - 150px)}
+
+/* O histórico fica no canto superior direito da tela da ficha,
+   abaixo do cabeçalho, sem ser cortado pelo conteúdo. */
+#historico-rolagens.dice-history{
+  top:86px!important;right:22px!important;width:min(370px,calc(100vw - 44px));z-index:9100!important;
+}
+#historico-rolagens.dice-history .dice-history-list{max-height:calc(100vh - 190px)}
+#modal-ficha.cat-dedicated-screen ~ #historico-rolagens{position:fixed}
+
+@media(max-width:900px){
+  #modal-mestre.cat-dedicated-screen .vt-layout{height:calc(100vh - 145px)!important;min-height:560px!important}
+  #historico-rolagens.dice-history{top:78px!important;right:12px!important;width:calc(100vw - 24px)!important;max-width:390px}
+}
+@media(max-width:650px){
+  #modal-ficha.cat-dedicated-screen .modal-content,
+  #modal-mestre.cat-dedicated-screen .modal-content{padding:12px 12px 36px!important}
+  #modal-mestre.cat-dedicated-screen .campanha-tabs{top:58px;overflow-x:auto;white-space:nowrap}
+  #modal-mestre.cat-dedicated-screen .vt-layout{height:calc(100vh - 135px)!important;min-height:500px!important}
+  #historico-rolagens.dice-history{top:70px!important;right:8px!important;width:calc(100vw - 16px)!important;max-width:none}
+}
+</style>
+
 </head>
 <body>
 <div class="catalise-page-effects" aria-hidden="true"></div>
@@ -6655,6 +6719,100 @@ body.theme-abismo{
   }
 }
 </style>
+
+
+<script id="catalise-dedicated-screens-final-js">
+/* =========================================================
+   CATÁLISE // NAVEGAÇÃO DE TELAS DEDICADAS
+   Ficha e campanha ocupam a tela inteira; fechar uma ficha aberta
+   a partir da campanha retorna à campanha, não ao Início.
+   ========================================================= */
+(function(){
+  const body=document.body;
+  const ficha=document.getElementById('modal-ficha');
+  const campanha=document.getElementById('modal-mestre');
+  let retornoFicha='app';
+
+  function entrarTela(el, tipo){
+    if(!el) return;
+    el.classList.add('cat-dedicated-screen');
+    body.classList.add('cat-dedicated-open', `cat-${tipo}-open`);
+    el.scrollTop=0;
+  }
+  function sairTela(el, tipo){
+    if(!el) return;
+    el.classList.remove('cat-dedicated-screen');
+    body.classList.remove(`cat-${tipo}-open`);
+    if(!document.querySelector('.cat-dedicated-screen')) body.classList.remove('cat-dedicated-open');
+  }
+
+  const originalAbrirCampanha=window.abrirPainelCampanha;
+  if(typeof originalAbrirCampanha==='function'){
+    window.abrirPainelCampanha=function(campId,eMestre){
+      retornoFicha='app';
+      originalAbrirCampanha(campId,eMestre);
+      entrarTela(campanha,'campanha');
+    };
+  }
+
+  const originalAbrirCampanhaJogador=window.abrirPainelCampanhaJogador;
+  if(typeof originalAbrirCampanhaJogador==='function'){
+    window.abrirPainelCampanhaJogador=async function(codigo,nome,bannerUrl){
+      retornoFicha='app';
+      await originalAbrirCampanhaJogador(codigo,nome,bannerUrl);
+      entrarTela(campanha,'campanha');
+    };
+  }
+
+  const originalFecharCampanha=window.fecharPainelMestre;
+  if(typeof originalFecharCampanha==='function'){
+    window.fecharPainelMestre=function(){
+      originalFecharCampanha();
+      sairTela(campanha,'campanha');
+      retornoFicha='app';
+    };
+  }
+
+  const originalAbrirFicha=window.abrirFicha;
+  if(typeof originalAbrirFicha==='function'){
+    window.abrirFicha=function(id){
+      retornoFicha=(campanha && campanha.style.display==='block')?'campanha':'app';
+      originalAbrirFicha(id);
+      entrarTela(ficha,'ficha');
+    };
+  }
+
+  const originalAbrirFichaOutro=window.abrirFichaOutroJogador;
+  if(typeof originalAbrirFichaOutro==='function'){
+    window.abrirFichaOutroJogador=async function(id){
+      retornoFicha=(campanha && campanha.style.display==='block')?'campanha':'app';
+      await originalAbrirFichaOutro(id);
+      entrarTela(ficha,'ficha');
+    };
+  }
+
+  const originalFecharFicha=window.fecharFicha;
+  if(typeof originalFecharFicha==='function'){
+    window.fecharFicha=function(){
+      originalFecharFicha();
+      sairTela(ficha,'ficha');
+      if(retornoFicha==='campanha' && campanha){
+        campanha.style.display='block';
+        entrarTela(campanha,'campanha');
+      }
+      retornoFicha='app';
+    };
+  }
+
+  /* Segurança: se alguma rotina antiga alterar apenas display, reaplica a tela dedicada. */
+  const observer=new MutationObserver(()=>{
+    if(ficha?.style.display==='block' && !ficha.classList.contains('cat-dedicated-screen')) entrarTela(ficha,'ficha');
+    if(campanha?.style.display==='block' && !campanha.classList.contains('cat-dedicated-screen')) entrarTela(campanha,'campanha');
+  });
+  if(ficha) observer.observe(ficha,{attributes:true,attributeFilter:['style','class']});
+  if(campanha) observer.observe(campanha,{attributes:true,attributeFilter:['style','class']});
+})();
+</script>
 
 </body>
 </html>
