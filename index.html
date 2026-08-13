@@ -2849,6 +2849,17 @@ body > #historico-rolagens.dice-history{
 }
 </style>
 
+<style id="catalise-modal-priority-fix">
+/* CORREÇÃO EXCLUSIVA: confirmações/popups sempre acima de qualquer interface */
+.modal.modal-dialog{
+  z-index:2147483647 !important;
+}
+.modal.modal-dialog .modal-content,
+.modal.modal-dialog .modal-content-sm{
+  position:relative;
+  z-index:2147483647 !important;
+}
+</style>
 </head>
 <body>
 <div class="catalise-page-effects" aria-hidden="true"></div>
