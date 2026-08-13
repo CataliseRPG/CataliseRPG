@@ -535,14 +535,21 @@ footer{display:none}
 .dice-history-list{display:flex;flex-direction:column;gap:7px;max-height:calc(100vh - 210px);overflow:auto;padding-right:2px}
 .dice-history-list::-webkit-scrollbar{width:4px}
 .dice-history-list::-webkit-scrollbar-thumb{background:rgba(67,182,163,.25)}
-.dice-history.is-collapsed{width:auto;max-width:fit-content}
-.dice-history.is-collapsed .dice-history-head{margin-bottom:0}
-.dice-history.is-collapsed .dice-history-list{display:none}
-.dice-history.is-collapsed .dice-history-head span{display:none}
-.dice-history.is-collapsed .dice-history-head{border-left:1px solid rgba(67,182,163,.35);padding:5px 6px}
-.dice-history.is-collapsed .dice-history-actions{gap:4px}
-.dice-history.is-collapsed .dice-history-head button:first-child{display:none}
-.dice-history.is-collapsed .dice-history-toggle{font-size:7px}
+.dice-history.is-collapsed{
+  width:auto!important;max-width:none!important;background:transparent!important;border:0!important;box-shadow:none!important;pointer-events:none!important;
+}
+.dice-history.is-collapsed .dice-history-head{
+  width:max-content!important;min-width:0!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important;backdrop-filter:none!important;-webkit-backdrop-filter:none!important;
+}
+.dice-history.is-collapsed .dice-history-list{display:none!important}
+.dice-history.is-collapsed .dice-history-head span{display:none!important}
+.dice-history.is-collapsed .dice-history-actions{gap:0!important}
+.dice-history.is-collapsed .dice-history-head button:first-child{display:none!important}
+.dice-history.is-collapsed .dice-history-toggle{
+  display:inline-flex!important;align-items:center;justify-content:center;min-width:0!important;width:auto!important;height:30px!important;padding:0 11px!important;
+  border:1px solid color-mix(in srgb,var(--cat-accent) 38%,transparent)!important;background:color-mix(in srgb,var(--cat-surface,#07171b) 88%,transparent)!important;color:var(--cat-accent2,#6ed8c1)!important;
+  box-shadow:0 8px 20px rgba(0,0,0,.24)!important;font-size:8px!important;letter-spacing:.1em!important;pointer-events:auto!important;
+}
 .dice-toast{
   position:relative; display:grid; grid-template-columns:48px 1fr auto; gap:11px; align-items:center;
   min-height:67px; padding:9px 11px; overflow:hidden;
@@ -2691,6 +2698,12 @@ body.cat-dedicated-open{overflow:hidden!important}
 }
 
 /* Histórico: agora fica no canto superior esquerdo, alinhado com a ficha. */
+body > #historico-rolagens.dice-history.is-collapsed{width:auto!important;max-width:none!important;background:transparent!important;border:0!important;box-shadow:none!important;pointer-events:none!important}
+body > #historico-rolagens.dice-history.is-collapsed .dice-history-head{width:max-content!important;margin:0!important;padding:0!important;border:0!important;background:transparent!important;box-shadow:none!important}
+body > #historico-rolagens.dice-history.is-collapsed .dice-history-toggle{min-width:0!important;width:auto!important;height:30px!important;padding:0 11px!important;border:1px solid color-mix(in srgb,var(--cat-accent) 38%,transparent)!important;background:color-mix(in srgb,var(--cat-surface,#07171b) 88%,transparent)!important;color:var(--cat-accent2,#6ed8c1)!important;pointer-events:auto!important}
+body > #historico-rolagens.dice-history.is-collapsed .dice-history-head span,
+body > #historico-rolagens.dice-history.is-collapsed .dice-history-head button:first-child{display:none!important}
+
 body > #historico-rolagens.dice-history{
   position:fixed!important;
   top:78px!important;
@@ -2970,16 +2983,16 @@ body > #historico-rolagens.dice-history{
           <p>Guarde suas fichas, registros e descobertas em um só lugar. Cada detalhe pode ser uma pista.</p>
         </article>
         <article class="home-note-card home-note-accent">
-          <span class="home-card-kicker">02 // PROTOCOLO</span>
+          <span class="home-card-kicker">02 // REGISTRO DO ARQUIVO</span>
           <div class="home-protocol-list">
-            <div><b>ARQUIVO</b><span>CATÁLISE / SANCTUM</span></div>
-            <div><b>ESTADO</b><span>REGISTRO OPERACIONAL</span></div>
-            <div><b>ACESSO</b><span>IDENTIDADE VERIFICADA</span></div>
+            <div><b>SESSÃO</b><span id="home-registro-sessao">ATIVA</span></div>
+            <div><b>AGENTES</b><span id="home-registro-agentes">0 CADASTRADOS</span></div>
+            <div><b>CAMPANHAS</b><span id="home-registro-campanhas">0 CRIADAS</span></div>
           </div>
         </article>
         <article class="home-quote-card">
           <span class="home-card-kicker">03 // FRAGMENTO</span>
-          <blockquote>“A verdadeira arte é só o reflexo do sentimento de quem a contempla.”</blockquote>
+          <blockquote>“Há mistérios que Deus ocultou não por crueldade, mas por misericórdia.”</blockquote>
           <span class="home-quote-mark">✦</span>
         </article>
       </section>
@@ -4437,6 +4450,7 @@ body > #historico-rolagens.dice-history{
         window.perfilAtual={...window.perfilAtual,...publicData};
         renderizarPerfilUI();
         const dash=document.getElementById('dash-usuario');if(dash)dash.textContent=nome;
+        window.atualizarResumoInicio?.();
         renderizarHeaderUsuario();
         await sitePopup('Seu arquivo pessoal foi atualizado e salvo na nuvem.',{title:'PERFIL SALVO',okText:'CONTINUAR'});
       }catch(e){console.error(e);sitePopup(e?.message||'Não foi possível salvar seu perfil.',{title:'ERRO AO SALVAR PERFIL'});}
@@ -5100,6 +5114,7 @@ body > #historico-rolagens.dice-history{
       renderizarHeaderUsuario();
       document.getElementById('menu-nav').style.display='flex';
       document.getElementById('dash-usuario').innerText=window.usuarioAtual||nome;
+      window.atualizarResumoInicio?.();
       document.getElementById('aba-login').classList.remove('active');
       await escutarAgentes();
       await escutarCampanhas();
@@ -5187,6 +5202,21 @@ body > #historico-rolagens.dice-history{
       if (window.usuarioAtual) window.mudarAba('inicio');
     };
 
+    window.atualizarResumoInicio = function() {
+      const sessao = document.getElementById('home-registro-sessao');
+      const agentes = document.getElementById('home-registro-agentes');
+      const campanhas = document.getElementById('home-registro-campanhas');
+      if (sessao) sessao.textContent = window.usuarioAtual ? 'ATIVA' : 'AGUARDANDO';
+      if (agentes) {
+        const total = Array.isArray(window.agentes) ? window.agentes.length : 0;
+        agentes.textContent = `${total} ${total === 1 ? 'CADASTRADO' : 'CADASTRADOS'}`;
+      }
+      if (campanhas) {
+        const total = Array.isArray(window.campanhas) ? window.campanhas.length : 0;
+        campanhas.textContent = `${total} ${total === 1 ? 'CRIADA' : 'CRIADAS'}`;
+      }
+    };
+
     async function escutarAgentes() {
       const q = query(collection(db, "agentes"), where("donoId", "==", window.usuarioId));
       if(window.agentesUnsubscribe)window.agentesUnsubscribe();
@@ -5194,6 +5224,7 @@ body > #historico-rolagens.dice-history{
         window.agentes = [];
         snapshot.forEach((ds) => window.agentes.push(ds.data()));
         window.renderizarAgentes();
+        window.atualizarResumoInicio?.();
       },err=>{console.error(err);window.sitePopup('Não foi possível carregar seus agentes. Verifique sua autenticação.');});
     }
 
@@ -5270,7 +5301,7 @@ body > #historico-rolagens.dice-history{
       const q = query(collection(db, "campanhas"), where("mestreUid", "==", window.usuarioId));
       if(window.campanhasUnsubscribe)window.campanhasUnsubscribe();
       window.campanhasUnsubscribe=onSnapshot(q,(snapshot)=>{
-        window.campanhas=[];snapshot.forEach(ds=>window.campanhas.push(ds.data()));window.renderizarCampanhas();
+        window.campanhas=[];snapshot.forEach(ds=>window.campanhas.push(ds.data()));window.renderizarCampanhas();window.atualizarResumoInicio?.();
       },err=>{console.error(err);window.campanhas=[];window.renderizarCampanhas();});
     }
 
