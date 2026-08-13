@@ -2836,6 +2836,40 @@ body > #historico-rolagens.dice-history{
 }
 </style>
 
+
+<style id="vt-popup-final-layer-fix">
+  /* CONFIRMAÇÕES DO TABLETOP: sempre acima da janela da campanha. */
+  #vt-popup-overlay.vt-popup-overlay,
+  #vt-popup-overlay.vt-popup-overlay.show {
+    position: fixed !important;
+    inset: 0 !important;
+    z-index: 2147483647 !important;
+    width: 100vw !important;
+    height: 100vh !important;
+    display: flex !important;
+    align-items: center !important;
+    justify-content: center !important;
+    pointer-events: auto !important;
+  }
+
+  /* Quando fechado, o overlay não interfere na página. */
+  #vt-popup-overlay.vt-popup-overlay:not(.show) {
+    display: none !important;
+    pointer-events: none !important;
+  }
+
+  #vt-popup-overlay.vt-popup-overlay::backdrop {
+    background: rgba(0,8,10,.72);
+    backdrop-filter: blur(6px);
+    -webkit-backdrop-filter: blur(6px);
+  }
+
+  #vt-popup-overlay .vt-popup-card {
+    position: relative !important;
+    z-index: 2147483647 !important;
+  }
+</style>
+
 </head>
 <body>
 <div class="catalise-page-effects" aria-hidden="true"></div>
@@ -6955,7 +6989,7 @@ body > #historico-rolagens.dice-history{
     let overlay=document.getElementById('vt-popup-overlay');
     if(overlay)return overlay;
     overlay=document.createElement('div');
-    overlay.id='vt-popup-overlay'; overlay.className='vt-popup-overlay';
+    overlay.id='vt-popup-overlay'; overlay.className='vt-popup-overlay'; overlay.setAttribute('popover','manual');
     overlay.innerHTML=`<div class="vt-popup-card" role="dialog" aria-modal="true" aria-labelledby="vt-popup-title">
       <div class="vt-popup-head"><div class="vt-popup-mark">✦</div><div class="vt-popup-title" id="vt-popup-title">TABLETOP</div></div>
       <div class="vt-popup-body" id="vt-popup-body"></div>
@@ -6988,7 +7022,7 @@ body > #historico-rolagens.dice-history{
     const actions=document.getElementById('vt-popup-actions'); actions.innerHTML='';
     const btn=document.createElement('button'); btn.type='button'; btn.className='vt-popup-btn primary'; btn.textContent=opts.okText||'OK';
     btn.onclick=()=>window.vtPopupClose(true); actions.appendChild(btn);
-    o.classList.add('show'); setTimeout(()=>btn.focus(),30);
+    o.classList.add('show'); try{ if(!o.matches(':popover-open')) o.showPopover(); }catch(_e){} setTimeout(()=>btn.focus(),30);
     return new Promise(resolve=>{o._resolve=resolve;});
   };
   window.vtPopupConfirm=function(message,opts={}){
@@ -6998,7 +7032,7 @@ body > #historico-rolagens.dice-history{
     const actions=document.getElementById('vt-popup-actions'); actions.innerHTML='';
     const cancel=document.createElement('button'); cancel.type='button'; cancel.className='vt-popup-btn'; cancel.textContent=opts.cancelText||'CANCELAR'; cancel.onclick=()=>window.vtPopupClose(false);
     const ok=document.createElement('button'); ok.type='button'; ok.className='vt-popup-btn '+(opts.danger?'danger':'primary'); ok.textContent=opts.okText||'CONFIRMAR'; ok.onclick=()=>window.vtPopupClose(true);
-    actions.append(cancel,ok); o.classList.add('show'); setTimeout(()=>ok.focus(),30);
+    actions.append(cancel,ok); o.classList.add('show'); try{ if(!o.matches(':popover-open')) o.showPopover(); }catch(_e){} setTimeout(()=>ok.focus(),30);
     return new Promise(resolve=>{o._resolve=resolve;});
   };
   // Mesmo modal visual para mensagens de todo o site. Assim nenhum alert()
