@@ -5931,6 +5931,10 @@ body > #historico-rolagens.dice-history{
 
     async function carregarJogadoresDaCampanha(codigo) {
       const container = document.getElementById('container-fichas-jogadores');
+      // Cache local das fichas já autorizadas pela consulta da campanha.
+      // Assim, ao clicar em 'Ver Ficha', não dependemos de uma segunda leitura
+      // que pode falhar por regras antigas/latência antes da ficha abrir.
+      window.fichasCampanhaCache = {};
       container.innerHTML = '';
 
       const q = query(collection(db, "agentes"), where("campanhaCodigo", "==", codigo));
@@ -5942,7 +5946,8 @@ body > #historico-rolagens.dice-history{
       }
 
       querySnapshot.forEach((docSnap) => {
-        const ag = docSnap.data();
+        const ag = { id: docSnap.id, ...docSnap.data() };
+        window.fichasCampanhaCache[docSnap.id] = ag;
         container.innerHTML += `
           <div class="card-ficha grid-3" style="margin-bottom: 15px; align-items: center;">
             <div>
@@ -5970,44 +5975,68 @@ body > #historico-rolagens.dice-history{
       window.vtCampaignKey = null;
       window.vtSelectedTokenId = null;
       window.vtState = null;
+      window.fichasCampanhaCache = {};
       window.campanhaAtualId = null;
     };
 
     window.abrirFichaOutroJogador = async function(agenteId) {
       try {
-        const docSnap = await getDoc(doc(db, "agentes", agenteId.toString()));
-        if (!docSnap.exists()) return window.sitePopup("A ficha deste jogador não foi encontrada.");
+        /*
+         * Primeiro usamos a ficha que já foi carregada pelo painel da campanha.
+         * A lista de jogadores só é preenchida depois de uma consulta autorizada,
+         * então não faz sentido obrigar o navegador a fazer um segundo getDoc()
+         * antes de abrir a ficha.
+         */
+        let ag = window.fichasCampanhaCache?.[String(agenteId)] || null;
 
-        const ag = docSnap.data();
+        // Fallback para fichas que não estejam no cache.
+        if (!ag) {
+          const docSnap = await getDoc(doc(db, "agentes", agenteId.toString()));
+          if (!docSnap.exists()) return window.sitePopup("A ficha deste jogador não foi encontrada.");
+          ag = { id: docSnap.id, ...docSnap.data() };
+        }
+
         window.agenteAtualDonoId = ag.donoId || '';
 
         /*
-         * A permissão do Mestre é calculada pela campanha real no Firestore,
-         * e não pela lista em memória. Isso evita perder o acesso quando a
-         * campanha foi aberta por uma lista antiga, convite ou atualização de estado.
+         * O painel da campanha já validou o acesso do usuário. Ainda assim,
+         * confirmamos o Mestre diretamente no documento da campanha atual.
+         * Isso evita depender de mestreUid gravado na ficha do jogador.
          */
-        let mestreConfirmado = false;
+        let mestreConfirmado = window.eMestreDaMesaAtual === true;
         let campanhaDoAgente = null;
 
         if (window.campanhaAtualId) {
-          const campSnap = await getDoc(doc(db, 'campanhas', String(window.campanhaAtualId)));
-          if (campSnap.exists()) campanhaDoAgente = { id: campSnap.id, ...campSnap.data() };
+          try {
+            const campSnap = await getDoc(doc(db, 'campanhas', String(window.campanhaAtualId)));
+            if (campSnap.exists()) {
+              campanhaDoAgente = { id: campSnap.id, ...campSnap.data() };
+              mestreConfirmado =
+                String(campanhaDoAgente.mestreUid || '') === String(window.usuarioId || '') ||
+                String(campanhaDoAgente.mestreId || '') === String(window.usuarioId || '');
+            }
+          } catch (e) {
+            // Se a campanha já foi aberta pelo Mestre, mantemos o estado validado
+            // pelo painel em vez de bloquear a abertura por uma segunda leitura.
+            console.warn('Não foi possível renovar a leitura da campanha:', e);
+          }
         }
 
-        if (!campanhaDoAgente && ag.campanhaCodigo) {
-          const qCamp = query(collection(db, 'campanhas'), where('codigo', '==', String(ag.campanhaCodigo).toUpperCase()));
-          const campsSnap = await getDocs(qCamp);
-          if (!campsSnap.empty) {
-            const first = campsSnap.docs[0];
-            campanhaDoAgente = { id: first.id, ...first.data() };
-          }
+        // Caso a ficha tenha vindo de outra origem, tentamos localizar sua campanha.
+        if (!campanhaDoAgente && ag.campanhaId) {
+          try {
+            const campSnap = await getDoc(doc(db, 'campanhas', String(ag.campanhaId)));
+            if (campSnap.exists()) {
+              campanhaDoAgente = { id: campSnap.id, ...campSnap.data() };
+              mestreConfirmado =
+                String(campanhaDoAgente.mestreUid || '') === String(window.usuarioId || '') ||
+                String(campanhaDoAgente.mestreId || '') === String(window.usuarioId || '');
+            }
+          } catch (_) {}
         }
 
         if (campanhaDoAgente) {
           window.campanhaAtualId = String(campanhaDoAgente.id);
-          mestreConfirmado =
-            String(campanhaDoAgente.mestreUid || '') === String(window.usuarioId || '') ||
-            String(campanhaDoAgente.mestreId || '') === String(window.usuarioId || '');
         }
 
         window.eMestreDaMesaAtual = mestreConfirmado;
@@ -6016,7 +6045,7 @@ body > #historico-rolagens.dice-history{
         console.error('Erro ao abrir ficha de jogador:', erro);
         const code = String(erro?.code || '');
         if (code.includes('permission-denied')) {
-          window.sitePopup('O Firebase bloqueou a leitura desta ficha. O Mestre precisa ter permissão de leitura na coleção "agentes" pelas Firestore Rules.', {title:'ACESSO À FICHA'});
+          window.sitePopup('O Firebase bloqueou a leitura desta ficha. Publique as Firestore Rules da versão final para permitir o acesso do Mestre.', {title:'ACESSO À FICHA'});
         } else {
           window.sitePopup('Não foi possível abrir a ficha deste jogador.');
         }
@@ -6142,6 +6171,7 @@ body > #historico-rolagens.dice-history{
       if (historicoLista) historicoLista.innerHTML = '';
       window.agenteAtualId = null;
       window.agenteAtualDonoId = null;
+      window.fichasCampanhaCache = window.fichasCampanhaCache || {};
       window.fichaCampanhaId = '';
       window.fichaMestreUid = '';
       window.podeEditarFichaAtual = true;
@@ -7975,5 +8005,131 @@ body > #historico-rolagens.dice-history .dice-toast{
 })();
 </script>
 
+
+<style id="catalise-theme-cleanup-final">
+/* =========================================================
+   CATÁLISE — LIMPEZA FINAL DE TEMA
+   Um único sistema visual: tudo que é interface herda o tema ativo.
+   Não altera conteúdo/funcionalidade; apenas remove cores fixas da UI.
+   ========================================================= */
+:root{
+  --cat-contrast:#f3fbf8;
+  --cat-shadow:rgba(0,0,0,.48);
+  --cat-danger-soft:color-mix(in srgb,var(--cat-danger) 16%,var(--cat-surface2));
+  --cat-accent-soft:color-mix(in srgb,var(--cat-accent) 10%,transparent);
+  --cat-accent-mid:color-mix(in srgb,var(--cat-accent) 24%,transparent);
+  --cat-accent-strong:color-mix(in srgb,var(--cat-accent2) 70%,transparent);
+}
+body{
+  color:var(--cat-text)!important;
+  background:radial-gradient(circle at 15% 0%,color-mix(in srgb,var(--cat-accent) 8%,transparent),transparent 28%),linear-gradient(180deg,var(--cat-bg),color-mix(in srgb,var(--cat-bg) 76%,#000) 80%)!important;
+}
+/* Cabeçalho / navegação */
+header,.site-header,.main-nav,.header-user-button,.nav-link{
+  color:var(--cat-text)!important;
+  border-color:var(--cat-line)!important;
+}
+.brand-copy strong,.logo,.nav-link.active,.nav-link:hover,.main-nav .nav-link i,.status-dot{color:var(--cat-accent2)!important}
+.nav-link{color:var(--cat-muted)!important;background:transparent!important}
+.nav-link:hover,.nav-link.active{background:color-mix(in srgb,var(--cat-accent) 16%,transparent)!important;color:var(--cat-accent2)!important}
+.header-status,.profile-handle,.profile-help,.profile-bio,.card-subtitle{color:var(--cat-muted)!important}
+.status-dot{background:var(--cat-accent)!important;box-shadow:0 0 12px color-mix(in srgb,var(--cat-accent) 72%,transparent)!important}
+/* Containers gerais */
+.card-ficha,.card-item,.login-box,.modal-content,.modal-content-sm,.support-hero,.tier-card,.premium-profile-panel,.support-link-card,.admin-tier-panel,.vt-sidebar,.vt-toolbar,.vt-layout,.vt-map-shell,.profile-card{
+  color:var(--cat-text)!important;
+  background:linear-gradient(145deg,color-mix(in srgb,var(--cat-surface) 96%,black),color-mix(in srgb,var(--cat-surface2) 96%,black))!important;
+  border-color:color-mix(in srgb,var(--cat-line) 84%,transparent)!important;
+}
+.card-item:hover{border-color:color-mix(in srgb,var(--cat-accent) 58%,transparent)!important;box-shadow:0 18px 40px color-mix(in srgb,var(--cat-accent) 8%,transparent)!important}
+.card-title,h1,h2,h3,h4,.card-ficha h3,.profile-name{color:var(--cat-accent2)!important}
+/* Inputs, selects, botões */
+input,textarea,select{
+  background:color-mix(in srgb,var(--cat-bg) 90%,black)!important;
+  color:var(--cat-text)!important;
+  border-color:color-mix(in srgb,var(--cat-line) 88%,transparent)!important;
+}
+input::placeholder,textarea::placeholder{color:color-mix(in srgb,var(--cat-muted) 82%,transparent)!important}
+input:focus,textarea:focus,select:focus{border-color:var(--cat-accent)!important;box-shadow:0 0 0 3px color-mix(in srgb,var(--cat-accent) 12%,transparent)!important}
+button{color:var(--cat-text)}
+.btn-main{
+  background:linear-gradient(135deg,color-mix(in srgb,var(--cat-accent) 43%,var(--cat-surface3)),color-mix(in srgb,var(--cat-accent) 22%,var(--cat-surface2)))!important;
+  border-color:color-mix(in srgb,var(--cat-accent2) 38%,transparent)!important;
+  color:var(--cat-contrast)!important;
+}
+.btn-main:hover{background:linear-gradient(135deg,color-mix(in srgb,var(--cat-accent) 56%,var(--cat-surface3)),color-mix(in srgb,var(--cat-accent) 30%,var(--cat-surface2)))!important}
+.btn-danger{background:linear-gradient(135deg,color-mix(in srgb,var(--cat-danger) 35%,var(--cat-surface2)),color-mix(in srgb,var(--cat-danger) 20%,var(--cat-surface3)))!important;border-color:color-mix(in srgb,var(--cat-danger) 48%,transparent)!important;color:var(--cat-text)!important}
+/* Remove overrides inline antigos de botões específicos */
+button.btn-main[style*="background:#"],button.btn-main[style*="background: #"],button.btn-main[style*="background:rgb"],button.btn-main[style*="background: #1a4d58"],button.btn-main[style*="background:#12363d"],button.btn-main[style*="background:#0e2a30"],button.btn-main[style*="background:#1d5c31"],button.btn-main[style*="background:#1d3d5c"]{background:linear-gradient(135deg,color-mix(in srgb,var(--cat-accent) 43%,var(--cat-surface3)),color-mix(in srgb,var(--cat-accent) 22%,var(--cat-surface2)))!important}
+/* Campanha */
+.campanha-tabs{border-bottom-color:color-mix(in srgb,var(--cat-accent) 25%,transparent)!important}
+.campanha-tab-btn{
+  background:color-mix(in srgb,var(--cat-surface2) 92%,black)!important;
+  color:var(--cat-muted)!important;
+  border-color:color-mix(in srgb,var(--cat-line) 75%,transparent)!important;
+}
+.campanha-tab-btn:hover{color:var(--cat-accent2)!important;border-color:color-mix(in srgb,var(--cat-accent) 34%,transparent)!important;background:color-mix(in srgb,var(--cat-accent) 8%,var(--cat-surface2))!important}
+.campanha-tab-btn.active{color:var(--cat-accent2)!important;background:color-mix(in srgb,var(--cat-accent) 17%,var(--cat-surface2))!important;border-color:color-mix(in srgb,var(--cat-accent) 48%,transparent)!important}
+#modal-mestre.cat-dedicated-screen .campanha-tabs{background:color-mix(in srgb,var(--cat-bg) 94%,transparent)!important;border-color:color-mix(in srgb,var(--cat-accent) 22%,transparent)!important}
+#modal-mestre .vt-layout,#modal-mestre .vt-sidebar,#modal-mestre .vt-toolbar,#modal-mestre .vt-map-shell{background-color:var(--cat-surface2)!important;color:var(--cat-text)!important;border-color:color-mix(in srgb,var(--cat-accent) 22%,transparent)!important}
+#modal-mestre .vt-toolbar *,#modal-mestre .vt-sidebar *{border-color:color-mix(in srgb,var(--cat-line) 72%,transparent)}
+#modal-mestre .vt-mini-btn{background:color-mix(in srgb,var(--cat-accent) 7%,var(--cat-surface2))!important;color:var(--cat-accent2)!important;border-color:color-mix(in srgb,var(--cat-accent) 28%,transparent)!important}
+/* Tabelas, avisos e etiquetas */
+table,th,td{border-color:color-mix(in srgb,var(--cat-line) 70%,transparent)!important;color:var(--cat-text)!important}
+th{background:color-mix(in srgb,var(--cat-surface3) 90%,black)!important;color:var(--cat-accent2)!important}
+.aviso-permissao{background:color-mix(in srgb,var(--cat-accent) 12%,var(--cat-surface2))!important;border-color:color-mix(in srgb,var(--cat-accent) 45%,transparent)!important;color:var(--cat-text)!important}
+.tag-cat,.tag-arma,.tag-protecao,.tag-util,.tag-cura,.tag-dogma{
+  background:color-mix(in srgb,var(--cat-accent) 11%,var(--cat-surface2))!important;
+  border-color:color-mix(in srgb,var(--cat-accent) 30%,transparent)!important;
+  color:var(--cat-accent2)!important;
+}
+/* Ficha / origem */
+.origem-panel{background:linear-gradient(135deg,color-mix(in srgb,var(--cat-surface) 96%,black),color-mix(in srgb,var(--cat-surface2) 94%,black))!important;border-color:color-mix(in srgb,var(--cat-accent) 28%,transparent)!important}
+.origem-panel-title,.origem-panel .tag-cat{color:var(--cat-accent2)!important}
+/* Histórico: só dentro da ficha e totalmente temático */
+#modal-ficha #historico-rolagens.dice-history{background:color-mix(in srgb,var(--cat-surface) 96%,black)!important;border-color:color-mix(in srgb,var(--cat-accent) 30%,transparent)!important;box-shadow:0 14px 35px var(--cat-shadow)!important}
+#modal-ficha #historico-rolagens .dice-history-head{background:color-mix(in srgb,var(--cat-surface2) 96%,black)!important;color:var(--cat-text)!important;border-color:color-mix(in srgb,var(--cat-accent) 22%,transparent)!important}
+#modal-ficha #historico-rolagens .dice-history-head span,#modal-ficha #historico-rolagens .dice-history-head i,#modal-ficha #historico-rolagens .roll-kind{color:var(--cat-accent2)!important}
+#modal-ficha #historico-rolagens .dice-history-head button{color:var(--cat-muted)!important}
+#modal-ficha #historico-rolagens .dice-history-toggle{background:color-mix(in srgb,var(--cat-accent) 9%,var(--cat-surface2))!important;color:var(--cat-accent2)!important;border-color:color-mix(in srgb,var(--cat-accent) 38%,transparent)!important}
+#modal-ficha #historico-rolagens .dice-toast{background:linear-gradient(90deg,color-mix(in srgb,var(--cat-surface) 97%,black),color-mix(in srgb,var(--cat-surface2) 94%,black))!important;border-color:color-mix(in srgb,var(--cat-accent) 24%,transparent)!important;color:var(--cat-text)!important}
+#modal-ficha #historico-rolagens .die-face{background:color-mix(in srgb,var(--cat-surface3) 92%,black)!important;border-color:color-mix(in srgb,var(--cat-accent) 42%,transparent)!important;color:var(--cat-accent2)!important}
+#modal-ficha #historico-rolagens .roll-label,#modal-ficha #historico-rolagens .roll-copy,#modal-ficha #historico-rolagens .roll-total small{color:var(--cat-muted)!important}
+#modal-ficha #historico-rolagens .roll-total{color:var(--cat-text)!important}
+#modal-ficha #historico-rolagens .roll-result{background:color-mix(in srgb,var(--cat-accent) 8%,var(--cat-surface3))!important;border-color:color-mix(in srgb,var(--cat-accent) 24%,transparent)!important;color:var(--cat-accent2)!important}
+#modal-ficha #historico-rolagens .dice-history-list::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--cat-accent) 38%,transparent)!important}
+/* Mensagens / autenticação */
+.auth-link-btn{color:var(--cat-accent2)!important}.auth-link-btn:hover{color:var(--cat-text)!important}
+.auth-message{background:color-mix(in srgb,var(--cat-surface2) 88%,transparent)!important;border-color:color-mix(in srgb,var(--cat-accent) 18%,transparent)!important;color:var(--cat-muted)!important}
+.auth-message.ok{color:var(--cat-accent2)!important;border-color:color-mix(in srgb,var(--cat-accent) 28%,transparent)!important;background:color-mix(in srgb,var(--cat-accent) 10%,var(--cat-surface2))!important}
+.auth-message.error{color:var(--cat-danger)!important;border-color:color-mix(in srgb,var(--cat-danger) 28%,transparent)!important;background:color-mix(in srgb,var(--cat-danger) 10%,var(--cat-surface2))!important}
+/* Logs e resultados */
+#log-rolagem{background:color-mix(in srgb,var(--cat-surface2) 94%,black)!important;border-color:var(--cat-line)!important;color:var(--cat-text)!important}
+.sobrecarregado{color:var(--cat-danger)!important}
+/* Cores de moldura deixam de ser uma paleta fixa e acompanham o tema */
+.profile-card[class*="frame-"],.public-profile-card[class*="frame-"]{border-color:color-mix(in srgb,var(--cat-accent) 58%,transparent)!important;box-shadow:0 0 0 1px color-mix(in srgb,var(--cat-accent) 16%,transparent),0 25px 80px rgba(0,0,0,.5),0 0 48px color-mix(in srgb,var(--cat-accent) 12%,transparent)!important}
+.profile-card[class*="frame-"] .profile-main:before,.public-profile-card[class*="frame-"] .public-profile-body:before{color:var(--cat-accent2)!important}
+.profile-avatar-shell,.public-avatar-shell{--art:var(--cat-accent)!important;--art-hi:var(--cat-accent2)!important;--art-deep:var(--cat-bg)!important}
+.frame-sanctum .profile-avatar-shell,.frame-sanctum .public-avatar-shell,.frame-thorn .profile-avatar-shell,.frame-thorn .public-avatar-shell,.frame-reliquary .profile-avatar-shell,.frame-reliquary .public-avatar-shell,.frame-obsidian .profile-avatar-shell,.frame-obsidian .public-avatar-shell,.frame-fracture .profile-avatar-shell,.frame-fracture .public-avatar-shell,.frame-seraphim .profile-avatar-shell,.frame-seraphim .public-avatar-shell{filter:hue-rotate(0deg) saturate(.92) brightness(.94)!important}
+/* Componentes que ainda recebiam a paleta antiga */
+#modal-ficha .card-ficha *,#modal-mestre .card-ficha *,#modal-mestre .card-item *{scrollbar-color:color-mix(in srgb,var(--cat-accent) 45%,transparent) color-mix(in srgb,var(--cat-bg) 85%,black)}
+html,body,*{scrollbar-color:color-mix(in srgb,var(--cat-accent) 48%,transparent) color-mix(in srgb,var(--cat-bg) 82%,black)}
+*::-webkit-scrollbar-thumb{background:color-mix(in srgb,var(--cat-accent) 48%,transparent)!important}
+*::-webkit-scrollbar-track{background:color-mix(in srgb,var(--cat-bg) 82%,black)!important}
+/* Textos inline que pertenciam à paleta antiga */
+#modal-mestre [style*="color:#cbe3db"],#modal-mestre [style*="color:#fff"],#modal-mestre [style*="color: #fff"],#modal-mestre [style*="color:#eafff9"]{color:var(--cat-text)!important}
+/* Elementos vazios/estados */
+.card-empty,.empty-state{color:var(--cat-muted)!important}
+/* Transição global ao trocar tema */
+body,body *{transition-property:background-color,border-color,color,box-shadow,fill,stroke!important;transition-duration:.22s}
+</style>
+
+
+<style id="catalise-theme-cleanup-inline-final">
+/* Qualquer cor escrita diretamente em HTML também herda o tema. */
+body [style*="color:#"],body [style*="color: #"]{color:var(--cat-text)!important}
+body [style*="background:#"],body [style*="background: #"]{background-color:var(--cat-surface2)!important}
+body [style*="border-color:#"],body [style*="border-color: #"]{border-color:var(--cat-line)!important}
+.btn-danger[style*="background"],.auth-message.error[style*="background"]{background:linear-gradient(135deg,color-mix(in srgb,var(--cat-danger) 35%,var(--cat-surface2)),color-mix(in srgb,var(--cat-danger) 20%,var(--cat-surface3)))!important}
+</style>
 </body>
 </html>
