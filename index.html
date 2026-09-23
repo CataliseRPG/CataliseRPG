@@ -2490,7 +2490,7 @@ body.cat-dedicated-open{overflow:hidden!important}
   min-height:calc(100vh - 142px);
 }
 
-/* Histórico: SEMPRE no canto superior direito da viewport. */
+/* Histórico: pertence exclusivamente à ficha do personagem. */
 #historico-rolagens.dice-history{
   position:fixed!important;
   top:78px!important;
@@ -2887,6 +2887,183 @@ body > #historico-rolagens.dice-history{
 }
 </style>
 
+<style>
+    /* === CATÁLISE // ORIGEM AUTOMATIZADA === */
+    .origem-panel{
+      width:min(980px,100%);
+      box-sizing:border-box;
+      margin:0 auto 18px;
+      padding:14px 16px;
+      border:1px solid color-mix(in srgb,var(--cat-accent) 28%,transparent);
+      border-left:3px solid color-mix(in srgb,var(--cat-accent2) 68%,transparent);
+      border-radius:2px;
+      background:linear-gradient(135deg,color-mix(in srgb,var(--cat-surface) 96%,black),color-mix(in srgb,var(--cat-surface2) 94%,black));
+      box-shadow:0 10px 28px color-mix(in srgb,var(--cat-accent) 5%,transparent);
+    }
+    .origem-panel-kicker{color:var(--cat-muted);font:600 8px 'DM Mono';letter-spacing:.13em;text-transform:uppercase}
+    .origem-panel-title{margin:5px 0 0;color:var(--cat-accent2);font:700 17px 'Manrope';line-height:1.25}
+    .origem-panel-desc{margin:9px 0 0;color:var(--cat-muted);font-size:10.5px;line-height:1.55;max-width:92ch}
+    .origem-pericias{display:flex;flex-wrap:wrap;gap:5px;margin-top:9px}
+    .origem-pericias-label{margin-top:10px;color:var(--cat-muted);font:600 8px 'DM Mono';letter-spacing:.1em;text-transform:uppercase}
+    .origem-panel .tag-cat{
+      border:1px solid color-mix(in srgb,var(--cat-accent) 38%,transparent)!important;
+      background:color-mix(in srgb,var(--cat-accent) 10%,var(--cat-surface2))!important;
+      color:var(--cat-accent2)!important;
+      font-size:8px!important;
+      padding:4px 7px!important;
+    }
+  </style>
+
+<style id="catalise-ficha-history-final-v2">
+/* =========================================================
+   HISTÓRICO DE DADOS — EXCLUSIVO DA FICHA
+   ========================================================= */
+#modal-ficha .ficha-historico-wrap{
+  width:100%; margin:0 0 24px; padding:0; position:relative; z-index:4;
+}
+#modal-ficha #historico-rolagens.dice-history{
+  position:relative!important; inset:auto!important; width:100%!important;
+  max-width:none!important; margin:0!important; z-index:auto!important;
+  pointer-events:auto!important;
+  border:1px solid color-mix(in srgb,var(--cat-accent) 22%,transparent)!important;
+  border-left:2px solid color-mix(in srgb,var(--cat-accent2) 72%,transparent)!important;
+  background:color-mix(in srgb,var(--cat-surface,#07171b) 94%,transparent)!important;
+  box-shadow:0 12px 28px rgba(0,0,0,.24)!important;
+}
+#modal-ficha #historico-rolagens.dice-history .dice-history-head{
+  width:100%!important; pointer-events:auto!important; border:0!important;
+  border-bottom:1px solid color-mix(in srgb,var(--cat-accent) 16%,transparent)!important;
+  background:color-mix(in srgb,var(--cat-surface2,var(--cat-surface,#07171b)) 96%,transparent)!important;
+  color:var(--cat-text)!important;
+}
+#modal-ficha #historico-rolagens.dice-history .dice-history-head span{color:var(--cat-accent2)!important}
+#modal-ficha #historico-rolagens.dice-history .dice-history-head button{color:var(--cat-muted)!important}
+#modal-ficha #historico-rolagens.dice-history .dice-history-head button:hover{color:var(--cat-accent2)!important}
+#modal-ficha #historico-rolagens.dice-history .dice-history-toggle{
+  border-color:color-mix(in srgb,var(--cat-accent) 38%,transparent)!important;
+  background:color-mix(in srgb,var(--cat-surface3,var(--cat-surface,#07171b)) 88%,transparent)!important;
+  color:var(--cat-accent2)!important;
+}
+#modal-ficha #historico-rolagens.dice-history .dice-history-list{
+  max-height:420px!important; overflow:auto!important; padding:10px!important;
+}
+#modal-ficha #historico-rolagens.dice-history .dice-history-list::-webkit-scrollbar-thumb{
+  background:color-mix(in srgb,var(--cat-accent) 30%,transparent)!important;
+}
+#modal-ficha #historico-rolagens.dice-history .dice-toast{
+  border-color:color-mix(in srgb,var(--cat-accent) 22%,transparent)!important;
+  border-right-color:color-mix(in srgb,var(--cat-accent2) 18%,transparent)!important;
+  background:linear-gradient(
+    90deg,
+    color-mix(in srgb,var(--cat-surface,#07171b) 96%,black),
+    color-mix(in srgb,var(--cat-surface2,#0a2024) 92%,black)
+  )!important;
+}
+#modal-ficha #historico-rolagens.dice-history .die-face{
+  border-color:color-mix(in srgb,var(--cat-accent) 28%,transparent)!important;
+  background:color-mix(in srgb,var(--cat-surface3,var(--cat-surface,#07171b)) 92%,transparent)!important;
+  color:var(--cat-accent2)!important;
+}
+#modal-ficha #historico-rolagens.dice-history .roll-kind{color:var(--cat-accent2)!important}
+#modal-ficha #historico-rolagens.dice-history .roll-label,
+#modal-ficha #historico-rolagens.dice-history .roll-copy,
+#modal-ficha #historico-rolagens.dice-history .roll-total small{color:var(--cat-muted)!important}
+#modal-ficha #historico-rolagens.dice-history .roll-total{color:var(--cat-text)!important}
+#modal-ficha #historico-rolagens.dice-history .roll-result{
+  border-color:color-mix(in srgb,var(--cat-accent) 18%,transparent)!important;
+  background:color-mix(in srgb,var(--cat-surface3,var(--cat-surface,#07171b)) 82%,transparent)!important;
+  color:var(--cat-text)!important;
+}
+#modal-ficha #historico-rolagens.dice-history.is-collapsed{
+  width:100%!important; max-width:none!important; background:transparent!important;
+  border:0!important; box-shadow:none!important;
+}
+#modal-ficha #historico-rolagens.dice-history.is-collapsed .dice-history-head{
+  width:100%!important; margin:0!important; padding:0!important;
+  border:0!important; background:transparent!important;
+}
+#modal-ficha #historico-rolagens.dice-history.is-collapsed .dice-history-toggle{
+  pointer-events:auto!important; height:32px!important; padding:0 12px!important;
+}
+#modal-ficha #historico-rolagens.dice-history.is-collapsed .dice-history-head span,
+#modal-ficha #historico-rolagens.dice-history.is-collapsed .dice-history-head button:first-child{
+  display:none!important;
+}
+</style>
+
+
+<style id="catalise-history-ficha-fixed-final">
+/* =========================================================
+   HISTÓRICO DE DADOS — PRESO NO CANTO SUPERIOR ESQUERDO DA FICHA
+   O elemento continua DENTRO do #modal-ficha no HTML.
+   ========================================================= */
+#modal-ficha #historico-rolagens.dice-history{
+  position:fixed!important;
+  top:78px!important;
+  left:20px!important;
+  right:auto!important;
+  bottom:auto!important;
+  width:min(370px,calc(100vw - 40px))!important;
+  max-width:370px!important;
+  margin:0!important;
+  z-index:99990!important;
+  pointer-events:auto!important;
+}
+
+#modal-ficha .ficha-historico-wrap{
+  position:static!important;
+  width:0!important;
+  height:0!important;
+  margin:0!important;
+  padding:0!important;
+  overflow:visible!important;
+}
+
+#modal-ficha #historico-rolagens.dice-history.is-collapsed{
+  width:auto!important;
+  max-width:none!important;
+  background:transparent!important;
+  border:0!important;
+  box-shadow:none!important;
+}
+
+#modal-ficha #historico-rolagens.dice-history.is-collapsed .dice-history-head{
+  width:max-content!important;
+  margin:0!important;
+  padding:0!important;
+  border:0!important;
+  background:transparent!important;
+}
+
+#modal-ficha #historico-rolagens.dice-history.is-collapsed .dice-history-toggle{
+  display:inline-flex!important;
+  pointer-events:auto!important;
+  height:32px!important;
+  min-width:0!important;
+  padding:0 12px!important;
+}
+
+@media(max-width:900px){
+  #modal-ficha #historico-rolagens.dice-history{
+    top:72px!important;
+    left:12px!important;
+    right:auto!important;
+    width:calc(100vw - 24px)!important;
+    max-width:390px!important;
+  }
+}
+
+@media(max-width:650px){
+  #modal-ficha #historico-rolagens.dice-history{
+    top:66px!important;
+    left:8px!important;
+    right:auto!important;
+    width:calc(100vw - 16px)!important;
+    max-width:390px!important;
+  }
+}
+</style>
+
 </head>
 <body>
 <div class="catalise-page-effects" aria-hidden="true"></div>
@@ -3038,7 +3215,7 @@ body > #historico-rolagens.dice-history{
 
     <div id="aba-agentes" class="tab-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h2 style="color: #45b69c; border: none; margin: 0;">SEUS AGENTES CADASTRADOS</h2>
+        <h2 style="color: var(--cat-accent); border: none; margin: 0;">SEUS AGENTES CADASTRADOS</h2>
         <button class="btn-main" onclick="abrirPopNovoAgente()">+ Criar Novo Agente</button>
       </div>
 
@@ -3047,7 +3224,7 @@ body > #historico-rolagens.dice-history{
 
     <div id="aba-campanhas" class="tab-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 10px;">
-        <h2 style="color: #45b69c; border: none; margin: 0;">CAMPANHAS QUE VOCÊ MESTRA</h2>
+        <h2 style="color: var(--cat-accent); border: none; margin: 0;">CAMPANHAS QUE VOCÊ MESTRA</h2>
         <div style="display:flex;gap:8px;flex-wrap:wrap;justify-content:flex-end;">
           <button class="btn-main" onclick="abrirPopEntrarCampanha()" style="background:#12363d;">↗ Entrar em Campanha</button>
           <button class="btn-main" onclick="abrirPopNovaCampanha()">+ Criar Nova Campanha</button>
@@ -3055,7 +3232,7 @@ body > #historico-rolagens.dice-history{
       </div>
       <div class="grid-cards" id="container-campanhas"></div>
 
-      <h2 style="color: #45b69c; border: none; margin-top: 40px;">CAMPANHAS QUE VOCÊ PARTICIPA</h2>
+      <h2 style="color: var(--cat-accent); border: none; margin-top: 40px;">CAMPANHAS QUE VOCÊ PARTICIPA</h2>
       <div class="grid-cards" id="container-campanhas-participando"></div>
     </div>
 
@@ -3394,13 +3571,13 @@ body > #historico-rolagens.dice-history{
   <div id="modal-novo-agente" class="modal modal-dialog">
     <div class="modal-content-sm">
       <h3 style="margin-top:0;">Novo Agente</h3>
-      <p style="font-size:0.85em; color:#8bb3a8; margin-bottom:15px;">Informe o codinome ou nome completo do seu personagem.</p>
+      <p style="font-size:0.85em; color:var(--cat-muted); margin-bottom:15px;">Informe o codinome ou nome completo do seu personagem.</p>
       
       <label>Nome do Agente</label>
       <input type="text" id="pop-input-agente-nome" placeholder="Ex: Agente Carlos" style="margin-bottom:20px;" data-enter-ready>
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn-main" style="background:#22383d;" onclick="fecharPop('modal-novo-agente')">Cancelar</button>
+        <button class="btn-main" style="background:var(--cat-surface3);" onclick="fecharPop('modal-novo-agente')">Cancelar</button>
         <button class="btn-main" onclick="confirmarCriarAgente()">Criar Agente</button>
       </div>
     </div>
@@ -3409,13 +3586,13 @@ body > #historico-rolagens.dice-history{
   <div id="modal-nova-campanha" class="modal modal-dialog">
     <div class="modal-content-sm">
       <h3 style="margin-top:0;">Nova Campanha</h3>
-      <p style="font-size:0.85em; color:#8bb3a8; margin-bottom:15px;">Defina o título da nova mesa de investigação.</p>
+      <p style="font-size:0.85em; color:var(--cat-muted); margin-bottom:15px;">Defina o título da nova mesa de investigação.</p>
 
       <label>Nome da Campanha</label>
       <input type="text" id="pop-input-campanha-nome" placeholder="Ex: O Culto de Cinzas" style="margin-bottom:20px;" data-enter-ready>
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn-main" style="background:#22383d;" onclick="fecharPop('modal-nova-campanha')">Cancelar</button>
+        <button class="btn-main" style="background:var(--cat-surface3);" onclick="fecharPop('modal-nova-campanha')">Cancelar</button>
         <button class="btn-main" onclick="confirmarCriarCampanha()">Criar Campanha</button>
       </div>
     </div>
@@ -3424,11 +3601,11 @@ body > #historico-rolagens.dice-history{
   <div id="modal-entrar-campanha" class="modal modal-dialog">
     <div class="modal-content-sm">
       <h3 style="margin-top:0;">Entrar em uma Campanha</h3>
-      <p style="font-size:0.85em; color:#8bb3a8; margin-bottom:15px;">Digite o código fornecido pelo Mestre. Seu acesso fica vinculado à sua conta autenticada.</p>
+      <p style="font-size:0.85em; color:var(--cat-muted); margin-bottom:15px;">Digite o código fornecido pelo Mestre. Seu acesso fica vinculado à sua conta autenticada.</p>
       <label for="pop-input-entrar-campanha">CÓDIGO DA CAMPANHA</label>
       <input type="text" id="pop-input-entrar-campanha" placeholder="Ex.: CAMP-482" style="margin-bottom:20px;text-transform:uppercase;" data-enter-ready>
       <div style="display:flex;justify-content:flex-end;gap:10px;">
-        <button class="btn-main" style="background:#22383d;" onclick="fecharPop('modal-entrar-campanha')">Cancelar</button>
+        <button class="btn-main" style="background:var(--cat-surface3);" onclick="fecharPop('modal-entrar-campanha')">Cancelar</button>
         <button class="btn-main" onclick="entrarEmCampanha()">ENTRAR NA MESA</button>
       </div>
     </div>
@@ -3437,13 +3614,13 @@ body > #historico-rolagens.dice-history{
   <div id="modal-editar-campanha" class="modal modal-dialog">
     <div class="modal-content-sm">
       <h3 style="margin-top:0;">Editar Campanha</h3>
-      <p style="font-size:0.85em; color:#8bb3a8; margin-bottom:15px;">Altere o nome da sua campanha.</p>
+      <p style="font-size:0.85em; color:var(--cat-muted); margin-bottom:15px;">Altere o nome da sua campanha.</p>
 
       <label>Novo Nome</label>
       <input type="text" id="pop-input-editar-campanha-nome" placeholder="Ex: A Segunda Liturgia" style="margin-bottom:20px;" data-enter-ready>
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn-main" style="background:#22383d;" onclick="fecharPop('modal-editar-campanha')">Cancelar</button>
+        <button class="btn-main" style="background:var(--cat-surface3);" onclick="fecharPop('modal-editar-campanha')">Cancelar</button>
         <button class="btn-main" onclick="confirmarEditarCampanha()">Salvar Alterações</button>
       </div>
     </div>
@@ -3451,35 +3628,26 @@ body > #historico-rolagens.dice-history{
 
   <div id="modal-excluir-campanha" class="modal modal-dialog">
     <div class="modal-content-sm">
-      <h3 style="margin-top:0; color:#ff6b6b;">Excluir Campanha</h3>
+      <h3 style="margin-top:0; color:var(--cat-danger);">Excluir Campanha</h3>
       <p style="font-size:0.9em; color:#cbe3db; margin-bottom:15px;">
-        Tem certeza que deseja apagar a campanha <b id="pop-texto-excluir-campanha" style="color:#45b69c;"></b>?
+        Tem certeza que deseja apagar a campanha <b id="pop-texto-excluir-campanha" style="color:var(--cat-accent);"></b>?
       </p>
 
       <div style="display:flex; justify-content:flex-end; gap:10px;">
-        <button class="btn-main" style="background:#22383d;" onclick="fecharPop('modal-excluir-campanha')">Cancelar</button>
+        <button class="btn-main" style="background:var(--cat-surface3);" onclick="fecharPop('modal-excluir-campanha')">Cancelar</button>
         <button class="btn-main btn-danger" onclick="confirmarExcluirCampanha()">Sim, Excluir</button>
       </div>
     </div>
   </div>
 
-    <!-- Histórico permanece exclusivo da ficha, mas fica fixo na viewport para acompanhar o scroll. -->
-    <aside id="historico-rolagens" class="dice-history" aria-live="polite" aria-label="Histórico de rolagens">
-      <div class="dice-history-head">
-        <span><i>✠</i> REGISTRO DE DADOS</span>
-        <div class="dice-history-actions">
-          <button type="button" onclick="limparHistoricoRolagens()" title="Limpar histórico">LIMPAR</button>
-          <button type="button" class="dice-history-toggle" onclick="alternarHistoricoRolagens()" aria-expanded="true" title="Minimizar histórico">FECHAR</button>
-        </div>
-      </div>
-      <div id="dice-history-list" class="dice-history-list"></div>
-    </aside>
+    <!-- Histórico permanece exclusivo da ficha do personagem. -->
+
 
   <div id="modal-ficha" class="modal">
     <div class="modal-content">
       <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 15px;">
-        <h2 style="color: #45b69c; border: none; margin: 0;" id="ficha-agente-nome">FICHA DE PERSONAGEM</h2>
-        <button class="btn-main" style="background: #22383d;" onclick="fecharFicha()">✖ Fechar / Sair</button>
+        <h2 style="color: var(--cat-accent); border: none; margin: 0;" id="ficha-agente-nome">FICHA DE PERSONAGEM</h2>
+        <button class="btn-main" style="background: var(--cat-surface3);" onclick="fecharFicha()">✖ Fechar / Sair</button>
       </div>
 
       <div id="banner-permissao-leitura" class="aviso-permissao" style="display: none;">
@@ -3493,11 +3661,25 @@ body > #historico-rolagens.dice-history{
         </div>
         <div>
           <label>Jogador / Criador</label>
-          <input type="text" id="dono-nome" readonly style="color: #5c7b82; background: #050d0f; cursor: not-allowed;">
+          <input type="text" id="dono-nome" readonly style="color: var(--cat-muted); background: var(--cat-bg); cursor: not-allowed;">
         </div>
         <div>
-          <label>Origem</label>
-          <input type="text" id="origem" class="campo-editavel" placeholder="Ex: Teólogo, Médico..." oninput="salvarAgenteAtual()">
+          <label for="origem">Origem</label>
+          <select id="origem" class="campo-editavel" onchange="aplicarOrigemSelecionada(true)">
+            <option value="">Selecione uma origem...</option>
+            <option value="Acadêmico Ostracizado">Acadêmico Ostracizado</option>
+            <option value="Médico de Combate">Médico de Combate</option>
+            <option value="Clérigo Renegado">Clérigo Renegado</option>
+            <option value="Detetive de Homicídios">Detetive de Homicídios</option>
+            <option value="Cultista Desertor">Cultista Desertor</option>
+            <option value="Arqueólogo de Campo">Arqueólogo de Campo</option>
+            <option value="Veterano das Forças Especiais">Veterano das Forças Especiais</option>
+            <option value="Jornalista Investigativo">Jornalista Investigativo</option>
+            <option value="Perito Legista">Perito Legista</option>
+            <option value="Mecânico de Precisão">Mecânico de Precisão</option>
+            <option value="Vítima de Sobrevivência">Vítima de Sobrevivência</option>
+            <option value="Psiquiatra de Asilo">Psiquiatra de Asilo</option>
+          </select>
         </div>
         <div>
           <label>Classe</label>
@@ -3508,6 +3690,14 @@ body > #historico-rolagens.dice-history{
             <option value="Receptáculo">Receptáculo</option>
           </select>
         </div>
+      </div>
+
+      <div id="origem-habilidade-box" class="origem-panel" style="display:none;">
+        <div class="origem-panel-kicker">Habilidade de Origem</div>
+        <div id="origem-habilidade-nome" class="origem-panel-title">—</div>
+        <div class="origem-pericias-label">Perícias automaticamente treinadas</div>
+        <div id="origem-pericias-lista" class="origem-pericias"></div>
+        <div id="origem-habilidade-descricao" class="origem-panel-desc"></div>
       </div>
 
       <div class="card-ficha grid-2" style="margin-bottom: 20px;">
@@ -3560,21 +3750,21 @@ body > #historico-rolagens.dice-history{
           <div style="display:flex; justify-content:center; align-items:center; gap:8px;">
             <input type="number" id="im-atual" class="campo-editavel" value="15" style="width:70px; text-align:center;" oninput="salvarAgenteAtual()">
             <span>/</span>
-            <span id="im-max" class="status-val" style="color: #45b69c;">15</span>
+            <span id="im-max" class="status-val" style="color: var(--cat-accent);">15</span>
           </div>
         </div>
         <div class="card-ficha">
           <label>Exposição Espiritual (EE)</label>
           <div style="display:flex; justify-content:center; align-items:center; gap:8px;">
             <input type="number" id="ee-atual" class="campo-editavel" value="0" min="0" max="100" style="width:70px; text-align:center;" oninput="salvarAgenteAtual()">
-            <span style="color:#2ec4b6; font-weight:bold;">%</span>
+            <span style="color:var(--cat-accent2); font-weight:bold;">%</span>
           </div>
         </div>
       </div>
 
       <h2>Inventário & Equipamentos</h2>
       <div class="card-ficha" style="margin-bottom: 15px; text-align: center;">
-        Espaços Utilizados: <b id="carga-usada" style="color:#2ec4b6;">0</b> / <b id="carga-max">12</b> slots
+        Espaços Utilizados: <b id="carga-usada" style="color:var(--cat-accent2);">0</b> / <b id="carga-max">12</b> slots
         <span id="alerta-carga" style="margin-left: 10px;"></span>
       </div>
 
@@ -3617,7 +3807,7 @@ body > #historico-rolagens.dice-history{
       </div>
 
       <div class="card-ficha area-edicao-item" style="margin-bottom: 15px;">
-        <label style="color:#2ec4b6; margin-bottom:10px;">Criar Item Personalizado</label>
+        <label style="color:var(--cat-accent2); margin-bottom:10px;">Criar Item Personalizado</label>
         <div class="grid-4" style="margin-bottom: 8px;">
           <div>
             <label>Nome do Item</label>
@@ -3664,8 +3854,8 @@ body > #historico-rolagens.dice-history{
       <h2>Dogmas & Rituais</h2>
 
       <div class="card-ficha area-edicao-item" style="margin-bottom: 15px;">
-        <label style="color:#2ec4b6; margin-bottom:10px;">Rituais Oficiais de Catálise</label>
-        <p style="font-size:0.82em; color:#8bb3a8; margin-bottom:12px;">
+        <label style="color:var(--cat-accent2); margin-bottom:10px;">Rituais Oficiais de Catálise</label>
+        <p style="font-size:0.82em; color:var(--cat-muted); margin-bottom:12px;">
           Escolha um dos rituais do grimório. O Dogma, Círculo, custo, exposição, DT e efeito são preenchidos automaticamente.
         </p>
         <div class="grid-2" style="margin-bottom: 8px;">
@@ -3693,7 +3883,7 @@ body > #historico-rolagens.dice-history{
               </optgroup>
             </select>
           </div>
-          <div id="preview-ritual-oficial" class="card-ficha" style="display:flex; align-items:center; color:#8bb3a8; font-size:0.82em;">
+          <div id="preview-ritual-oficial" class="card-ficha" style="display:flex; align-items:center; color:var(--cat-muted); font-size:0.82em;">
             Selecione um ritual para visualizar seus dados.
           </div>
         </div>
@@ -3701,8 +3891,8 @@ body > #historico-rolagens.dice-history{
       </div>
 
       <div class="card-ficha area-edicao-item" style="margin-bottom: 15px;">
-        <label style="color:#2ec4b6; margin-bottom:10px;">Criar Ritual Personalizado</label>
-        <p style="font-size:0.82em; color:#8bb3a8; margin-bottom:12px;">
+        <label style="color:var(--cat-accent2); margin-bottom:10px;">Criar Ritual Personalizado</label>
+        <p style="font-size:0.82em; color:var(--cat-muted); margin-bottom:12px;">
           Use esta área para criar rituais de sua própria campanha. Os cinco Dogmas oficiais podem ser usados normalmente.
         </p>
         <div class="grid-4" style="margin-bottom: 8px;">
@@ -3778,6 +3968,19 @@ body > #historico-rolagens.dice-history{
         <tbody id="lista-pericias"></tbody>
       </table>
 
+      <section class="ficha-historico-wrap" aria-label="Histórico de rolagens da ficha">
+        <aside id="historico-rolagens" class="dice-history" aria-live="polite" aria-label="Histórico de rolagens">
+      <div class="dice-history-head">
+        <span><i>✠</i> REGISTRO DE DADOS</span>
+        <div class="dice-history-actions">
+          <button type="button" onclick="limparHistoricoRolagens()" title="Limpar histórico">LIMPAR</button>
+          <button type="button" class="dice-history-toggle" onclick="alternarHistoricoRolagens()" aria-expanded="true" title="Minimizar histórico">FECHAR</button>
+        </div>
+      </div>
+      <div id="dice-history-list" class="dice-history-list"></div>
+        </aside>
+      </section>
+
       <h2>Anotações & Histórico</h2>
       <div class="card-ficha">
         <textarea id="anotacoes" class="campo-editavel" rows="5" placeholder="Escreva aqui detalhes e informações importantes..." oninput="salvarAgenteAtual()"></textarea>
@@ -3790,8 +3993,8 @@ body > #historico-rolagens.dice-history{
   <div id="modal-mestre" class="modal">
     <div class="modal-content">
       <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:12px;gap:12px;">
-        <h2 style="color:#45b69c;border:none;margin:0;" id="mestre-campanha-titulo">PAINEL DA CAMPANHA</h2>
-        <button class="btn-main" style="background:#22383d;white-space:nowrap;" onclick="fecharPainelMestre()">✖ Fechar</button>
+        <h2 style="color:var(--cat-accent);border:none;margin:0;" id="mestre-campanha-titulo">PAINEL DA CAMPANHA</h2>
+        <button class="btn-main" style="background:var(--cat-surface3);white-space:nowrap;" onclick="fecharPainelMestre()">✖ Fechar</button>
       </div>
 
       <div class="campanha-tabs">
@@ -3898,7 +4101,7 @@ body > #historico-rolagens.dice-history{
             <input type="text" id="input-banner-url" placeholder="https://..." onchange="salvarBannerCampanha()">
           </div>
           <div style="display:flex;align-items:flex-end;">
-            <p style="font-size:0.85em;color:#8bb3a8;">Código: <b id="mestre-campanha-codigo" style="color:#2ec4b6;"></b></p>
+            <p style="font-size:0.85em;color:var(--cat-muted);">Código: <b id="mestre-campanha-codigo" style="color:var(--cat-accent2);"></b></p>
           </div>
         </div>
 
@@ -3956,6 +4159,8 @@ body > #historico-rolagens.dice-history{
     window.campanhaParaExcluirId = null;
     window.eMestreDaMesaAtual = false;
     window.podeEditarFichaAtual = true;
+    window.fichaCampanhaId = '';
+    window.fichaMestreUid = '';
 
     window.rolarDadoCripto = function(lados) {
       const array = new Uint32Array(1);
@@ -4108,8 +4313,127 @@ body > #historico-rolagens.dice-history{
       { nome: "Diplomacia", attr: "presenca" },
       { nome: "Enganação", attr: "presenca" },
       { nome: "Intimidação", attr: "presenca" },
-      { nome: "Percepção", attr: "presenca" }
+      { nome: "Percepção", attr: "presenca" },
+      /* Adicionadas no fim para preservar os índices das fichas antigas. */
+      { nome: "Resistência", attr: "corpo" },
+      { nome: "História", attr: "mente" },
+      { nome: "Religião", attr: "mente" },
+      { nome: "Lábia", attr: "presenca" }
     ];
+
+    /* === CATÁLISE // ORIGENS OFICIAIS DO LIVRO === */
+    window.origensCatálise = {
+      "Acadêmico Ostracizado": {
+        pericias: ["Investigação", "História", "Religião"],
+        habilidade: "Lógica Fria",
+        descricao: "Pode gastar 2 pontos de Integridade Mental para receber Vantagem em qualquer teste de Mente baseado em análise documental ou tradução de textos."
+      },
+      "Médico de Combate": {
+        pericias: ["Medicina", "Resistência", "Vontade"],
+        habilidade: "Triagem Rápida",
+        descricao: "A ação de Primeiros Socorros para estabilizar um aliado moribundo passa a ser uma Ação Livre, em vez de uma Ação Completa."
+      },
+      "Clérigo Renegado": {
+        pericias: ["Religião", "Intuição", "Ocultismo"],
+        habilidade: "Exegese Dissidente",
+        descricao: "Uma vez por cena, reduz em 3 pontos qualquer perda de Integridade provocada por monstros baseados no Dogma da Coroa ou do Êxtase."
+      },
+      "Detetive de Homicídios": {
+        pericias: ["Investigação", "Percepção", "Intuição"],
+        habilidade: "Faro para Sangue",
+        descricao: "Encontra pistas cruciais em cenas de crime em metade do tempo normal e ignora penalidades de iluminação fraca para achar evidências."
+      },
+      "Cultista Desertor": {
+        pericias: ["Ocultismo", "Furtividade", "Vontade"],
+        habilidade: "Segredos Macabros",
+        descricao: "Começa o jogo com +2 de Exposição Espiritual permanente, mas conhece um ritual de Círculo I de sua escolha."
+      },
+      "Arqueólogo de Campo": {
+        pericias: ["História", "Ocultismo", "Investigação"],
+        habilidade: "Análise de Artefatos",
+        descricao: "Identifica a origem histórica e a utilidade mística de qualquer relíquia do Sanctum com um teste simples de Mente (DT 12)."
+      },
+      "Veterano das Forças Especiais": {
+        pericias: ["Luta", "Pontaria", "Resistência"],
+        habilidade: "Memória Muscular",
+        descricao: "Recebe imunidade à condição de Abalado durante a primeira rodada de qualquer combate físico. Suas armas causam +1 de dano."
+      },
+      "Jornalista Investigativo": {
+        pericias: ["Lábia", "Percepção", "Investigação"],
+        habilidade: "Fontes Anônimas",
+        descricao: "Consegue obter contatos, subornos ou informações confidenciais em qualquer cidade civilizada sem precisar rolar dados sociais."
+      },
+      "Perito Legista": {
+        pericias: ["Medicina", "Investigação", "Ocultismo"],
+        habilidade: "A Voz dos Mortos",
+        descricao: "Ao realizar uma autópsia em um corpo humano, descobre o Dogma exato que causou a morte e o último sentimento da vítima."
+      },
+      "Mecânico de Precisão": {
+        pericias: ["Acrobacia", "Atletismo", "Investigação"],
+        habilidade: "Giar de Engrenagens",
+        descricao: "Pode consertar ou sabotar estruturas mecânicas e armas de fogo na metade do tempo, adicionando +2 em testes de modificação de arsenal."
+      },
+      "Vítima de Sobrevivência": {
+        pericias: ["Furtividade", "Vontade", "Resistência"],
+        habilidade: "Sexto Sentido Teológico",
+        descricao: "O Mestre avisa o jogador se houver uma criatura invisível ou uma Zona Amaldiçoada ativa a até 15 metros do personagem."
+      },
+      "Psiquiatra de Asilo": {
+        pericias: ["Intuição", "Vontade", "Medicina"],
+        habilidade: "Terapia de Choque",
+        descricao: "Pode gastar uma Ação Completa para estabilizar o Surto temporário de um aliado próximo, restaurando 1d6 de Integridade Mental dele."
+      }
+    };
+
+    function renderizarHabilidadeOrigem(origemNome) {
+      const box = document.getElementById('origem-habilidade-box');
+      const nomeEl = document.getElementById('origem-habilidade-nome');
+      const descEl = document.getElementById('origem-habilidade-descricao');
+      const periciasEl = document.getElementById('origem-pericias-lista');
+      if (!box || !nomeEl || !descEl || !periciasEl) return;
+
+      const origem = window.origensCatálise?.[origemNome];
+      if (!origem) {
+        box.style.display = 'none';
+        nomeEl.textContent = '—';
+        descEl.textContent = 'Selecione uma origem para carregar automaticamente suas perícias e habilidade.';
+        periciasEl.innerHTML = '';
+        return;
+      }
+
+      box.style.display = 'block';
+      nomeEl.textContent = origem.habilidade;
+      descEl.textContent = origem.descricao;
+      periciasEl.innerHTML = origem.pericias.map(p => `<span class="tag-cat tag-dogma" style="margin:3px;">${p} +2</span>`).join('');
+    }
+
+    window.aplicarOrigemSelecionada = async function(persistir = true) {
+      const origemNome = document.getElementById('origem')?.value || '';
+      const origem = window.origensCatálise?.[origemNome];
+
+      renderizarHabilidadeOrigem(origemNome);
+
+      if (origem) {
+        origem.pericias.forEach(nomePericia => {
+          const idx = window.pericias.findIndex(p => p.nome === nomePericia);
+          const select = idx >= 0 ? document.getElementById(`p-treino-${idx}`) : null;
+          if (select && Number(select.value || 0) < 2) select.value = "2";
+        });
+      }
+
+      if (persistir) await window.atualizarTudo?.();
+    };
+
+    window.validarTreinoOrigem = function(idx) {
+      const origemNome = document.getElementById('origem')?.value || '';
+      const origem = window.origensCatálise?.[origemNome];
+      const pericia = window.pericias[idx]?.nome;
+      if (!origem || !pericia || !origem.pericias.includes(pericia)) return;
+
+      const select = document.getElementById(`p-treino-${idx}`);
+      if (select && Number(select.value || 0) < 2) select.value = "2";
+    };
+
 
     window.itensOficiais = {
       revolver: { nome: "Revólver Calibre .38", cat: "arma", espaco: 1, dano: "1d8", efeito: "Arma leve de porte fácil." },
@@ -5309,9 +5633,11 @@ body > #historico-rolagens.dice-history{
         nome: nome,
         donoNome: window.usuarioAtual,
         donoId: window.usuarioId,
-        origem: "Investigador",
+        origem: "",
         classe: "Mundano",
         campanhaCodigo: "",
+        campanhaId: "",
+        mestreUid: "",
         fotoUrl: "",
         corpo: 1, reflexo: 1, mente: 1, espirito: 1, presenca: 1,
         pvAtual: 19, imAtual: 15, eeAtual: 0,
@@ -5330,7 +5656,7 @@ body > #historico-rolagens.dice-history{
       container.innerHTML = '';
 
       if (window.agentes.length === 0) {
-        container.innerHTML = `<p style="grid-column: 1/-1; color: #8bb3a8; text-align: center;">Nenhum agente cadastrado no seu codinome. Clique em "+ Criar Novo Agente".</p>`;
+        container.innerHTML = `<p style="grid-column: 1/-1; color: var(--cat-muted); text-align: center;">Nenhum agente cadastrado no seu codinome. Clique em "+ Criar Novo Agente".</p>`;
         return;
       }
 
@@ -5341,8 +5667,8 @@ body > #historico-rolagens.dice-history{
             <div class="card-avatar" style="background-image: ${bgImg}; display: ${ag.fotoUrl ? 'block' : 'none'};"></div>
             <div class="card-title">${ag.nome}</div>
             <div class="card-subtitle">${ag.classe} — ${ag.origem}</div>
-            <div style="font-size:0.8em; color:#8bb3a8;">Dono: <b>${ag.donoNome || window.usuarioAtual}</b></div>
-            <div style="font-size:0.8em; color:#5c7b82;">Campanha: <b>${ag.campanhaCodigo || 'Nenhuma'}</b></div>
+            <div style="font-size:0.8em; color:var(--cat-muted);">Dono: <b>${ag.donoNome || window.usuarioAtual}</b></div>
+            <div style="font-size:0.8em; color:var(--cat-muted);">Campanha: <b>${ag.campanhaCodigo || 'Nenhuma'}</b></div>
             <div class="card-details">
               <span>❤️ PV: ${ag.pvAtual}</span>
               <span>🧠 IM: ${ag.imAtual}</span>
@@ -5436,7 +5762,7 @@ body > #historico-rolagens.dice-history{
       containerParticipando.innerHTML = '';
 
       if (window.campanhas.length === 0) {
-        containerCriadas.innerHTML = `<p style="grid-column: 1/-1; color: #8bb3a8; text-align: center;">Nenhuma campanha criada por você.</p>`;
+        containerCriadas.innerHTML = `<p style="grid-column: 1/-1; color: var(--cat-muted); text-align: center;">Nenhuma campanha criada por você.</p>`;
       } else {
         window.campanhas.forEach(c => {
           const bgBanner = c.bannerUrl ? `url('${c.bannerUrl}')` : 'none';
@@ -5444,7 +5770,7 @@ body > #historico-rolagens.dice-history{
             <div class="card-item">
               <div class="card-banner" style="background-image: ${bgBanner}; display: ${c.bannerUrl ? 'block' : 'none'};"></div>
               <div class="card-title">${c.nome}</div>
-              <div class="card-subtitle">CÓDIGO: <b style="color:#2ec4b6;">${c.codigo}</b></div>
+              <div class="card-subtitle">CÓDIGO: <b style="color:var(--cat-accent2);">${c.codigo}</b></div>
               <button class="btn-main" style="margin-top:10px;" onclick="abrirPainelCampanha('${c.id}', true)">👁️ Painel do Mestre</button>
               <div style="display: flex; gap: 5px; margin-top: 5px;">
                 <button class="btn-main" style="width:100%; font-size: 0.75em; background: #1a4d58;" onclick="abrirPopEditarCampanha('${c.id}')">✏️ Editar Nome</button>
@@ -5461,13 +5787,13 @@ body > #historico-rolagens.dice-history{
         const code=String(ag.campanhaCodigo||'').toUpperCase();
         if(code&&!seen.has(code)){seen.add(code);participating.push(code);}
       }
-      if(!participating.length){containerParticipando.innerHTML=`<p style="grid-column:1/-1;color:#8bb3a8;text-align:center;">Você não está participando de nenhuma mesa no momento.</p>`;return;}
+      if(!participating.length){containerParticipando.innerHTML=`<p style="grid-column:1/-1;color:var(--cat-muted);text-align:center;">Você não está participando de nenhuma mesa no momento.</p>`;return;}
       const docs=await Promise.all(participating.map(async code=>{try{const inv=await getDoc(doc(db,'convites',code));if(!inv.exists())return null;const data=inv.data();const camp=await getDoc(doc(db,'campanhas',data.campanhaId));return camp.exists()?camp.data():null;}catch(e){console.warn(e);return null;}}));
       docs.filter(Boolean).forEach(c=>{
         const bgBanner=c.bannerUrl?`url('${c.bannerUrl}')`:'none';
-        containerParticipando.innerHTML+=`<div class="card-item"><div class="card-banner" style="background-image:${bgBanner};display:${c.bannerUrl?'block':'none'};"></div><div class="card-title">${c.nome}</div><div class="card-subtitle">CÓDIGO: <b style="color:#2ec4b6;">${c.codigo}</b></div><button class="btn-main" style="margin-top:10px;background:#0e2a30;" onclick="abrirPainelCampanhaJogador('${c.codigo}','${String(c.nome||'').replace(/'/g,"\'")}','${String(c.bannerUrl||'').replace(/'/g,"\'")}')">👁️ Entrar na Mesa</button></div>`;
+        containerParticipando.innerHTML+=`<div class="card-item"><div class="card-banner" style="background-image:${bgBanner};display:${c.bannerUrl?'block':'none'};"></div><div class="card-title">${c.nome}</div><div class="card-subtitle">CÓDIGO: <b style="color:var(--cat-accent2);">${c.codigo}</b></div><button class="btn-main" style="margin-top:10px;background:#0e2a30;" onclick="abrirPainelCampanhaJogador('${c.codigo}','${String(c.nome||'').replace(/'/g,"\'")}','${String(c.bannerUrl||'').replace(/'/g,"\'")}')">👁️ Entrar na Mesa</button></div>`;
       });
-      if(!docs.some(Boolean))containerParticipando.innerHTML=`<p style="grid-column:1/-1;color:#8bb3a8;text-align:center;">Você não está participando de nenhuma mesa no momento.</p>`;
+      if(!docs.some(Boolean))containerParticipando.innerHTML=`<p style="grid-column:1/-1;color:var(--cat-muted);text-align:center;">Você não está participando de nenhuma mesa no momento.</p>`;
     };
 
     window.abrirPopEntrarCampanha=function(){document.getElementById('pop-input-entrar-campanha').value='';window.abrirPop('modal-entrar-campanha');};
@@ -5501,7 +5827,11 @@ body > #historico-rolagens.dice-history{
         // Se houver exatamente uma ficha ainda sem campanha, vinculamos automaticamente.
         const meus=window.agentes.filter(a=>!a.campanhaCodigo);
         if(meus.length===1){
-          await updateDoc(doc(db,'agentes',meus[0].id),{campanhaCodigo:codigo});
+          await updateDoc(doc(db,'agentes',meus[0].id),{
+            campanhaCodigo:codigo,
+            campanhaId:campanhaId,
+            mestreUid:String(camp.mestreUid||camp.mestreId||'')
+          });
         }
 
         window.fecharPop('modal-entrar-campanha');
@@ -5522,6 +5852,11 @@ body > #historico-rolagens.dice-history{
       const c = window.campanhas.find(item => item.id == campId);
       if (!c) return;
       window.campanhaAtualId = campId.toString();
+      const historicoAoAbrirCampanha = document.getElementById('historico-rolagens');
+      if (historicoAoAbrirCampanha) {
+        historicoAoAbrirCampanha.style.display = 'none';
+        historicoAoAbrirCampanha.classList.add('is-collapsed');
+      }
       window.eMestreDaMesaAtual = !!(eMestre && (String(c.mestreUid || '') === String(window.usuarioId || '') || String(c.mestreId || '') === String(window.usuarioId || '')));
 
       document.getElementById('mestre-campanha-titulo').innerText = `CAMPANHA — ${c.nome.toUpperCase()}`;
@@ -5545,6 +5880,11 @@ body > #historico-rolagens.dice-history{
     };
 
     window.abrirPainelCampanhaJogador = async function(codigo, nome, bannerUrl) {
+      const historicoAoAbrirCampanha = document.getElementById('historico-rolagens');
+      if (historicoAoAbrirCampanha) {
+        historicoAoAbrirCampanha.style.display = 'none';
+        historicoAoAbrirCampanha.classList.add('is-collapsed');
+      }
       window.eMestreDaMesaAtual = false;
       const convite=await getDoc(doc(db,'convites',String(codigo).toUpperCase()));
       if(!convite.exists())return window.sitePopup('Convite da campanha não encontrado.');
@@ -5597,7 +5937,7 @@ body > #historico-rolagens.dice-history{
       const querySnapshot = await getDocs(q);
 
       if (querySnapshot.empty) {
-        container.innerHTML = `<p style="color:#8bb3a8; text-align:center;">Nenhum agente vinculado ao código "<b>${codigo}</b>".</p>`;
+        container.innerHTML = `<p style="color:var(--cat-muted); text-align:center;">Nenhum agente vinculado ao código "<b>${codigo}</b>".</p>`;
         return;
       }
 
@@ -5606,13 +5946,13 @@ body > #historico-rolagens.dice-history{
         container.innerHTML += `
           <div class="card-ficha grid-3" style="margin-bottom: 15px; align-items: center;">
             <div>
-              <h3 style="text-align:left; border:none; margin:0; color:#fff;">${ag.nome}</h3>
-              <p style="font-size:0.85em; color:#2ec4b6;">Jogador: <b>${ag.donoNome || 'Desconhecido'}</b></p>
-              <p style="font-size:0.8em; color:#8bb3a8;">${ag.classe} - ${ag.origem}</p>
+              <h3 style="text-align:left; border:none; margin:0; color:var(--cat-text);">${ag.nome}</h3>
+              <p style="font-size:0.85em; color:var(--cat-accent2);">Jogador: <b>${ag.donoNome || 'Desconhecido'}</b></p>
+              <p style="font-size:0.8em; color:var(--cat-muted);">${ag.classe} - ${ag.origem}</p>
             </div>
             <div>
               <p>❤️ PV: <b>${ag.pvAtual}</b> | 🧠 IM: <b>${ag.imAtual}</b> | 🔮 EE: <b>${ag.eeAtual}%</b></p>
-              <p style="font-size:0.8em; color:#8bb3a8;">Corpo:${ag.corpo} | Ref:${ag.reflexo} | Mente:${ag.mente}</p>
+              <p style="font-size:0.8em; color:var(--cat-muted);">Corpo:${ag.corpo} | Ref:${ag.reflexo} | Mente:${ag.mente}</p>
             </div>
             <div style="text-align: right;">
               <button class="btn-main" onclick="abrirFichaOutroJogador('${ag.id}')">👁️ Ver Ficha</button>
@@ -5634,12 +5974,53 @@ body > #historico-rolagens.dice-history{
     };
 
     window.abrirFichaOutroJogador = async function(agenteId) {
-      const docSnap = await getDoc(doc(db, "agentes", agenteId.toString()));
-      if (!docSnap.exists()) return window.sitePopup("Erro ao carregar a ficha!");
+      try {
+        const docSnap = await getDoc(doc(db, "agentes", agenteId.toString()));
+        if (!docSnap.exists()) return window.sitePopup("A ficha deste jogador não foi encontrada.");
 
-      const ag = docSnap.data();
-      window.agenteAtualDonoId = ag.donoId;
-      carregarDadosNaFicha(ag);
+        const ag = docSnap.data();
+        window.agenteAtualDonoId = ag.donoId || '';
+
+        /*
+         * A permissão do Mestre é calculada pela campanha real no Firestore,
+         * e não pela lista em memória. Isso evita perder o acesso quando a
+         * campanha foi aberta por uma lista antiga, convite ou atualização de estado.
+         */
+        let mestreConfirmado = false;
+        let campanhaDoAgente = null;
+
+        if (window.campanhaAtualId) {
+          const campSnap = await getDoc(doc(db, 'campanhas', String(window.campanhaAtualId)));
+          if (campSnap.exists()) campanhaDoAgente = { id: campSnap.id, ...campSnap.data() };
+        }
+
+        if (!campanhaDoAgente && ag.campanhaCodigo) {
+          const qCamp = query(collection(db, 'campanhas'), where('codigo', '==', String(ag.campanhaCodigo).toUpperCase()));
+          const campsSnap = await getDocs(qCamp);
+          if (!campsSnap.empty) {
+            const first = campsSnap.docs[0];
+            campanhaDoAgente = { id: first.id, ...first.data() };
+          }
+        }
+
+        if (campanhaDoAgente) {
+          window.campanhaAtualId = String(campanhaDoAgente.id);
+          mestreConfirmado =
+            String(campanhaDoAgente.mestreUid || '') === String(window.usuarioId || '') ||
+            String(campanhaDoAgente.mestreId || '') === String(window.usuarioId || '');
+        }
+
+        window.eMestreDaMesaAtual = mestreConfirmado;
+        carregarDadosNaFicha(ag);
+      } catch (erro) {
+        console.error('Erro ao abrir ficha de jogador:', erro);
+        const code = String(erro?.code || '');
+        if (code.includes('permission-denied')) {
+          window.sitePopup('O Firebase bloqueou a leitura desta ficha. O Mestre precisa ter permissão de leitura na coleção "agentes" pelas Firestore Rules.', {title:'ACESSO À FICHA'});
+        } else {
+          window.sitePopup('Não foi possível abrir a ficha deste jogador.');
+        }
+      }
     };
 
     window.abrirFicha = function(id) {
@@ -5653,8 +6034,11 @@ body > #historico-rolagens.dice-history{
     function carregarDadosNaFicha(ag) {
       window.agenteAtualId = ag.id.toString();
 
-      const ehDono = (window.agenteAtualDonoId === window.usuarioId || ag.donoId === window.usuarioId);
-      window.podeEditarFichaAtual = ehDono || window.eMestreDaMesaAtual;
+      const ehDono =
+        String(window.agenteAtualDonoId || '') === String(window.usuarioId || '') ||
+        String(ag.donoId || '') === String(window.usuarioId || '');
+      const ehMestre = window.eMestreDaMesaAtual === true;
+      window.podeEditarFichaAtual = ehDono || ehMestre;
 
       const bannerPermissao = document.getElementById('banner-permissao-leitura');
       bannerPermissao.style.display = window.podeEditarFichaAtual ? 'none' : 'block';
@@ -5664,21 +6048,37 @@ body > #historico-rolagens.dice-history{
       document.getElementById('nome').value = ag.nome || '';
       document.getElementById('dono-nome').value = ag.donoNome || window.usuarioAtual;
       document.getElementById('origem').value = ag.origem || '';
+      renderizarHabilidadeOrigem(ag.origem || '');
       document.getElementById('classe').value = ag.classe || 'Mundano';
       document.getElementById('campanha-codigo').value = ag.campanhaCodigo || '';
       document.getElementById('foto-url').value = ag.fotoUrl || '';
+
+      /* Metadados explícitos da campanha deixam a autorização do Mestre verificável
+         nas Firestore Rules, sem depender de uma query por código. */
+      window.fichaCampanhaId = String(ag.campanhaId || '');
+      window.fichaMestreUid = String(ag.mestreUid || '');
+      if (!window.fichaCampanhaId && ag.campanhaCodigo && Array.isArray(window.campanhas)) {
+        const meta = window.campanhas.find(c => String(c.codigo || '').toUpperCase() === String(ag.campanhaCodigo || '').toUpperCase());
+        if (meta) {
+          window.fichaCampanhaId = String(meta.id || '');
+          window.fichaMestreUid = String(meta.mestreUid || meta.mestreId || '');
+        }
+      }
+      /* O histórico pertence à ficha: entra minimizado, mas continua disponível. */
       window.renderizarHistoricoRolagens(ag.historicoRolagens || []);
       const historicoPainel = document.getElementById('historico-rolagens');
       const historicoBotao = historicoPainel?.querySelector('.dice-history-toggle');
       if (historicoPainel) {
         historicoPainel.style.display = 'block';
-        historicoPainel.classList.remove('is-collapsed');
+        historicoPainel.classList.add('is-collapsed');
       }
       if (historicoBotao) {
-        historicoBotao.textContent = 'FECHAR';
-        historicoBotao.title = 'Minimizar histórico';
-        historicoBotao.setAttribute('aria-expanded', 'true');
+        historicoBotao.textContent = 'ABRIR';
+        historicoBotao.title = 'Abrir histórico';
+        historicoBotao.setAttribute('aria-expanded', 'false');
       }
+      const historicoLimpar = historicoPainel?.querySelector('.dice-history-actions button:first-child');
+      if (historicoLimpar) historicoLimpar.style.display = window.podeEditarFichaAtual ? '' : 'none';
 
       document.getElementById('attr-corpo').value = ag.corpo || 1;
       document.getElementById('attr-reflexo').value = ag.reflexo || 1;
@@ -5697,6 +6097,15 @@ body > #historico-rolagens.dice-history{
         ag.treinos.forEach((val, idx) => {
           const sel = document.getElementById(`p-treino-${idx}`);
           if (sel) sel.value = val;
+        });
+      }
+
+      const origemAtual = window.origensCatálise?.[ag.origem || ''];
+      if (origemAtual) {
+        origemAtual.pericias.forEach(nomePericia => {
+          const idx = window.pericias.findIndex(p => p.nome === nomePericia);
+          const sel = idx >= 0 ? document.getElementById(`p-treino-${idx}`) : null;
+          if (sel && Number(sel.value || 0) < 2) sel.value = "2";
         });
       }
 
@@ -5733,6 +6142,8 @@ body > #historico-rolagens.dice-history{
       if (historicoLista) historicoLista.innerHTML = '';
       window.agenteAtualId = null;
       window.agenteAtualDonoId = null;
+      window.fichaCampanhaId = '';
+      window.fichaMestreUid = '';
       window.podeEditarFichaAtual = true;
     };
 
@@ -5745,6 +6156,7 @@ body > #historico-rolagens.dice-history{
         classe: document.getElementById('classe').value,
         campanhaCodigo: document.getElementById('campanha-codigo').value.trim(),
         fotoUrl: document.getElementById('foto-url').value,
+        ...(window.fichaCampanhaId ? { campanhaId: String(window.fichaCampanhaId), mestreUid: String(window.fichaMestreUid || '') } : {}),
 
         corpo: parseInt(document.getElementById('attr-corpo').value) || 0,
         reflexo: parseInt(document.getElementById('attr-reflexo').value) || 0,
@@ -5760,7 +6172,17 @@ body > #historico-rolagens.dice-history{
         treinos: window.pericias.map((_, i) => document.getElementById(`p-treino-${i}`)?.value || "0")
       };
 
-      await setDoc(doc(db, "agentes", window.agenteAtualId.toString()), dadosAtualizados, { merge: true });
+      try {
+        await setDoc(doc(db, "agentes", window.agenteAtualId.toString()), dadosAtualizados, { merge: true });
+      } catch (erro) {
+        console.error('Erro ao salvar ficha:', erro);
+        const code = String(erro?.code || '');
+        if (code.includes('permission-denied')) {
+          window.sitePopup('A ficha está liberada no site, mas o Firebase recusou a gravação. Nas Firestore Rules, permita escrita ao mestre da campanha.', {title:'PERMISSÃO DO MESTRE'});
+        } else {
+          window.sitePopup('Não foi possível salvar a ficha agora.');
+        }
+      }
     };
 
     function renderizarPericias() {
@@ -5773,7 +6195,7 @@ body > #historico-rolagens.dice-history{
             <td><b>${p.nome}</b></td>
             <td>${p.attr.toUpperCase()}</td>
             <td>
-              <select id="p-treino-${idx}" class="campo-editavel" onchange="atualizarTudo()">
+              <select id="p-treino-${idx}" class="campo-editavel" onchange="validarTreinoOrigem(${idx}); atualizarTudo()">
                 <option value="0">Não Treinado (+0)</option>
                 <option value="2">Treinado (+2)</option>
                 <option value="5">Especializado (+5)</option>
@@ -5907,7 +6329,7 @@ body > #historico-rolagens.dice-history{
             <span class="tag-cat" style="background:#173c48; color:#9ed8df;">${ritual.circulo}</span>
             <span class="tag-cat" style="background:#253b34; color:#9fe0c0;">DT ${ritual.dt}</span>
           </div>
-          <b style="color:#fff;">${ritual.nome}</b>
+          <b style="color:var(--cat-text);">${ritual.nome}</b>
           <div style="margin-top:5px;">${ritual.custo} · ${ritual.exposicao}</div>
           <div style="margin-top:5px;">${ritual.efeito}</div>
         </div>
@@ -6031,7 +6453,7 @@ body > #historico-rolagens.dice-history{
 
       const ag = await obterAgenteEmEdicao();
       if (!ag || !ag.rituais || ag.rituais.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="6" style="color:#8bb3a8; text-align:center;">Nenhum ritual aprendido.</td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="6" style="color:var(--cat-muted); text-align:center;">Nenhum ritual aprendido.</td></tr>`;
         return;
       }
 
@@ -6110,7 +6532,7 @@ body > #historico-rolagens.dice-history{
       const ganhoEE = exposicaoMatch ? parseInt(exposicaoMatch[1]) : 0;
 
       if (window.podeEditarFichaAtual && (parseInt(ag.imAtual) || 0) < custoIM) {
-        log.innerHTML = `<b style="color:#ff6b6b;">⚠️ INTEGRIDADE MENTAL INSUFICIENTE</b> — ${ritual.nome} exige ${custoIM} IM.`;
+        log.innerHTML = `<b style="color:var(--cat-danger);">⚠️ INTEGRIDADE MENTAL INSUFICIENTE</b> — ${ritual.nome} exige ${custoIM} IM.`;
         return;
       }
 
@@ -6137,14 +6559,14 @@ body > #historico-rolagens.dice-history{
       }
 
       const resultado = sucesso
-        ? `<b style="color:#2ec4b6;">✨ RITUAL CONJURADO!</b>`
-        : `<b style="color:#ff6b6b;">✖ FALHA NA CONJURAÇÃO!</b>`;
+        ? `<b style="color:var(--cat-accent2);">✨ RITUAL CONJURADO!</b>`
+        : `<b style="color:var(--cat-danger);">✖ FALHA NA CONJURAÇÃO!</b>`;
       const custoAplicadoTexto = sucesso ? `${custoIM} IM` : `${Math.floor(custoIM / 2)} IM`;
       const eeAplicadoTexto = sucesso ? `+${ganhoEE} EE` : `+${ganhoEE * 2} EE`;
 
       log.innerHTML = `${resultado} <b>${ritual.nome}</b><br>
         1d20: <b>${d20}</b> + Espírito: <b>${espirito}</b> + Ocultismo: <b>${treinoOcultismo}</b> =
-        <b style="color:#2ec4b6; font-size:1.15em;">${total}</b> vs DT <b>${dt}</b><br>
+        <b style="color:var(--cat-accent2); font-size:1.15em;">${total}</b> vs DT <b>${dt}</b><br>
         ${sucesso ? 'Efeito ativado.' : 'O ritual não funciona.'} · Custo aplicado: <b>${custoAplicadoTexto}</b> · Exposição: <b>${eeAplicadoTexto}</b>`;
 
       window.registrarRolagem({
@@ -6200,11 +6622,11 @@ body > #historico-rolagens.dice-history{
       let destaque = d20 === 20 ? 'critico' : d20 === 1 ? 'falha' : '';
       let log = document.getElementById('log-rolagem');
       if (d20 === 20) {
-        log.innerHTML = `<b style="color: #2ec4b6;">🔥 SUCESSO CRÍTICO!</b> ${nome} (1d20: 20) + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b>Total: ${total}</b>`;
+        log.innerHTML = `<b style="color: var(--cat-accent2);">🔥 SUCESSO CRÍTICO!</b> ${nome} (1d20: 20) + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b>Total: ${total}</b>`;
       } else if (d20 === 1) {
-        log.innerHTML = `<b style="color: #ff6b6b;">💀 FALHA CATASTRÓFICA!</b> ${nome} (1d20: 1) + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b>Total: ${total}</b>`;
+        log.innerHTML = `<b style="color: var(--cat-danger);">💀 FALHA CATASTRÓFICA!</b> ${nome} (1d20: 1) + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b>Total: ${total}</b>`;
       } else {
-        log.innerHTML = `Teste de <b>${nome}</b>: [1d20: ${d20}] + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b style="color: #2ec4b6; font-size: 1.2em;">Total: ${total}</b>`;
+        log.innerHTML = `Teste de <b>${nome}</b>: [1d20: ${d20}] + ${attr.toUpperCase()}: ${attrVal} + Treino: ${treinoVal} = <b style="color: var(--cat-accent2); font-size: 1.2em;">Total: ${total}</b>`;
       }
       window.registrarRolagem({formula:'1d20',resultados:[d20],total,tipo:'Teste de perícia',nome,destaque});
     };
@@ -6227,7 +6649,7 @@ body > #historico-rolagens.dice-history{
       for(let i=0;i<qtdDados;i++){let roll=window.rolarDadoCripto(ladosDado);resultados.push(roll);soma+=roll;}
       let total=soma+bonus;
       let textoBonus=bonus>0?` + ${bonus}`:'';
-      log.innerHTML=`🎲 ${tipo} de <b>${nomeItem}</b> (${formula}): [${resultados.join(', ')}]${textoBonus} = <b style="color: #2ec4b6; font-size: 1.2em;">${total}</b>`;
+      log.innerHTML=`🎲 ${tipo} de <b>${nomeItem}</b> (${formula}): [${resultados.join(', ')}]${textoBonus} = <b style="color: var(--cat-accent2); font-size: 1.2em;">${total}</b>`;
       window.registrarRolagem({formula,resultados,total,tipo,nome:nomeItem});
     };
 
@@ -7418,6 +7840,138 @@ body.theme-abismo{
      logo após DOMContentLoaded. */
   window.addEventListener('load',instalarNavegacaoDedicada,{once:true});
   setTimeout(instalarNavegacaoDedicada,0);
+})();
+</script>
+
+
+<style id="catalise-final-theme-normalizer-v6">
+/* =========================================================
+   CATÁLISE FINAL — NORMALIZAÇÃO DE TEMA + FICHA
+   Tudo que é interface usa as variáveis do tema ativo.
+   ========================================================= */
+:root{
+  --cat-danger:#d66a6a;
+  --cat-contrast:#f4fffc;
+  --cat-overlay:rgba(0,0,0,.42);
+}
+body.theme-sangue{--cat-danger:#ef6b78;--cat-contrast:#fff1f2}
+body.theme-capela{--cat-danger:#ef6fb2;--cat-contrast:#fff0f8}
+body.theme-abismo{--cat-danger:#a96cff;--cat-contrast:#f4ecff}
+body.theme-cinzas{--cat-danger:#bfc9c7;--cat-contrast:#f7faf9}
+body.theme-ouro{--cat-danger:#d2ae57;--cat-contrast:#fff6cf}
+
+/* Modal/ficha: nenhum painel usa a paleta teal antiga como cor fixa. */
+#modal-ficha .modal-content,
+#modal-mestre .modal-content{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--cat-surface) 97%,black),color-mix(in srgb,var(--cat-bg) 97%,black))!important;
+  color:var(--cat-text)!important;
+  border-color:color-mix(in srgb,var(--cat-accent) 28%,transparent)!important;
+}
+#modal-ficha h2,#modal-ficha h3,#modal-mestre h2,#modal-mestre h3{color:var(--cat-accent2)!important}
+#modal-ficha label,#modal-mestre label{color:var(--cat-muted)!important}
+#modal-ficha input,#modal-ficha select,#modal-ficha textarea,#modal-mestre input,#modal-mestre select,#modal-mestre textarea{
+  color:var(--cat-text)!important;
+  background:color-mix(in srgb,var(--cat-bg) 90%,black)!important;
+  border-color:color-mix(in srgb,var(--cat-accent) 28%,transparent)!important;
+}
+#modal-ficha input:focus,#modal-ficha select:focus,#modal-ficha textarea:focus,#modal-mestre input:focus,#modal-mestre select:focus,#modal-mestre textarea:focus{
+  border-color:var(--cat-accent)!important;
+  box-shadow:0 0 0 3px color-mix(in srgb,var(--cat-accent) 13%,transparent)!important;
+}
+
+/* Sobrescreve cores inline antigas nos componentes de interface, sem tocar em imagens. */
+#modal-ficha [style*="color:"],#modal-mestre [style*="color:"]{color:var(--cat-text)!important}
+#modal-ficha [style*="background:"]:not([style*="background-image"]),#modal-mestre [style*="background:"]:not([style*="background-image"]){background:color-mix(in srgb,var(--cat-surface3) 78%,var(--cat-surface2))!important}
+#modal-ficha .btn-main,#modal-mestre .btn-main{
+  color:var(--cat-contrast)!important;
+  background:linear-gradient(135deg,color-mix(in srgb,var(--cat-accent) 42%,var(--cat-surface3)),color-mix(in srgb,var(--cat-accent) 18%,var(--cat-surface2)))!important;
+  border-color:color-mix(in srgb,var(--cat-accent2) 42%,transparent)!important;
+}
+#modal-ficha .btn-main:hover,#modal-mestre .btn-main:hover{border-color:var(--cat-accent2)!important}
+#modal-ficha .btn-danger,#modal-mestre .btn-danger{background:linear-gradient(135deg,color-mix(in srgb,var(--cat-danger) 45%,var(--cat-surface3)),color-mix(in srgb,var(--cat-danger) 24%,var(--cat-surface2)))!important;border-color:color-mix(in srgb,var(--cat-danger) 58%,transparent)!important}
+
+/* Ficha: habilidade de origem proporcional ao restante do conteúdo. */
+#origem-habilidade-box{
+  min-height:0!important;
+  max-height:none!important;
+  overflow:visible!important;
+}
+#origem-habilidade-box .origem-panel-title{font-size:17px!important}
+#origem-habilidade-box .origem-panel-desc{font-size:10.5px!important;line-height:1.55!important}
+
+/* Histórico: fica visível como botão minimizado ao abrir a ficha. */
+body > #historico-rolagens.dice-history{
+  display:block!important;
+  color:var(--cat-muted)!important;
+}
+body > #historico-rolagens.dice-history .dice-history-head{
+  background:color-mix(in srgb,var(--cat-surface) 94%,black)!important;
+  border-color:color-mix(in srgb,var(--cat-accent) 30%,transparent)!important;
+  color:var(--cat-muted)!important;
+}
+body > #historico-rolagens.dice-history .dice-history-head button{color:var(--cat-accent2)!important}
+body > #historico-rolagens.dice-history .dice-history-head button:hover{color:var(--cat-contrast)!important}
+body > #historico-rolagens.dice-history .dice-history-toggle{
+  border-color:color-mix(in srgb,var(--cat-accent) 38%,transparent)!important;
+  background:color-mix(in srgb,var(--cat-accent) 8%,var(--cat-surface2))!important;
+  color:var(--cat-accent2)!important;
+}
+body > #historico-rolagens.dice-history .dice-toast{
+  background:linear-gradient(90deg,color-mix(in srgb,var(--cat-bg) 94%,black),color-mix(in srgb,var(--cat-surface) 94%,black))!important;
+  border-color:color-mix(in srgb,var(--cat-accent) 26%,transparent)!important;
+  color:var(--cat-text)!important;
+}
+
+/* Player cards da campanha também acompanham o tema. */
+#container-fichas-jogadores .card-ficha{
+  background:linear-gradient(145deg,color-mix(in srgb,var(--cat-surface) 96%,black),color-mix(in srgb,var(--cat-surface2) 96%,black))!important;
+  border-color:color-mix(in srgb,var(--cat-accent) 24%,transparent)!important;
+}
+#container-fichas-jogadores .card-ficha p{color:var(--cat-muted)!important}
+#container-fichas-jogadores .card-ficha h3{color:var(--cat-text)!important}
+
+/* Mensagens e avisos. */
+.aviso-permissao{
+  border-color:color-mix(in srgb,var(--cat-accent) 34%,transparent)!important;
+  background:color-mix(in srgb,var(--cat-accent) 7%,var(--cat-surface2))!important;
+  color:var(--cat-text)!important;
+}
+
+/* Tag de origem sempre segue o tema. */
+.tag-dogma{
+  border-color:color-mix(in srgb,var(--cat-accent) 40%,transparent)!important;
+  background:color-mix(in srgb,var(--cat-accent) 11%,var(--cat-surface2))!important;
+  color:var(--cat-accent2)!important;
+}
+
+@media(max-width:650px){
+  #origem-habilidade-box{padding:12px!important}
+  #origem-habilidade-box .origem-panel-desc{font-size:10px!important}
+}
+</style>\n
+
+<script id="catalise-history-scope-final-v2">
+/* Histórico de dados é montado e exibido somente quando a ficha está aberta. */
+(function(){
+  function fichaAberta(){
+    return document.getElementById('modal-ficha')?.style.display === 'block';
+  }
+  function sincronizarEscopoHistorico(){
+    const painel=document.getElementById('historico-rolagens');
+    if(!painel) return;
+    if(!fichaAberta()){
+      painel.style.display='none';
+      painel.classList.add('is-collapsed');
+      painel.querySelector('.dice-history-toggle')?.setAttribute('aria-expanded','false');
+    }
+  }
+  document.addEventListener('DOMContentLoaded', sincronizarEscopoHistorico);
+  const ficha=document.getElementById('modal-ficha');
+  if(ficha){
+    new MutationObserver(sincronizarEscopoHistorico).observe(
+      ficha,{attributes:true,attributeFilter:['style']}
+    );
+  }
 })();
 </script>
 
